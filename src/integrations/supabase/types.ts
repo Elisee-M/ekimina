@@ -367,6 +367,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_group_by_id: {
+        Args: { _id: string }
+        Returns: {
+          id: string
+          name: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
