@@ -1,9 +1,13 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { ArrowRight, Shield, Users, TrendingUp } from "lucide-react";
+import { ArrowRight, Shield, Users, TrendingUp, Play, X } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 export function HeroSection() {
+  const [showDemo, setShowDemo] = useState(false);
+
   return (
     <section className="relative min-h-screen flex items-center pt-16 overflow-hidden">
       {/* Background Pattern */}
@@ -44,8 +48,9 @@ export function HeroSection() {
                   <ArrowRight className="w-5 h-5" />
                 </Link>
               </Button>
-              <Button variant="outline" size="xl" asChild>
-                <Link to="/demo">Watch Demo</Link>
+              <Button variant="outline" size="xl" onClick={() => setShowDemo(true)}>
+                <Play className="w-5 h-5 mr-2" />
+                Watch Demo
               </Button>
             </div>
 
@@ -152,6 +157,56 @@ export function HeroSection() {
           </motion.div>
         </div>
       </div>
+
+      {/* Demo Video Modal */}
+      <Dialog open={showDemo} onOpenChange={setShowDemo}>
+        <DialogContent className="max-w-4xl p-0 overflow-hidden">
+          <DialogHeader className="p-6 pb-0">
+            <DialogTitle className="text-xl font-bold">How eKimina Works</DialogTitle>
+          </DialogHeader>
+          <div className="p-6">
+            <div className="aspect-video bg-muted rounded-lg flex items-center justify-center relative overflow-hidden">
+              {/* Placeholder for actual video - replace with real video embed */}
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20" />
+              <div className="relative z-10 text-center space-y-4 p-8">
+                <div className="w-20 h-20 rounded-full bg-primary/20 flex items-center justify-center mx-auto">
+                  <Play className="w-10 h-10 text-primary" />
+                </div>
+                <h3 className="text-2xl font-bold text-foreground">Demo Video Coming Soon</h3>
+                <p className="text-muted-foreground max-w-md">
+                  We're preparing an interactive walkthrough of the eKimina platform. 
+                  In the meantime, here's a quick overview:
+                </p>
+              </div>
+            </div>
+            
+            {/* Quick Feature Overview */}
+            <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="bg-muted/50 rounded-lg p-4">
+                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mb-3">
+                  <Users className="w-5 h-5 text-primary" />
+                </div>
+                <h4 className="font-semibold text-foreground mb-1">Create or Join</h4>
+                <p className="text-sm text-muted-foreground">Start your own Ikimina group or join an existing one with a simple code.</p>
+              </div>
+              <div className="bg-muted/50 rounded-lg p-4">
+                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mb-3">
+                  <TrendingUp className="w-5 h-5 text-primary" />
+                </div>
+                <h4 className="font-semibold text-foreground mb-1">Track Everything</h4>
+                <p className="text-sm text-muted-foreground">Monitor contributions, loans, and profits with real-time dashboards.</p>
+              </div>
+              <div className="bg-muted/50 rounded-lg p-4">
+                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mb-3">
+                  <Shield className="w-5 h-5 text-primary" />
+                </div>
+                <h4 className="font-semibold text-foreground mb-1">Stay Secure</h4>
+                <p className="text-sm text-muted-foreground">Bank-level encryption keeps your group's finances safe and private.</p>
+              </div>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </section>
   );
 }

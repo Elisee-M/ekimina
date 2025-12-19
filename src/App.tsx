@@ -12,6 +12,8 @@ import Onboarding from "./pages/Onboarding";
 import Dashboard from "./pages/Dashboard";
 import Members from "./pages/Members";
 import Contributions from "./pages/Contributions";
+import Loans from "./pages/Loans";
+import Reports from "./pages/Reports";
 import MemberDashboard from "./pages/MemberDashboard";
 import Unauthorized from "./pages/Unauthorized";
 import NotFound from "./pages/NotFound";
@@ -48,6 +50,16 @@ const App = () => (
             <Route path="/dashboard/contributions" element={
               <ProtectedRoute requireGroupAdmin>
                 <Contributions />
+              </ProtectedRoute>
+            } />
+            <Route path="/dashboard/loans" element={
+              <ProtectedRoute requireGroupAdmin>
+                <Loans />
+              </ProtectedRoute>
+            } />
+            <Route path="/dashboard/reports" element={
+              <ProtectedRoute requireGroupAdmin>
+                <Reports />
               </ProtectedRoute>
             } />
             <Route path="/dashboard/*" element={

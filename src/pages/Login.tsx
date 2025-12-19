@@ -25,17 +25,22 @@ const Login = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Only redirect if user is logged in AND auth data is fully loaded
     if (!loading && user) {
-      // Check if user has a group
-      if (!groupMembership && !isSuperAdmin) {
-        navigate('/onboarding');
-      } else if (isSuperAdmin) {
-        navigate('/super-admin');
-      } else if (isGroupAdmin) {
-        navigate('/dashboard');
-      } else {
-        navigate('/member');
-      }
+      // Wait a bit for user data to be fetched
+      const timeout = setTimeout(() => {
+        // Check if user has a group
+        if (!groupMembership && !isSuperAdmin) {
+          navigate('/onboarding', { replace: true });
+        } else if (isSuperAdmin) {
+          navigate('/super-admin', { replace: true });
+        } else if (isGroupAdmin) {
+          navigate('/dashboard', { replace: true });
+        } else {
+          navigate('/member', { replace: true });
+        }
+      }, 100);
+      return () => clearTimeout(timeout);
     }
   }, [user, loading, isSuperAdmin, isGroupAdmin, groupMembership, navigate]);
 
