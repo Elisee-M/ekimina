@@ -212,7 +212,7 @@ const Loans = () => {
     }
   };
 
-  const handleCreateLoan = async () => {
+  const handleCreateLoan = async (approveImmediately: boolean = false) => {
     if (!groupMembership || !user) return;
 
     try {
@@ -228,27 +228,32 @@ const Loans = () => {
       const dueDate = new Date(startDate);
       dueDate.setMonth(dueDate.getMonth() + durationMonths);
 
+      const loanData: any = {
+        group_id: groupMembership.group_id,
+        borrower_id: newLoan.borrower_id,
+        principal_amount: principalAmount,
+        interest_rate: interestRate,
+        total_payable: totalPayable,
+        profit: profit,
+        duration_months: durationMonths,
+        start_date: newLoan.start_date,
+        due_date: dueDate.toISOString().split('T')[0],
+        notes: newLoan.notes || null,
+        status: approveImmediately ? 'active' : 'pending'
+      };
+
+      if (approveImmediately) {
+        loanData.approved_by = user.id;
+        loanData.approved_at = new Date().toISOString();
+      }
+
       const { error } = await supabase
         .from('loans')
-        .insert({
-          group_id: groupMembership.group_id,
-          borrower_id: newLoan.borrower_id,
-          principal_amount: principalAmount,
-          interest_rate: interestRate,
-          total_payable: totalPayable,
-          profit: profit,
-          duration_months: durationMonths,
-          start_date: newLoan.start_date,
-          due_date: dueDate.toISOString().split('T')[0],
-          notes: newLoan.notes || null,
-          status: 'active',
-          approved_by: user.id,
-          approved_at: new Date().toISOString()
-        });
+        .insert(loanData);
 
       if (error) throw error;
 
-      toast({ title: "Loan created successfully" });
+      toast({ title: approveImmediately ? "Loan created and approved" : "Loan saved for approval" });
       setShowNewLoanDialog(false);
       setNewLoan({
         borrower_id: "",
@@ -688,14 +693,22 @@ const Loans = () => {
                 </div>
               )}
             </div>
-            <DialogFooter>
+            <DialogFooter className="flex-col sm:flex-row gap-2">
               <Button variant="outline" onClick={() => setShowNewLoanDialog(false)}>Cancel</Button>
               <Button 
-                onClick={handleCreateLoan} 
+                variant="secondary"
+                onClick={() => handleCreateLoan(false)} 
                 disabled={!newLoan.borrower_id || !newLoan.principal_amount || isSubmitting}
               >
-                {isSubmitting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
-                Create Loan
+                {isSubmitting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Clock className="w-4 h-4 mr-2" />}
+                Save as Pending
+              </Button>
+              <Button 
+                onClick={() => handleCreateLoan(true)} 
+                disabled={!newLoan.borrower_id || !newLoan.principal_amount || isSubmitting}
+              >
+                {isSubmitting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <CheckCircle className="w-4 h-4 mr-2" />}
+                Create & Approve
               </Button>
             </DialogFooter>
           </DialogContent>

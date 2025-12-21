@@ -14,6 +14,11 @@ import Members from "./pages/Members";
 import Contributions from "./pages/Contributions";
 import Loans from "./pages/Loans";
 import Reports from "./pages/Reports";
+import Settings from "./pages/Settings";
+import SuperAdminOverview from "./pages/super-admin/SuperAdminOverview";
+import SuperAdminGroups from "./pages/super-admin/SuperAdminGroups";
+import SuperAdminAdmins from "./pages/super-admin/SuperAdminAdmins";
+import SuperAdminSettings from "./pages/super-admin/SuperAdminSettings";
 import MemberDashboard from "./pages/MemberDashboard";
 import Unauthorized from "./pages/Unauthorized";
 import NotFound from "./pages/NotFound";
@@ -62,6 +67,11 @@ const App = () => (
                 <Reports />
               </ProtectedRoute>
             } />
+            <Route path="/dashboard/settings" element={
+              <ProtectedRoute requireGroupAdmin>
+                <Settings />
+              </ProtectedRoute>
+            } />
             <Route path="/dashboard/*" element={
               <ProtectedRoute requireGroupAdmin>
                 <Dashboard />
@@ -83,12 +93,27 @@ const App = () => (
             {/* Protected Super Admin Routes */}
             <Route path="/super-admin" element={
               <ProtectedRoute requiredRole="super_admin">
-                <Dashboard />
+                <SuperAdminOverview />
+              </ProtectedRoute>
+            } />
+            <Route path="/super-admin/groups" element={
+              <ProtectedRoute requiredRole="super_admin">
+                <SuperAdminGroups />
+              </ProtectedRoute>
+            } />
+            <Route path="/super-admin/admins" element={
+              <ProtectedRoute requiredRole="super_admin">
+                <SuperAdminAdmins />
+              </ProtectedRoute>
+            } />
+            <Route path="/super-admin/settings" element={
+              <ProtectedRoute requiredRole="super_admin">
+                <SuperAdminSettings />
               </ProtectedRoute>
             } />
             <Route path="/super-admin/*" element={
               <ProtectedRoute requiredRole="super_admin">
-                <Dashboard />
+                <SuperAdminOverview />
               </ProtectedRoute>
             } />
             
