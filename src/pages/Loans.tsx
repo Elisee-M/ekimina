@@ -599,7 +599,7 @@ const Loans = () => {
 
         {/* New Loan Dialog */}
         <Dialog open={showNewLoanDialog} onOpenChange={setShowNewLoanDialog}>
-          <DialogContent className="max-w-md">
+          <DialogContent className="max-w-md max-h-[85vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Create New Loan</DialogTitle>
             </DialogHeader>

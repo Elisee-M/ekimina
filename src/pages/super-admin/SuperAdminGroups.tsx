@@ -3,10 +3,23 @@ import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Building2, Loader2, Search } from "lucide-react";
+import { Building2, Loader2, Search, ToggleLeft, ToggleRight, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { usePageSeo } from "@/hooks/usePageSeo";
+import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 interface GroupRow {
   id: string;
@@ -14,6 +27,7 @@ interface GroupRow {
   created_at: string;
   contribution_frequency: string;
   contribution_amount: number;
+  status: string;
 }
 
 export default function SuperAdminGroups() {
@@ -33,7 +47,7 @@ export default function SuperAdminGroups() {
         setLoading(true);
         const { data } = await supabase
           .from("ikimina_groups")
-          .select("id,name,created_at,contribution_frequency,contribution_amount")
+          .select("id,name,created_at,contribution_frequency,contribution_amount,status")
           .order("created_at", { ascending: false });
         setGroups((data || []) as GroupRow[]);
       } finally {
@@ -50,6 +64,36 @@ export default function SuperAdminGroups() {
   }, [groups, q]);
 
   const formatCurrency = (amount: number) => new Intl.NumberFormat("en-RW").format(amount);
+
+  const toggleGroupStatus = async (group: GroupRow) => {
+    const newStatus = group.status === "active" ? "disabled" : "active";
+    const { error } = await supabase
+      .from("ikimina_groups")
+      .update({ status: newStatus })
+      .eq("id", group.id);
+
+    if (error) {
+      toast.error("Failed to update group status");
+      return;
+    }
+
+    setGroups((prev) =>
+      prev.map((g) => (g.id === group.id ? { ...g, status: newStatus } : g))
+    );
+    toast.success(`Group ${newStatus === "active" ? "enabled" : "disabled"} successfully`);
+  };
+
+  const deleteGroup = async (groupId: string) => {
+    const { error } = await supabase.from("ikimina_groups").delete().eq("id", groupId);
+
+    if (error) {
+      toast.error("Failed to delete group. It may have related data.");
+      return;
+    }
+
+    setGroups((prev) => prev.filter((g) => g.id !== groupId));
+    toast.success("Group deleted successfully");
+  };
 
   if (loading) {
     return (
@@ -102,18 +146,63 @@ export default function SuperAdminGroups() {
                   <TableHeader>
                     <TableRow>
                       <TableHead>Name</TableHead>
+                      <TableHead>Status</TableHead>
                       <TableHead>Frequency</TableHead>
                       <TableHead>Contribution</TableHead>
                       <TableHead>Created</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {filtered.map((g) => (
                       <TableRow key={g.id}>
                         <TableCell className="font-medium">{g.name}</TableCell>
+                        <TableCell>
+                          <Badge variant={g.status === "active" ? "default" : "secondary"}>
+                            {g.status}
+                          </Badge>
+                        </TableCell>
                         <TableCell className="capitalize">{g.contribution_frequency}</TableCell>
                         <TableCell>RWF {formatCurrency(Number(g.contribution_amount || 0))}</TableCell>
                         <TableCell>{new Date(g.created_at).toLocaleDateString()}</TableCell>
+                        <TableCell className="text-right space-x-2">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => toggleGroupStatus(g)}
+                            title={g.status === "active" ? "Disable group" : "Enable group"}
+                          >
+                            {g.status === "active" ? (
+                              <ToggleRight className="w-4 h-4 text-green-600" />
+                            ) : (
+                              <ToggleLeft className="w-4 h-4 text-muted-foreground" />
+                            )}
+                          </Button>
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button variant="ghost" size="sm" title="Delete group">
+                                <Trash2 className="w-4 h-4 text-destructive" />
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Delete Group</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  Are you sure you want to delete "{g.name}"? This action cannot be undone.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction
+                                  onClick={() => deleteGroup(g.id)}
+                                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                >
+                                  Delete
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>

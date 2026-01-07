@@ -50,7 +50,7 @@ export default function SuperAdminOverview() {
 
         setGroups(recentGroups);
         setStats({
-          totalGroups: (groupRows || []).length ? undefined as any : 0,
+          totalGroups: (groupRows || []).length,
           totalMembers,
           totalContributions,
           totalLoans,
