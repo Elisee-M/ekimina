@@ -84,15 +84,22 @@ export default function SuperAdminGroups() {
   };
 
   const deleteGroup = async (groupId: string) => {
-    const { error } = await supabase.from("ikimina_groups").delete().eq("id", groupId);
+    try {
+      const response = await supabase.functions.invoke("delete-group-users", {
+        body: { groupId },
+      });
 
-    if (error) {
-      toast.error("Failed to delete group. It may have related data.");
-      return;
+      if (response.error) throw response.error;
+
+      const data = response.data;
+      setGroups((prev) => prev.filter((g) => g.id !== groupId));
+      toast.success(
+        `Group deleted. ${data.deletedUsers} user(s) removed, ${data.skippedUsers} user(s) kept (belong to other groups).`
+      );
+    } catch (error) {
+      console.error("Error deleting group:", error);
+      toast.error("Failed to delete group");
     }
-
-    setGroups((prev) => prev.filter((g) => g.id !== groupId));
-    toast.success("Group deleted successfully");
   };
 
   if (loading) {

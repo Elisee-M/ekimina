@@ -139,22 +139,24 @@ export default function Members() {
   };
 
   const handleRemoveMember = async () => {
-    if (!selectedMember) return;
+    if (!selectedMember || !groupMembership?.group_id) return;
     setActionLoading(true);
 
     try {
-      const { error } = await supabase
-        .from("group_members")
-        .update({ status: "inactive" })
-        .eq("id", selectedMember.id);
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) throw new Error("No session");
 
-      if (error) throw error;
+      const response = await supabase.functions.invoke("delete-user", {
+        body: { userId: selectedMember.userId, groupId: groupMembership.group_id },
+      });
 
-      toast.success(`${selectedMember.fullName} has been removed from the group`);
+      if (response.error) throw response.error;
+
+      toast.success(`${selectedMember.fullName} has been permanently deleted`);
       fetchMembers();
     } catch (error) {
-      console.error("Error removing member:", error);
-      toast.error("Failed to remove member");
+      console.error("Error deleting member:", error);
+      toast.error("Failed to delete member");
     } finally {
       setActionLoading(false);
       setActionDialog({ type: "", open: false });

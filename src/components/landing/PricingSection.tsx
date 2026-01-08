@@ -125,6 +125,30 @@ export function PricingSection() {
             </motion.div>
           ))}
         </div>
+
+        {/* Payment Information */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+          className="mt-16 text-center"
+        >
+          <Card variant="elevated" className="max-w-xl mx-auto">
+            <CardContent className="p-6">
+              <h3 className="text-lg font-semibold text-foreground mb-2">Payment Information</h3>
+              <p className="text-muted-foreground mb-4">
+                To subscribe to a paid plan, send your payment via Mobile Money to:
+              </p>
+              <div className="bg-primary/10 rounded-lg p-4 inline-block">
+                <span className="text-xl font-bold text-primary">+250 798 809 812</span>
+              </div>
+              <p className="text-sm text-muted-foreground mt-4">
+                After payment, contact us with your transaction ID to activate your plan.
+              </p>
+            </CardContent>
+          </Card>
+        </motion.div>
       </div>
     </section>
   );

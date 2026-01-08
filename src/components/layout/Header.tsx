@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
@@ -6,6 +6,25 @@ import { motion, AnimatePresence } from "framer-motion";
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const scrollToSection = (sectionId: string) => {
+    setMobileMenuOpen(false);
+    
+    // If not on home page, navigate first then scroll
+    if (location.pathname !== "/") {
+      navigate("/");
+      // Wait for navigation then scroll
+      setTimeout(() => {
+        const element = document.getElementById(sectionId);
+        element?.scrollIntoView({ behavior: "smooth" });
+      }, 100);
+    } else {
+      const element = document.getElementById(sectionId);
+      element?.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-card/80 backdrop-blur-md border-b border-border">
@@ -21,15 +40,24 @@ export function Header() {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-8">
-            <Link to="/#features" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+            <button 
+              onClick={() => scrollToSection("features")} 
+              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
               Features
-            </Link>
-            <Link to="/#how-it-works" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+            </button>
+            <button 
+              onClick={() => scrollToSection("how-it-works")} 
+              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
               How It Works
-            </Link>
-            <Link to="/#pricing" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+            </button>
+            <button 
+              onClick={() => scrollToSection("pricing")} 
+              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
               Pricing
-            </Link>
+            </button>
           </nav>
 
           {/* Desktop CTA */}
@@ -62,27 +90,24 @@ export function Header() {
             className="md:hidden bg-card border-b border-border"
           >
             <nav className="container mx-auto px-4 py-4 flex flex-col gap-4">
-              <Link 
-                to="/#features" 
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors py-2"
-                onClick={() => setMobileMenuOpen(false)}
+              <button 
+                onClick={() => scrollToSection("features")}
+                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors py-2 text-left"
               >
                 Features
-              </Link>
-              <Link 
-                to="/#how-it-works" 
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors py-2"
-                onClick={() => setMobileMenuOpen(false)}
+              </button>
+              <button 
+                onClick={() => scrollToSection("how-it-works")}
+                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors py-2 text-left"
               >
                 How It Works
-              </Link>
-              <Link 
-                to="/#pricing" 
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors py-2"
-                onClick={() => setMobileMenuOpen(false)}
+              </button>
+              <button 
+                onClick={() => scrollToSection("pricing")}
+                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors py-2 text-left"
               >
                 Pricing
-              </Link>
+              </button>
               <div className="flex flex-col gap-2 pt-4 border-t border-border">
                 <Button variant="ghost" asChild className="justify-center">
                   <Link to="/login">Log In</Link>

@@ -99,12 +99,66 @@ const Loans = () => {
     pendingApproval: 0
   });
 
+  // Available funds for lending
+  const [availableFunds, setAvailableFunds] = useState(0);
+
   useEffect(() => {
     if (groupMembership) {
       fetchLoans();
       fetchMembers();
+      fetchAvailableFunds();
     }
   }, [groupMembership]);
+
+  const fetchAvailableFunds = async () => {
+    if (!groupMembership) return;
+
+    try {
+      // Get total paid contributions
+      const { data: contributions } = await supabase
+        .from('contributions')
+        .select('amount, status')
+        .eq('group_id', groupMembership.group_id);
+
+      const totalSavings = (contributions || []).reduce((sum, c) => 
+        c.status === 'paid' ? sum + Number(c.amount) : sum, 0
+      );
+
+      // Get total outstanding loans (active + pending principal)
+      const { data: loans } = await supabase
+        .from('loans')
+        .select('principal_amount, status')
+        .eq('group_id', groupMembership.group_id)
+        .in('status', ['active', 'pending', 'overdue']);
+
+      const totalOutstandingLoans = (loans || []).reduce((sum, l) => 
+        sum + Number(l.principal_amount), 0
+      );
+
+      // Get total repayments received
+      const { data: loanIds } = await supabase
+        .from('loans')
+        .select('id')
+        .eq('group_id', groupMembership.group_id)
+        .in('status', ['active', 'pending', 'overdue']);
+
+      let totalRepaid = 0;
+      if (loanIds && loanIds.length > 0) {
+        const { data: repayments } = await supabase
+          .from('repayments')
+          .select('amount')
+          .in('loan_id', loanIds.map(l => l.id));
+
+        totalRepaid = (repayments || []).reduce((sum, r) => sum + Number(r.amount), 0);
+      }
+
+      // Available = savings - outstanding loans + repayments received
+      const available = totalSavings - totalOutstandingLoans + totalRepaid;
+      setAvailableFunds(Math.max(0, available));
+    } catch (error) {
+      console.error('Error fetching available funds:', error);
+    }
+  };
 
   const fetchLoans = async () => {
     if (!groupMembership) return;
@@ -215,10 +269,21 @@ const Loans = () => {
   const handleCreateLoan = async (approveImmediately: boolean = false) => {
     if (!groupMembership || !user) return;
 
+    const principalAmount = parseFloat(newLoan.principal_amount);
+
+    // Validate loan amount against available funds
+    if (principalAmount > availableFunds) {
+      toast({ 
+        title: "Insufficient funds", 
+        description: `The loan amount (RWF ${formatCurrency(principalAmount)}) exceeds available savings (RWF ${formatCurrency(availableFunds)}).`,
+        variant: "destructive" 
+      });
+      return;
+    }
+
     try {
       setIsSubmitting(true);
 
-      const principalAmount = parseFloat(newLoan.principal_amount);
       const interestRate = parseFloat(newLoan.interest_rate);
       const durationMonths = parseInt(newLoan.duration_months);
       const profit = principalAmount * (interestRate / 100) * (durationMonths / 12);
@@ -663,6 +728,21 @@ const Loans = () => {
                 />
               </div>
 
+              {/* Available Funds Info */}
+              <div className={`p-3 rounded-lg ${parseFloat(newLoan.principal_amount || "0") > availableFunds ? 'bg-destructive/10 border border-destructive/30' : 'bg-primary/10'}`}>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium">Available Funds:</span>
+                  <span className={`font-bold ${parseFloat(newLoan.principal_amount || "0") > availableFunds ? 'text-destructive' : 'text-primary'}`}>
+                    RWF {formatCurrency(availableFunds)}
+                  </span>
+                </div>
+                {parseFloat(newLoan.principal_amount || "0") > availableFunds && (
+                  <p className="text-xs text-destructive mt-1">
+                    Loan amount exceeds available group savings
+                  </p>
+                )}
+              </div>
+
               {/* Loan Summary */}
               {newLoan.principal_amount && (
                 <div className="p-4 rounded-lg bg-muted space-y-2">
@@ -698,14 +778,14 @@ const Loans = () => {
               <Button 
                 variant="secondary"
                 onClick={() => handleCreateLoan(false)} 
-                disabled={!newLoan.borrower_id || !newLoan.principal_amount || isSubmitting}
+                disabled={!newLoan.borrower_id || !newLoan.principal_amount || isSubmitting || parseFloat(newLoan.principal_amount || "0") > availableFunds}
               >
                 {isSubmitting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Clock className="w-4 h-4 mr-2" />}
                 Save as Pending
               </Button>
               <Button 
                 onClick={() => handleCreateLoan(true)} 
-                disabled={!newLoan.borrower_id || !newLoan.principal_amount || isSubmitting}
+                disabled={!newLoan.borrower_id || !newLoan.principal_amount || isSubmitting || parseFloat(newLoan.principal_amount || "0") > availableFunds}
               >
                 {isSubmitting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <CheckCircle className="w-4 h-4 mr-2" />}
                 Create & Approve
