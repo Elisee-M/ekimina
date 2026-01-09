@@ -21,12 +21,12 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
   
-  const { signIn, user, loading, isSuperAdmin, isGroupAdmin, groupMembership, roles } = useAuth();
+  const { signIn, user, loading, isSuperAdmin, isGroupAdmin, groupMembership } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
     // Only redirect if user is logged in AND auth data is fully loaded
-    if (!loading && user && roles.length > 0) {
+    if (!loading && user) {
       // Super admin check should come FIRST before any other redirects
       if (isSuperAdmin) {
         navigate('/super-admin', { replace: true });
@@ -42,7 +42,7 @@ const Login = () => {
         navigate('/member', { replace: true });
       }
     }
-  }, [user, loading, isSuperAdmin, isGroupAdmin, groupMembership, roles, navigate]);
+  }, [user, loading, isSuperAdmin, isGroupAdmin, groupMembership, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

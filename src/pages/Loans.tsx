@@ -72,6 +72,8 @@ const Loans = () => {
   const [members, setMembers] = useState<Member[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [startDate, setStartDate] = useState<string>("");
+  const [endDate, setEndDate] = useState<string>("");
   const [showNewLoanDialog, setShowNewLoanDialog] = useState(false);
   const [showRepaymentDialog, setShowRepaymentDialog] = useState(false);
   const [selectedLoan, setSelectedLoan] = useState<Loan | null>(null);
@@ -437,7 +439,10 @@ const Loans = () => {
   const filteredLoans = loans.filter(loan => {
     const matchesSearch = loan.borrower_name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === "all" || loan.status === statusFilter;
-    return matchesSearch && matchesStatus;
+    const loanDate = new Date(loan.start_date);
+    const matchesStartDate = !startDate || loanDate >= new Date(startDate);
+    const matchesEndDate = !endDate || loanDate <= new Date(endDate);
+    return matchesSearch && matchesStatus && matchesStartDate && matchesEndDate;
   });
 
   if (loading) {
@@ -545,6 +550,23 @@ const Loans = () => {
               <SelectItem value="overdue">Overdue</SelectItem>
             </SelectContent>
           </Select>
+          <div className="flex gap-2 items-center">
+            <Input
+              type="date"
+              placeholder="From"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              className="w-36"
+            />
+            <span className="text-muted-foreground">to</span>
+            <Input
+              type="date"
+              placeholder="To"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              className="w-36"
+            />
+          </div>
         </div>
 
         {/* Loans List */}

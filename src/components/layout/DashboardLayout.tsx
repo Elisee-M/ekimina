@@ -13,7 +13,8 @@ import {
   Menu,
   X,
   ChevronDown,
-  Building2
+  Building2,
+  History
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -37,6 +38,7 @@ const adminNav = [
   { icon: Users, label: "Members", href: "/dashboard/members" },
   { icon: Wallet, label: "Contributions", href: "/dashboard/contributions" },
   { icon: TrendingUp, label: "Loans", href: "/dashboard/loans" },
+  { icon: History, label: "History", href: "/dashboard/history" },
   { icon: FileText, label: "Reports", href: "/dashboard/reports" },
   { icon: Bell, label: "Announcements", href: "/dashboard/announcements" },
   { icon: Settings, label: "Settings", href: "/dashboard/settings" },
@@ -46,6 +48,7 @@ const memberNav = [
   { icon: LayoutDashboard, label: "My Dashboard", href: "/member" },
   { icon: Wallet, label: "My Contributions", href: "/member/contributions" },
   { icon: TrendingUp, label: "My Loans", href: "/member/loans" },
+  { icon: History, label: "History", href: "/member/history" },
   { icon: Bell, label: "Announcements", href: "/member/announcements" },
   { icon: Settings, label: "Settings", href: "/member/settings" },
 ];

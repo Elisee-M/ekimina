@@ -15,11 +15,13 @@ import Contributions from "./pages/Contributions";
 import Loans from "./pages/Loans";
 import Reports from "./pages/Reports";
 import Settings from "./pages/Settings";
+import History from "./pages/History";
 import SuperAdminOverview from "./pages/super-admin/SuperAdminOverview";
 import SuperAdminGroups from "./pages/super-admin/SuperAdminGroups";
 import SuperAdminAdmins from "./pages/super-admin/SuperAdminAdmins";
 import SuperAdminSettings from "./pages/super-admin/SuperAdminSettings";
 import MemberDashboard from "./pages/MemberDashboard";
+import MemberHistory from "./pages/MemberHistory";
 import Unauthorized from "./pages/Unauthorized";
 import NotFound from "./pages/NotFound";
 const queryClient = new QueryClient();
@@ -62,6 +64,11 @@ const App = () => (
                 <Loans />
               </ProtectedRoute>
             } />
+            <Route path="/dashboard/history" element={
+              <ProtectedRoute requireGroupAdmin>
+                <History />
+              </ProtectedRoute>
+            } />
             <Route path="/dashboard/reports" element={
               <ProtectedRoute requireGroupAdmin>
                 <Reports />
@@ -82,6 +89,11 @@ const App = () => (
             <Route path="/member" element={
               <ProtectedRoute>
                 <MemberDashboard />
+              </ProtectedRoute>
+            } />
+            <Route path="/member/history" element={
+              <ProtectedRoute>
+                <MemberHistory />
               </ProtectedRoute>
             } />
             <Route path="/member/*" element={

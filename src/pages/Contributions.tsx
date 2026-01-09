@@ -52,6 +52,8 @@ export default function Contributions() {
   const [members, setMembers] = useState<MemberOption[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [startDate, setStartDate] = useState<string>("");
+  const [endDate, setEndDate] = useState<string>("");
   const [recordDialog, setRecordDialog] = useState(false);
   const [markPaidDialog, setMarkPaidDialog] = useState<Contribution | null>(null);
   const [actionLoading, setActionLoading] = useState(false);
@@ -150,7 +152,10 @@ export default function Contributions() {
       c.memberName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       c.memberEmail.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesStatus = statusFilter === "all" || c.status === statusFilter;
-    return matchesSearch && matchesStatus;
+    const contributionDate = new Date(c.paidDate || c.dueDate);
+    const matchesStartDate = !startDate || contributionDate >= new Date(startDate);
+    const matchesEndDate = !endDate || contributionDate <= new Date(endDate);
+    return matchesSearch && matchesStatus && matchesStartDate && matchesEndDate;
   });
 
   const handleRecordContribution = async () => {
@@ -344,8 +349,8 @@ export default function Contributions() {
         </div>
 
         {/* Filters */}
-        <div className="flex flex-col sm:flex-row gap-4">
-          <div className="relative flex-1 max-w-md">
+        <div className="flex flex-col sm:flex-row gap-4 flex-wrap">
+          <div className="relative flex-1 min-w-[200px] max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input
               placeholder="Search by member name..."
@@ -366,6 +371,23 @@ export default function Contributions() {
               <SelectItem value="overdue">Overdue</SelectItem>
             </SelectContent>
           </Select>
+          <div className="flex gap-2 items-center">
+            <Input
+              type="date"
+              placeholder="From"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              className="w-36"
+            />
+            <span className="text-muted-foreground">to</span>
+            <Input
+              type="date"
+              placeholder="To"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              className="w-36"
+            />
+          </div>
         </div>
 
         {/* Contributions List */}
