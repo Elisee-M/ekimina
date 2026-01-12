@@ -35,6 +35,7 @@ interface GroupInfo {
   name: string;
   contributionAmount: number;
   contributionFrequency: string;
+  interestRate: number;
 }
 
 export function useMemberData() {
@@ -77,7 +78,8 @@ export function useMemberData() {
           id: groupData.id,
           name: groupData.name,
           contributionAmount: groupData.contribution_amount,
-          contributionFrequency: groupData.contribution_frequency
+          contributionFrequency: groupData.contribution_frequency,
+          interestRate: groupData.interest_rate
         });
       }
 

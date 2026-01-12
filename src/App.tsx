@@ -16,12 +16,17 @@ import Loans from "./pages/Loans";
 import Reports from "./pages/Reports";
 import Settings from "./pages/Settings";
 import History from "./pages/History";
+import Announcements from "./pages/Announcements";
 import SuperAdminOverview from "./pages/super-admin/SuperAdminOverview";
 import SuperAdminGroups from "./pages/super-admin/SuperAdminGroups";
 import SuperAdminAdmins from "./pages/super-admin/SuperAdminAdmins";
 import SuperAdminSettings from "./pages/super-admin/SuperAdminSettings";
 import MemberDashboard from "./pages/MemberDashboard";
 import MemberHistory from "./pages/MemberHistory";
+import MemberContributions from "./pages/MemberContributions";
+import MemberLoans from "./pages/MemberLoans";
+import MemberAnnouncements from "./pages/MemberAnnouncements";
+import MemberSettings from "./pages/MemberSettings";
 import Unauthorized from "./pages/Unauthorized";
 import NotFound from "./pages/NotFound";
 const queryClient = new QueryClient();
@@ -79,6 +84,11 @@ const App = () => (
                 <Settings />
               </ProtectedRoute>
             } />
+            <Route path="/dashboard/announcements" element={
+              <ProtectedRoute requireGroupAdmin>
+                <Announcements />
+              </ProtectedRoute>
+            } />
             <Route path="/dashboard/*" element={
               <ProtectedRoute requireGroupAdmin>
                 <Dashboard />
@@ -91,9 +101,29 @@ const App = () => (
                 <MemberDashboard />
               </ProtectedRoute>
             } />
+            <Route path="/member/contributions" element={
+              <ProtectedRoute>
+                <MemberContributions />
+              </ProtectedRoute>
+            } />
+            <Route path="/member/loans" element={
+              <ProtectedRoute>
+                <MemberLoans />
+              </ProtectedRoute>
+            } />
             <Route path="/member/history" element={
               <ProtectedRoute>
                 <MemberHistory />
+              </ProtectedRoute>
+            } />
+            <Route path="/member/announcements" element={
+              <ProtectedRoute>
+                <MemberAnnouncements />
+              </ProtectedRoute>
+            } />
+            <Route path="/member/settings" element={
+              <ProtectedRoute>
+                <MemberSettings />
               </ProtectedRoute>
             } />
             <Route path="/member/*" element={
