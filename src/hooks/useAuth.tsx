@@ -25,6 +25,7 @@ interface AuthContextType {
   profile: UserProfile | null;
   roles: AppRole[];
   groupMembership: GroupMembership | null;
+  groupMembershipLoaded: boolean;
   loading: boolean;
   signUp: (email: string, password: string, fullName: string, phone?: string) => Promise<{ error: Error | null }>;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
@@ -42,6 +43,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [roles, setRoles] = useState<AppRole[]>([]);
   const [groupMembership, setGroupMembership] = useState<GroupMembership | null>(null);
+  const [groupMembershipLoaded, setGroupMembershipLoaded] = useState(false);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
@@ -61,6 +63,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setProfile(null);
           setRoles([]);
           setGroupMembership(null);
+          setGroupMembershipLoaded(false);
           setLoading(false);
         }
       }
@@ -121,7 +124,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           group_name: (membershipData.ikimina_groups as { name: string }).name,
           is_admin: membershipData.is_admin
         });
+      } else {
+        setGroupMembership(null);
       }
+      setGroupMembershipLoaded(true);
     } catch (error) {
       console.error('Error fetching user data:', error);
     } finally {
@@ -197,6 +203,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setProfile(null);
     setRoles([]);
     setGroupMembership(null);
+    setGroupMembershipLoaded(false);
     toast({
       title: "Signed out",
       description: "You have been signed out successfully.",
@@ -214,6 +221,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       profile,
       roles,
       groupMembership,
+      groupMembershipLoaded,
       loading,
       signUp,
       signIn,
