@@ -45,8 +45,12 @@ const App = () => (
             <Route path="/register" element={<Register />} />
             <Route path="/unauthorized" element={<Unauthorized />} />
             
-            {/* Onboarding Route - requires auth but no group */}
-            <Route path="/onboarding" element={<Onboarding />} />
+            {/* Onboarding Route - signed-in users without a group */}
+            <Route path="/onboarding" element={
+              <ProtectedRoute allowNoGroup>
+                <Onboarding />
+              </ProtectedRoute>
+            } />
             
             {/* Protected Admin Routes */}
             <Route path="/dashboard" element={

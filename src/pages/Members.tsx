@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Users, UserPlus, Search, Mail, Phone, MoreVertical, Shield, ShieldOff, UserX } from "lucide-react";
+import { Users, UserPlus, Search, Mail, Phone, MoreVertical, Shield, ShieldOff, UserX, UserCheck, Clock, Check, X } from "lucide-react";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -164,6 +164,40 @@ export default function Members() {
     }
   };
 
+  const handleApproveRejoin = async (member: Member) => {
+    try {
+      const { error } = await supabase
+        .from("group_members")
+        .update({ status: "active" })
+        .eq("id", member.id);
+
+      if (error) throw error;
+
+      toast.success(`${member.fullName} has been approved to rejoin the group`);
+      fetchMembers();
+    } catch (error) {
+      console.error("Error approving rejoin:", error);
+      toast.error("Failed to approve rejoin request");
+    }
+  };
+
+  const handleRejectRejoin = async (member: Member) => {
+    try {
+      const { error } = await supabase
+        .from("group_members")
+        .update({ status: "removed" })
+        .eq("id", member.id);
+
+      if (error) throw error;
+
+      toast.success(`${member.fullName}'s rejoin request has been rejected`);
+      fetchMembers();
+    } catch (error) {
+      console.error("Error rejecting rejoin:", error);
+      toast.error("Failed to reject rejoin request");
+    }
+  };
+
   const getInitials = (name: string) => {
     return name
       .split(" ")
@@ -172,6 +206,9 @@ export default function Members() {
       .toUpperCase()
       .slice(0, 2);
   };
+
+  const pendingRejoinMembers = members.filter(m => m.status === "pending_rejoin");
+  const activeAndOtherMembers = members.filter(m => m.status !== "pending_rejoin");
 
   if (loading) {
     return (
@@ -216,8 +253,79 @@ export default function Members() {
           />
         </div>
 
+        {/* Pending Rejoin Requests */}
+        {pendingRejoinMembers.length > 0 && (
+          <Card className="border-amber-500/50 bg-amber-500/5">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Clock className="w-5 h-5 text-amber-500" />
+                Pending Rejoin Requests
+                <Badge variant="secondary" className="ml-2">{pendingRejoinMembers.length}</Badge>
+              </CardTitle>
+              <CardDescription>Members who have requested to rejoin the group</CardDescription>
+            </CardHeader>
+            <CardContent className="p-0">
+              <div className="divide-y divide-border">
+                {pendingRejoinMembers.map((member) => (
+                  <div
+                    key={member.id}
+                    className="flex items-center justify-between p-4 hover:bg-muted/50 transition-colors"
+                  >
+                    <div className="flex items-center gap-4">
+                      <Avatar className="h-10 w-10">
+                        <AvatarImage src={member.avatarUrl || undefined} />
+                        <AvatarFallback className="bg-amber-500/10 text-amber-600">
+                          {getInitials(member.fullName)}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <p className="font-medium text-foreground">{member.fullName}</p>
+                        <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                          <span className="flex items-center gap-1">
+                            <Mail className="w-3 h-3" />
+                            {member.email}
+                          </span>
+                          {member.phone && (
+                            <span className="flex items-center gap-1">
+                              <Phone className="w-3 h-3" />
+                              {member.phone}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="text-destructive hover:bg-destructive hover:text-destructive-foreground"
+                        onClick={() => handleRejectRejoin(member)}
+                      >
+                        <X className="w-4 h-4 mr-1" />
+                        Reject
+                      </Button>
+                      <Button
+                        size="sm"
+                        onClick={() => handleApproveRejoin(member)}
+                      >
+                        <Check className="w-4 h-4 mr-1" />
+                        Approve
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Members List */}
-        {filteredMembers.length === 0 ? (
+        {activeAndOtherMembers.filter(
+          (m) =>
+            m.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            m.email.toLowerCase().includes(searchQuery.toLowerCase())
+        ).length === 0 ? (
           <EmptyState
             icon={Users}
             title="No members found"
@@ -233,7 +341,11 @@ export default function Members() {
             </CardHeader>
             <CardContent className="p-0">
               <div className="divide-y divide-border">
-                {filteredMembers.map((member) => (
+                {activeAndOtherMembers.filter(
+                  (m) =>
+                    m.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    m.email.toLowerCase().includes(searchQuery.toLowerCase())
+                ).map((member) => (
                   <div
                     key={member.id}
                     className="flex items-center justify-between p-4 hover:bg-muted/50 transition-colors"
@@ -254,9 +366,15 @@ export default function Members() {
                               Admin
                             </Badge>
                           )}
-                          {member.status !== "active" && (
+                          {member.status === "pending_rejoin" && (
+                            <Badge variant="default" className="text-xs bg-amber-500">
+                              <Clock className="w-3 h-3 mr-1" />
+                              Pending Rejoin
+                            </Badge>
+                          )}
+                          {member.status !== "active" && member.status !== "pending_rejoin" && (
                             <Badge variant="destructive" className="text-xs">
-                              Inactive
+                              {member.status === "removed" ? "Removed" : "Inactive"}
                             </Badge>
                           )}
                         </div>

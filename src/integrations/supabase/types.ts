@@ -409,6 +409,16 @@ export type Database = {
           name: string
         }[]
       }
+      get_user_previous_groups: {
+        Args: { _user_id: string }
+        Returns: {
+          group_id: string
+          group_name: string
+          is_admin: boolean
+          joined_at: string
+          status: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -424,6 +434,7 @@ export type Database = {
         Args: { _group_id: string; _user_id: string }
         Returns: boolean
       }
+      request_rejoin_group: { Args: { _group_id: string }; Returns: boolean }
     }
     Enums: {
       app_role: "super_admin" | "group_admin" | "member"

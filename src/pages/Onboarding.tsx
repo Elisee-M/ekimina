@@ -6,11 +6,12 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Users, Plus, ArrowRight, Loader2, UserPlus, ArrowLeft } from "lucide-react";
+import { Users, Plus, ArrowRight, Loader2, UserPlus, ArrowLeft, RotateCcw, Clock, CheckCircle2 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
+import { Badge } from "@/components/ui/badge";
 
 const createGroupSchema = z.object({
   groupName: z.string().trim().min(2, "Group name must be at least 2 characters").max(100),
@@ -22,7 +23,15 @@ const joinGroupSchema = z.object({
   groupCode: z.string().trim().min(1, "Please enter a group code")
 });
 
-type OnboardingStep = "choice" | "create" | "join";
+interface PreviousGroup {
+  group_id: string;
+  group_name: string;
+  status: string;
+  joined_at: string;
+  is_admin: boolean;
+}
+
+type OnboardingStep = "choice" | "create" | "join" | "restore";
 
 const Onboarding = () => {
   const [step, setStep] = useState<OnboardingStep>("choice");
@@ -34,6 +43,9 @@ const Onboarding = () => {
     contributionAmount: ""
   });
   const [joinForm, setJoinForm] = useState({ groupCode: "" });
+  const [previousGroups, setPreviousGroups] = useState<PreviousGroup[]>([]);
+  const [loadingPreviousGroups, setLoadingPreviousGroups] = useState(false);
+  const [requestingRejoin, setRequestingRejoin] = useState<string | null>(null);
 
   const { user, loading, groupMembership } = useAuth();
   const navigate = useNavigate();
@@ -48,6 +60,68 @@ const Onboarding = () => {
       navigate(groupMembership.is_admin ? '/dashboard' : '/member');
     }
   }, [user, loading, groupMembership, navigate]);
+
+  const fetchPreviousGroups = async () => {
+    if (!user) return;
+    
+    setLoadingPreviousGroups(true);
+    try {
+      const { data, error } = await supabase
+        .rpc('get_user_previous_groups', { _user_id: user.id });
+      
+      if (error) throw error;
+      setPreviousGroups((data as PreviousGroup[]) || []);
+    } catch (error: any) {
+      console.error('Error fetching previous groups:', error);
+      toast({
+        title: "Couldn't load previous groups",
+        description: error.message,
+        variant: "destructive"
+      });
+    } finally {
+      setLoadingPreviousGroups(false);
+    }
+  };
+
+  const handleRestoreClick = () => {
+    setStep("restore");
+    fetchPreviousGroups();
+  };
+
+  const handleRequestRejoin = async (groupId: string, groupName: string) => {
+    if (!user) return;
+    
+    setRequestingRejoin(groupId);
+    try {
+      const { data, error } = await supabase
+        .rpc('request_rejoin_group', { _group_id: groupId });
+      
+      if (error) throw error;
+      
+      if (data) {
+        toast({
+          title: "Rejoin request sent!",
+          description: `Your request to rejoin "${groupName}" has been sent to the group admin for approval.`,
+        });
+        // Refresh the list to show updated status
+        fetchPreviousGroups();
+      } else {
+        toast({
+          title: "Request failed",
+          description: "Unable to request rejoin. You may already be active or no previous membership exists.",
+          variant: "destructive"
+        });
+      }
+    } catch (error: any) {
+      toast({
+        title: "Request failed",
+        description: error.message,
+        variant: "destructive"
+      });
+    } finally {
+      setRequestingRejoin(null);
+    }
+  };
 
   const handleCreateGroup = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -270,6 +344,23 @@ const Onboarding = () => {
                 </CardContent>
               </Card>
 
+              <Card 
+                variant="elevated" 
+                className="cursor-pointer hover:border-primary/50 transition-all"
+                onClick={handleRestoreClick}
+              >
+                <CardContent className="p-6 flex items-center gap-4">
+                  <div className="w-14 h-14 rounded-xl bg-amber-500/10 flex items-center justify-center flex-shrink-0">
+                    <RotateCcw className="w-7 h-7 text-amber-600" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-semibold text-foreground text-lg">Restore My Old Group</h3>
+                    <p className="text-sm text-muted-foreground">Rejoin an Ikimina you were previously part of</p>
+                  </div>
+                  <ArrowRight className="w-5 h-5 text-muted-foreground flex-shrink-0" />
+                </CardContent>
+              </Card>
+
               <div className="text-center mt-6">
                 <Link to="/" className="text-sm text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1">
                   <ArrowLeft className="w-4 h-4" />
@@ -438,6 +529,119 @@ const Onboarding = () => {
                       </Button>
                     </div>
                   </form>
+                </CardContent>
+              </Card>
+            </motion.div>
+          )}
+
+          {step === "restore" && (
+            <motion.div
+              key="restore"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+            >
+              <Card variant="elevated">
+                <CardHeader className="px-4 sm:px-6">
+                  <CardTitle className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-amber-500/10 flex items-center justify-center">
+                      <RotateCcw className="w-5 h-5 text-amber-600" />
+                    </div>
+                    Restore My Old Group
+                  </CardTitle>
+                  <CardDescription>Request to rejoin a group you were previously a member of</CardDescription>
+                </CardHeader>
+                <CardContent className="px-4 sm:px-6">
+                  {loadingPreviousGroups ? (
+                    <div className="flex items-center justify-center py-8">
+                      <Loader2 className="w-6 h-6 animate-spin text-primary" />
+                      <span className="ml-2 text-muted-foreground">Searching for your groups...</span>
+                    </div>
+                  ) : previousGroups.length === 0 ? (
+                    <div className="text-center py-8">
+                      <div className="w-16 h-16 rounded-full bg-muted/50 flex items-center justify-center mx-auto mb-4">
+                        <Users className="w-8 h-8 text-muted-foreground" />
+                      </div>
+                      <h3 className="font-medium text-foreground mb-1">No previous groups found</h3>
+                      <p className="text-sm text-muted-foreground mb-4">
+                        We couldn't find any groups you were previously a member of.
+                      </p>
+                      <Button
+                        variant="outline"
+                        onClick={() => setStep("choice")}
+                      >
+                        Go Back
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {previousGroups.map((group) => (
+                        <div
+                          key={group.group_id}
+                          className="p-4 border rounded-lg bg-card hover:border-primary/30 transition-colors"
+                        >
+                          <div className="flex items-center justify-between gap-3">
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2 mb-1">
+                                <h4 className="font-medium text-foreground truncate">{group.group_name}</h4>
+                                {group.is_admin && (
+                                  <Badge variant="secondary" className="text-xs">Admin</Badge>
+                                )}
+                              </div>
+                              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                                <span>Joined {new Date(group.joined_at).toLocaleDateString()}</span>
+                                <span>•</span>
+                                <Badge 
+                                  variant={group.status === 'pending_rejoin' ? 'default' : 'outline'}
+                                  className="text-xs capitalize"
+                                >
+                                  {group.status === 'pending_rejoin' ? 'Pending Approval' : group.status}
+                                </Badge>
+                              </div>
+                            </div>
+                            <div className="flex-shrink-0">
+                              {group.status === 'pending_rejoin' ? (
+                                <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                                  <Clock className="w-4 h-4" />
+                                  <span>Waiting</span>
+                                </div>
+                              ) : (
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => handleRequestRejoin(group.group_id, group.group_name)}
+                                  disabled={requestingRejoin === group.group_id}
+                                >
+                                  {requestingRejoin === group.group_id ? (
+                                    <Loader2 className="w-4 h-4 animate-spin" />
+                                  ) : (
+                                    <>
+                                      <RotateCcw className="w-4 h-4 mr-1.5" />
+                                      Request Rejoin
+                                    </>
+                                  )}
+                                </Button>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+
+                      <div className="pt-4 border-t mt-4">
+                        <p className="text-xs text-muted-foreground text-center mb-4">
+                          Your rejoin request will be sent to the group admin for approval.
+                        </p>
+                        <Button
+                          variant="outline"
+                          className="w-full h-12"
+                          onClick={() => setStep("choice")}
+                        >
+                          <ArrowLeft className="w-4 h-4 mr-2" />
+                          Back to Options
+                        </Button>
+                      </div>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </motion.div>
