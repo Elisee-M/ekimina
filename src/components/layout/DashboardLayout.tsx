@@ -23,6 +23,8 @@ import { useAuth } from "@/hooks/useAuth";
 interface DashboardLayoutProps {
   children: React.ReactNode;
   role: "super-admin" | "admin" | "member";
+  /** Override group name in sidebar when super admin views a specific group */
+  groupNameOverride?: string;
 }
 
 const superAdminNav = [
@@ -53,7 +55,7 @@ const memberNav = [
   { icon: Settings, label: "Settings", href: "/member/settings" },
 ];
 
-export function DashboardLayout({ children, role }: DashboardLayoutProps) {
+export function DashboardLayout({ children, role, groupNameOverride }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
@@ -71,7 +73,7 @@ export function DashboardLayout({ children, role }: DashboardLayoutProps) {
     "member": "Member"
   };
 
-  const groupName = groupMembership?.group_name || (role === "super-admin" ? "System Overview" : "No Group");
+  const groupName = groupNameOverride || groupMembership?.group_name || (role === "super-admin" ? "System Overview" : "No Group");
   const displayName = profile?.full_name || "User";
   const displayEmail = profile?.email || "";
   const initials = displayName.split(" ").slice(0, 2).map(n => n[0]).join("").toUpperCase();

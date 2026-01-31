@@ -19,6 +19,7 @@ import History from "./pages/History";
 import Announcements from "./pages/Announcements";
 import SuperAdminOverview from "./pages/super-admin/SuperAdminOverview";
 import SuperAdminGroups from "./pages/super-admin/SuperAdminGroups";
+import SuperAdminGroupDetail from "./pages/super-admin/SuperAdminGroupDetail";
 import SuperAdminAdmins from "./pages/super-admin/SuperAdminAdmins";
 import SuperAdminSettings from "./pages/super-admin/SuperAdminSettings";
 import MemberDashboard from "./pages/MemberDashboard";
@@ -145,6 +146,11 @@ const App = () => (
             <Route path="/super-admin/groups" element={
               <ProtectedRoute requiredRole="super_admin">
                 <SuperAdminGroups />
+              </ProtectedRoute>
+            } />
+            <Route path="/super-admin/groups/:groupId" element={
+              <ProtectedRoute requiredRole="super_admin">
+                <SuperAdminGroupDetail />
               </ProtectedRoute>
             } />
             <Route path="/super-admin/admins" element={
