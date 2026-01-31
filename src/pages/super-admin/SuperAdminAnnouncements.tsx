@@ -35,6 +35,7 @@ import {
   Calendar,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 import { usePageSeo } from "@/hooks/usePageSeo";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
@@ -56,6 +57,7 @@ export default function SuperAdminAnnouncements() {
   });
 
   const { toast } = useToast();
+  const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [announcements, setAnnouncements] = useState<PlatformAnnouncement[]>([]);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -98,7 +100,6 @@ export default function SuperAdminAnnouncements() {
 
     setSubmitting(true);
     try {
-      const { data: { user } } = await supabase.auth.getUser();
       const { error } = await supabase.from("platform_announcements").insert({
         title: newAnnouncement.title.trim(),
         content: newAnnouncement.content.trim(),
@@ -122,7 +123,16 @@ export default function SuperAdminAnnouncements() {
       setDialogOpen(false);
       fetchAnnouncements();
     } catch (error: unknown) {
-      const msg = error instanceof Error ? error.message : "Failed to send announcement";
+      let msg = "Failed to send announcement";
+      if (error && typeof error === "object" && "message" in error) {
+        msg = String((error as { message: unknown }).message);
+        const details = (error as { details?: string }).details;
+        const hint = (error as { hint?: string }).hint;
+        if (details) msg += ` — ${details}`;
+        if (hint) msg += ` (${hint})`;
+      } else if (error instanceof Error) {
+        msg = error.message;
+      }
       toast({ title: "Error", description: msg, variant: "destructive" });
     } finally {
       setSubmitting(false);
