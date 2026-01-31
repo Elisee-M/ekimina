@@ -31,6 +31,7 @@ const superAdminNav = [
   { icon: LayoutDashboard, label: "Overview", href: "/super-admin" },
   { icon: Building2, label: "All Groups", href: "/super-admin/groups" },
   { icon: Users, label: "Admins", href: "/super-admin/admins" },
+  { icon: Bell, label: "Announcements", href: "/super-admin/announcements" },
   { icon: TrendingUp, label: "Analytics", href: "/super-admin/analytics" },
   { icon: Settings, label: "Settings", href: "/super-admin/settings" },
 ];

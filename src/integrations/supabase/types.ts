@@ -116,6 +116,68 @@ export type Database = {
           },
         ]
       }
+      platform_announcements: {
+        Row: {
+          id: string
+          title: string
+          content: string
+          target_audience: string
+          comments_allowed: boolean
+          created_by: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          title: string
+          content: string
+          target_audience: "admins" | "all_members"
+          comments_allowed?: boolean
+          created_by?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          title?: string
+          content?: string
+          target_audience?: "admins" | "all_members"
+          comments_allowed?: boolean
+          created_by?: string | null
+          created_at?: string
+        }
+        Relationships: []
+      }
+      platform_announcement_comments: {
+        Row: {
+          id: string
+          platform_announcement_id: string
+          user_id: string
+          content: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          platform_announcement_id: string
+          user_id: string
+          content: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          platform_announcement_id?: string
+          user_id?: string
+          content?: string
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "platform_announcement_comments_platform_announcement_id_fkey"
+            columns: ["platform_announcement_id"]
+            isOneToOne: false
+            referencedRelation: "platform_announcements"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       contributions: {
         Row: {
           amount: number
