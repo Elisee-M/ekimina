@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -32,14 +32,8 @@ const Register = () => {
     confirmPassword: ""
   });
 
-  const { signUp, user, loading } = useAuth();
+  const { signUp, loading } = useAuth();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!loading && user) {
-      navigate('/onboarding');
-    }
-  }, [user, loading, navigate]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData(prev => ({
@@ -69,16 +63,16 @@ const Register = () => {
     }
 
     setIsLoading(true);
-    const { error } = await signUp(
-      formData.email, 
-      formData.password, 
-      formData.fullName, 
+    const { error, didSignIn } = await signUp(
+      formData.email,
+      formData.password,
+      formData.fullName,
       formData.phone || undefined
     );
     setIsLoading(false);
 
     if (!error) {
-      navigate('/onboarding');
+      navigate(didSignIn ? '/onboarding' : '/login', { replace: true });
     }
   };
 

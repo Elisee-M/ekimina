@@ -5,11 +5,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/EmptyState";
-import {
+import { 
   Dialog,
   DialogContent,
   DialogHeader,
@@ -23,69 +21,53 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
+import { 
   Bell,
   Loader2,
-  Plus,
-  Send,
-  Users,
-  Shield,
-  MessageCircle,
-  MessageCircleOff,
   Calendar,
+  Plus,
+  Trash2,
+  Users,
+  Shield
 } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { usePageSeo } from "@/hooks/usePageSeo";
+import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 
-interface PlatformAnnouncement {
+interface SystemAnnouncement {
   id: string;
   title: string;
   content: string;
-  target_audience: "admins" | "all_members";
-  comments_allowed: boolean;
+  audience: "all" | "admins_only";
   created_at: string;
+  created_by: string | null;
 }
 
-export default function SuperAdminAnnouncements() {
-  usePageSeo({
-    title: "Platform Announcements | Super Admin | eKimina",
-    description: "Send platform-wide announcements to admins or all members.",
-    canonicalPath: "/super-admin/announcements",
-  });
-
-  const { toast } = useToast();
+const SuperAdminAnnouncements = () => {
   const { user } = useAuth();
+  const { toast } = useToast();
   const [loading, setLoading] = useState(true);
-  const [announcements, setAnnouncements] = useState<PlatformAnnouncement[]>([]);
+  const [announcements, setAnnouncements] = useState<SystemAnnouncement[]>([]);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [newAnnouncement, setNewAnnouncement] = useState({
-    title: "",
+  const [newAnnouncement, setNewAnnouncement] = useState({ 
+    title: "", 
     content: "",
-    target_audience: "all_members" as "admins" | "all_members",
-    comments_allowed: true,
+    audience: "all" as "all" | "admins_only"
   });
 
   const fetchAnnouncements = async () => {
     try {
-      setLoading(true);
       const { data, error } = await supabase
-        .from("platform_announcements")
+        .from("system_announcements")
         .select("*")
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      setAnnouncements((data || []) as PlatformAnnouncement[]);
-    } catch (error: unknown) {
-      console.error("Error fetching announcements:", error);
-      toast({
-        title: "Error",
-        description: "Failed to load announcements",
-        variant: "destructive",
-      });
+      setAnnouncements((data || []) as SystemAnnouncement[]);
+    } catch (error) {
+      console.error("Error fetching system announcements:", error);
     } finally {
       setLoading(false);
     }
@@ -100,42 +82,44 @@ export default function SuperAdminAnnouncements() {
 
     setSubmitting(true);
     try {
-      const { error } = await supabase.from("platform_announcements").insert({
-        title: newAnnouncement.title.trim(),
-        content: newAnnouncement.content.trim(),
-        target_audience: newAnnouncement.target_audience,
-        comments_allowed: newAnnouncement.comments_allowed,
-        created_by: user?.id ?? null,
-      });
+      const { error } = await supabase
+        .from("system_announcements")
+        .insert({
+          title: newAnnouncement.title.trim(),
+          content: newAnnouncement.content.trim(),
+          audience: newAnnouncement.audience,
+          created_by: user?.id
+        });
 
       if (error) throw error;
 
-      toast({
-        title: "Announcement sent",
-        description: `Your announcement has been sent to ${newAnnouncement.target_audience === "admins" ? "all group admins" : "all members"}.`,
+      toast({ 
+        title: "Announcement sent", 
+        description: `Your announcement has been sent to ${newAnnouncement.audience === 'all' ? 'all users' : 'group admins only'}.` 
       });
-      setNewAnnouncement({
-        title: "",
-        content: "",
-        target_audience: "all_members",
-        comments_allowed: true,
-      });
+      setNewAnnouncement({ title: "", content: "", audience: "all" });
       setDialogOpen(false);
       fetchAnnouncements();
-    } catch (error: unknown) {
-      let msg = "Failed to send announcement";
-      if (error && typeof error === "object" && "message" in error) {
-        msg = String((error as { message: unknown }).message);
-        const details = (error as { details?: string }).details;
-        const hint = (error as { hint?: string }).hint;
-        if (details) msg += ` — ${details}`;
-        if (hint) msg += ` (${hint})`;
-      } else if (error instanceof Error) {
-        msg = error.message;
-      }
-      toast({ title: "Error", description: msg, variant: "destructive" });
+    } catch (error: any) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  const handleDeleteAnnouncement = async (id: string) => {
+    try {
+      const { error } = await supabase
+        .from("system_announcements")
+        .delete()
+        .eq("id", id);
+
+      if (error) throw error;
+
+      toast({ title: "Announcement deleted" });
+      fetchAnnouncements();
+    } catch (error: any) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
     }
   };
 
@@ -151,14 +135,13 @@ export default function SuperAdminAnnouncements() {
 
   return (
     <DashboardLayout role="super-admin">
-      <main className="space-y-6">
-        <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="space-y-6 sm:space-y-8">
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-foreground">
-              Platform Announcements
-            </h1>
-            <p className="text-muted-foreground text-sm mt-1">
-              Send announcements to all group admins or all members. Sender shows as eKimina.
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground">System Announcements</h1>
+            <p className="text-sm sm:text-base text-muted-foreground">
+              Broadcast messages to all users or group admins only
             </p>
           </div>
 
@@ -171,182 +154,133 @@ export default function SuperAdminAnnouncements() {
             </DialogTrigger>
             <DialogContent className="sm:max-w-lg">
               <DialogHeader>
-                <DialogTitle>Create Platform Announcement</DialogTitle>
+                <DialogTitle>Create System Announcement</DialogTitle>
               </DialogHeader>
               <div className="space-y-4 mt-4">
                 <div>
-                  <Label htmlFor="title">Title</Label>
                   <Input
-                    id="title"
                     placeholder="Announcement title"
                     value={newAnnouncement.title}
-                    onChange={(e) =>
-                      setNewAnnouncement((prev) => ({ ...prev, title: e.target.value }))
-                    }
-                    className="mt-1"
+                    onChange={(e) => setNewAnnouncement(prev => ({ ...prev, title: e.target.value }))}
                   />
                 </div>
                 <div>
-                  <Label htmlFor="content">Content</Label>
                   <Textarea
-                    id="content"
                     placeholder="Write your announcement..."
                     rows={5}
                     value={newAnnouncement.content}
-                    onChange={(e) =>
-                      setNewAnnouncement((prev) => ({ ...prev, content: e.target.value }))
-                    }
-                    className="mt-1"
+                    onChange={(e) => setNewAnnouncement(prev => ({ ...prev, content: e.target.value }))}
                   />
                 </div>
                 <div>
-                  <Label>Send to</Label>
-                  <Select
-                    value={newAnnouncement.target_audience}
-                    onValueChange={(v: "admins" | "all_members") =>
-                      setNewAnnouncement((prev) => ({ ...prev, target_audience: v }))
+                  <label className="text-sm font-medium mb-2 block">Audience</label>
+                  <Select 
+                    value={newAnnouncement.audience} 
+                    onValueChange={(value: "all" | "admins_only") => 
+                      setNewAnnouncement(prev => ({ ...prev, audience: value }))
                     }
                   >
-                    <SelectTrigger className="mt-1">
+                    <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="admins" className="gap-2">
-                        <Shield className="w-4 h-4 mr-2" />
-                        Only group admins
+                      <SelectItem value="all">
+                        <div className="flex items-center gap-2">
+                          <Users className="w-4 h-4" />
+                          All Users
+                        </div>
                       </SelectItem>
-                      <SelectItem value="all_members" className="gap-2">
-                        <Users className="w-4 h-4 mr-2" />
-                        All members
+                      <SelectItem value="admins_only">
+                        <div className="flex items-center gap-2">
+                          <Shield className="w-4 h-4" />
+                          Group Admins Only
+                        </div>
                       </SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
-                <div className="flex items-center justify-between rounded-lg border p-4">
-                  <div className="flex items-center gap-2">
-                    {newAnnouncement.comments_allowed ? (
-                      <MessageCircle className="w-5 h-5 text-primary" />
-                    ) : (
-                      <MessageCircleOff className="w-5 h-5 text-muted-foreground" />
-                    )}
-                    <div>
-                      <Label htmlFor="comments">Allow comments</Label>
-                      <p className="text-xs text-muted-foreground">
-                        Let recipients comment on this announcement
-                      </p>
-                    </div>
-                  </div>
-                  <Switch
-                    id="comments"
-                    checked={newAnnouncement.comments_allowed}
-                    onCheckedChange={(checked) =>
-                      setNewAnnouncement((prev) => ({ ...prev, comments_allowed: checked }))
-                    }
-                  />
-                </div>
-                <Button
-                  className="w-full gap-2"
+                <Button 
+                  className="w-full" 
                   onClick={handleCreateAnnouncement}
-                  disabled={
-                    submitting ||
-                    !newAnnouncement.title.trim() ||
-                    !newAnnouncement.content.trim()
-                  }
+                  disabled={submitting || !newAnnouncement.title.trim() || !newAnnouncement.content.trim()}
                 >
-                  {submitting ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <Send className="w-4 h-4" />
-                  )}
-                  Send as eKimina
+                  {submitting ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
+                  Send Announcement
                 </Button>
               </div>
             </DialogContent>
           </Dialog>
-        </header>
+        </div>
 
-        {announcements.length === 0 ? (
-          <EmptyState
-            icon={Bell}
-            title="No platform announcements yet"
-            description="Create your first announcement to notify admins or all members. It will appear as sent by eKimina."
-            action={
-              <Button onClick={() => setDialogOpen(true)} className="gap-2">
-                <Plus className="w-4 h-4" />
-                New Announcement
-              </Button>
-            }
-          />
-        ) : (
-          <div className="space-y-4">
-            {announcements.map((announcement, index) => (
-              <motion.div
-                key={announcement.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: index * 0.05 }}
-              >
-                <Card variant="elevated">
-                  <CardHeader className="p-4 sm:p-6">
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex items-start gap-3">
-                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                          <Bell className="w-5 h-5 text-primary" />
-                        </div>
-                        <div>
-                          <CardTitle className="text-base sm:text-lg">
-                            {announcement.title}
-                          </CardTitle>
-                          <div className="flex items-center gap-2 mt-2 flex-wrap">
-                            <p className="text-xs text-muted-foreground flex items-center gap-1">
+        {/* Announcements List */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          {announcements.length === 0 ? (
+            <EmptyState
+              icon={Bell}
+              title="No system announcements yet"
+              description="Create your first system-wide announcement to notify users across all groups."
+            />
+          ) : (
+            <div className="space-y-4">
+              {announcements.map((announcement, index) => (
+                <motion.div
+                  key={announcement.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: index * 0.1 }}
+                >
+                  <Card variant="elevated">
+                    <CardHeader className="p-4 sm:p-6">
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex items-start gap-3">
+                          <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                            <Bell className="w-5 h-5 text-primary" />
+                          </div>
+                          <div>
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <CardTitle className="text-base sm:text-lg">{announcement.title}</CardTitle>
+                              <Badge variant={announcement.audience === "all" ? "default" : "secondary"}>
+                                {announcement.audience === "all" ? (
+                                  <><Users className="w-3 h-3 mr-1" /> All Users</>
+                                ) : (
+                                  <><Shield className="w-3 h-3 mr-1" /> Admins Only</>
+                                )}
+                              </Badge>
+                            </div>
+                            <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
                               <Calendar className="w-3 h-3" />
-                              {format(
-                                new Date(announcement.created_at),
-                                "MMM d, yyyy 'at' h:mm a"
-                              )}
+                              {format(new Date(announcement.created_at), "MMM d, yyyy 'at' h:mm a")}
                             </p>
-                            <Badge variant="secondary" className="text-xs">
-                              from eKimina
-                            </Badge>
-                            <Badge
-                              variant={
-                                announcement.target_audience === "admins"
-                                  ? "default"
-                                  : "outline"
-                              }
-                              className="text-xs"
-                            >
-                              {announcement.target_audience === "admins"
-                                ? "Admins only"
-                                : "All members"}
-                            </Badge>
-                            {announcement.comments_allowed ? (
-                              <Badge variant="muted" className="text-xs gap-1">
-                                <MessageCircle className="w-3 h-3" />
-                                Comments on
-                              </Badge>
-                            ) : (
-                              <Badge variant="muted" className="text-xs gap-1">
-                                <MessageCircleOff className="w-3 h-3" />
-                                No comments
-                              </Badge>
-                            )}
                           </div>
                         </div>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleDeleteAnnouncement(announcement.id)}
+                          className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
                       </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="p-4 sm:p-6 pt-0">
-                    <p className="text-sm text-muted-foreground whitespace-pre-wrap">
-                      {announcement.content}
-                    </p>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-        )}
-      </main>
+                    </CardHeader>
+                    <CardContent className="p-4 sm:p-6 pt-0">
+                      <p className="text-sm text-muted-foreground whitespace-pre-wrap">
+                        {announcement.content}
+                      </p>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+          )}
+        </motion.div>
+      </div>
     </DashboardLayout>
   );
-}
+};
+
+export default SuperAdminAnnouncements;

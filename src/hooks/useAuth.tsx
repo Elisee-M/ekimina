@@ -1,4 +1,4 @@
-import { useState, useEffect, createContext, useContext, ReactNode } from 'react';
+import { useState, useEffect, useRef, createContext, useContext, ReactNode } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -26,10 +26,17 @@ interface AuthContextType {
   roles: AppRole[];
   groupMembership: GroupMembership | null;
   groupMembershipLoaded: boolean;
+  rolesLoaded: boolean;
   loading: boolean;
-  signUp: (email: string, password: string, fullName: string, phone?: string) => Promise<{ error: Error | null }>;
+  signUp: (
+    email: string,
+    password: string,
+    fullName: string,
+    phone?: string
+  ) => Promise<{ error: Error | null; didSignIn: boolean }>;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
+  refreshUserData: () => Promise<void>;
   isSuperAdmin: boolean;
   isGroupAdmin: boolean;
   isMember: boolean;
@@ -44,46 +51,64 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [roles, setRoles] = useState<AppRole[]>([]);
   const [groupMembership, setGroupMembership] = useState<GroupMembership | null>(null);
   const [groupMembershipLoaded, setGroupMembershipLoaded] = useState(false);
+  const [rolesLoaded, setRolesLoaded] = useState(false);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
+  // Prevent a stale getSession()/INITIAL_SESSION race from overwriting a fresh SIGNED_IN session.
+  // We rely on onAuthStateChange's INITIAL_SESSION event for initialization.
+  const hasReceivedAuthEventRef = useRef(false);
+
   useEffect(() => {
-    // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        setSession(session);
-        setUser(session?.user ?? null);
-        
-        // Defer data fetching with setTimeout to prevent deadlock
-        if (session?.user) {
+      (_event, nextSession) => {
+        hasReceivedAuthEventRef.current = true;
+
+        setSession(nextSession);
+        setUser(nextSession?.user ?? null);
+
+        if (nextSession?.user) {
+          // Defer to avoid any potential listener/event-loop deadlocks.
           setTimeout(() => {
-            fetchUserData(session.user.id);
+            fetchUserData(nextSession.user.id);
           }, 0);
         } else {
           setProfile(null);
           setRoles([]);
           setGroupMembership(null);
           setGroupMembershipLoaded(false);
+          setRolesLoaded(false);
           setLoading(false);
         }
       }
     );
 
-    // THEN check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        fetchUserData(session.user.id);
-      } else {
-        setLoading(false);
-      }
-    });
+    // If the library does not emit INITIAL_SESSION for any reason, fall back once.
+    // (This is a guard; in normal cases, INITIAL_SESSION will fire.)
+    const fallbackTimer = setTimeout(() => {
+      if (hasReceivedAuthEventRef.current) return;
+      supabase.auth.getSession().then(({ data: { session: s } }) => {
+        // Only apply if still no auth event happened.
+        if (hasReceivedAuthEventRef.current) return;
+        setSession(s);
+        setUser(s?.user ?? null);
+        if (s?.user) fetchUserData(s.user.id);
+        else setLoading(false);
+      });
+    }, 1000);
 
-    return () => subscription.unsubscribe();
+    return () => {
+      clearTimeout(fallbackTimer);
+      subscription.unsubscribe();
+    };
   }, []);
 
   const fetchUserData = async (userId: string) => {
+    // Mark sub-loaders as pending for this user fetch
+    setRolesLoaded(false);
+    setGroupMembershipLoaded(false);
+    setLoading(true);
+
     try {
       // Fetch profile
       const { data: profileData } = await supabase
@@ -91,46 +116,35 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         .select('*')
         .eq('id', userId)
         .maybeSingle();
-      
-      if (profileData) {
-        setProfile(profileData as UserProfile);
-      }
 
-      // Fetch roles
-      const { data: rolesData } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', userId);
-      
-      if (rolesData) {
-        setRoles(rolesData.map(r => r.role as AppRole));
-      }
+      setProfile(profileData ? (profileData as UserProfile) : null);
 
-      // Fetch group membership
-      const { data: membershipData } = await supabase
-        .from('group_members')
-        .select(`
-          group_id,
-          is_admin,
-          ikimina_groups (name)
-        `)
-        .eq('user_id', userId)
-        .eq('status', 'active')
-        .maybeSingle();
-      
-      if (membershipData && membershipData.ikimina_groups) {
+      // Fetch roles using RPC to bypass RLS recursion
+      const { data: rolesData } = await supabase.rpc('get_my_roles');
+      setRoles((rolesData || []) as AppRole[]);
+
+      // Fetch group membership using RPC to bypass RLS recursion
+      const { data: membershipData } = await supabase.rpc('get_my_group_membership');
+
+      if (membershipData && membershipData.length > 0) {
+        const membership = membershipData[0];
         setGroupMembership({
-          group_id: membershipData.group_id,
-          group_name: (membershipData.ikimina_groups as { name: string }).name,
-          is_admin: membershipData.is_admin
+          group_id: membership.group_id,
+          group_name: membership.group_name,
+          is_admin: membership.is_admin,
         });
       } else {
         setGroupMembership(null);
       }
-      setGroupMembershipLoaded(true);
     } catch (error) {
       console.error('Error fetching user data:', error);
+      // Fail closed on data, but allow UI to proceed (so user sees screens + toasts instead of infinite loaders)
+      setProfile(null);
+      setRoles([]);
+      setGroupMembership(null);
     } finally {
+      setRolesLoaded(true);
+      setGroupMembershipLoaded(true);
       setLoading(false);
     }
   };
@@ -138,46 +152,58 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signUp = async (email: string, password: string, fullName: string, phone?: string) => {
     try {
       const redirectUrl = `${window.location.origin}/`;
-      
-      const { error } = await supabase.auth.signUp({
+
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
           emailRedirectTo: redirectUrl,
           data: {
             full_name: fullName,
-            phone: phone || null
-          }
-        }
+            phone: phone || null,
+          },
+        },
       });
 
       if (error) throw error;
 
+      const didSignIn = Boolean(data.session);
+
       toast({
         title: "Account created!",
-        description: "Welcome to eKimina. You can now sign in.",
+        description: didSignIn
+          ? "Welcome to eKimina. Finishing setup…"
+          : "Please check your email to confirm your account, then sign in.",
       });
 
-      return { error: null };
+      return { error: null, didSignIn };
     } catch (error) {
       const err = error as Error;
       toast({
         title: "Sign up failed",
         description: err.message,
-        variant: "destructive"
+        variant: "destructive",
       });
-      return { error: err };
+      return { error: err, didSignIn: false };
     }
   };
 
   const signIn = async (email: string, password: string) => {
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
-        password
+        password,
       });
 
       if (error) throw error;
+
+      // Eagerly set state from returned session to avoid any auth-event race,
+      // then load the rest of the user context.
+      if (data.session?.user) {
+        setSession(data.session);
+        setUser(data.session.user);
+        await fetchUserData(data.session.user.id);
+      }
 
       toast({
         title: "Welcome back!",
@@ -190,7 +216,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       toast({
         title: "Sign in failed",
         description: err.message,
-        variant: "destructive"
+        variant: "destructive",
       });
       return { error: err };
     }
@@ -204,10 +230,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setRoles([]);
     setGroupMembership(null);
     setGroupMembershipLoaded(false);
+    setRolesLoaded(false);
     toast({
       title: "Signed out",
       description: "You have been signed out successfully.",
     });
+  };
+
+  const refreshUserData = async () => {
+    if (!user) return;
+    await fetchUserData(user.id);
   };
 
   const isSuperAdmin = roles.includes('super_admin');
@@ -222,10 +254,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       roles,
       groupMembership,
       groupMembershipLoaded,
+      rolesLoaded,
       loading,
       signUp,
       signIn,
       signOut,
+      refreshUserData,
       isSuperAdmin,
       isGroupAdmin,
       isMember

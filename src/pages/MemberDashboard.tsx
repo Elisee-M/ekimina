@@ -251,12 +251,7 @@ const MemberDashboard = () => {
                     <div key={announcement.id} className="p-3 sm:p-4 rounded-lg bg-muted/50 border border-border">
                       <p className="text-sm font-semibold text-foreground mb-1">{announcement.title}</p>
                       <p className="text-sm text-muted-foreground mb-2 line-clamp-3">{announcement.content}</p>
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <p className="text-xs text-muted-foreground">{announcement.date}</p>
-                        {announcement.senderName && (
-                          <span className="text-xs text-muted-foreground">• from {announcement.senderName}</span>
-                        )}
-                      </div>
+                      <p className="text-xs text-muted-foreground">{announcement.date}</p>
                     </div>
                   ))}
                 </CardContent>

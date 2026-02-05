@@ -23,14 +23,11 @@ interface ContributionRecord {
   date: string;
 }
 
-export interface Announcement {
+interface Announcement {
   id: string;
   title: string;
   content: string;
   date: string;
-  source: 'group' | 'platform';
-  commentsAllowed: boolean;
-  senderName?: string;
 }
 
 interface GroupInfo {
@@ -144,47 +141,20 @@ export function useMemberData() {
         };
       }
 
-      // Fetch group announcements
+      // Fetch announcements
       const { data: announcementsData } = await supabase
         .from('announcements')
         .select('*')
         .eq('group_id', groupId)
         .order('created_at', { ascending: false })
-        .limit(10);
+        .limit(5);
 
-      const groupAnnouncements: Announcement[] = (announcementsData || []).map(a => ({
+      const formattedAnnouncements: Announcement[] = (announcementsData || []).map(a => ({
         id: a.id,
         title: a.title,
         content: a.content,
-        date: formatRelativeDate(a.created_at),
-        source: 'group' as const,
-        commentsAllowed: true
+        date: formatRelativeDate(a.created_at)
       }));
-
-      // Fetch platform announcements (target: all_members)
-      const { data: platformData } = await supabase
-        .from('platform_announcements')
-        .select('*')
-        .eq('target_audience', 'all_members')
-        .order('created_at', { ascending: false })
-        .limit(10);
-
-      const platformAnnouncements: Announcement[] = (platformData || []).map(a => ({
-        id: a.id,
-        title: a.title,
-        content: a.content,
-        date: formatRelativeDate(a.created_at),
-        source: 'platform' as const,
-        commentsAllowed: a.comments_allowed,
-        senderName: 'eKimina'
-      }));
-
-      // Merge and sort by date (use created_at for sorting - we need to pass it for merge)
-      const groupWithDate = (announcementsData || []).map((a, i) => ({ ...groupAnnouncements[i], _createdAt: a.created_at }));
-      const platformWithDate = (platformData || []).map((a, i) => ({ ...platformAnnouncements[i], _createdAt: a.created_at }));
-      const merged = [...groupWithDate, ...platformWithDate]
-        .sort((a, b) => new Date(b._createdAt).getTime() - new Date(a._createdAt).getTime())
-        .map(({ _createdAt, ...a }) => a);
 
       setStats({
         totalContributed,
@@ -192,7 +162,7 @@ export function useMemberData() {
         activeLoan
       });
       setContributions(formattedContributions);
-      setAnnouncements(merged);
+      setAnnouncements(formattedAnnouncements);
     } catch (error) {
       console.error('Error fetching member data:', error);
     } finally {

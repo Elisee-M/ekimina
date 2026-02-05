@@ -47,7 +47,7 @@ const Onboarding = () => {
   const [loadingPreviousGroups, setLoadingPreviousGroups] = useState(false);
   const [requestingRejoin, setRequestingRejoin] = useState<string | null>(null);
 
-  const { user, loading, groupMembership } = useAuth();
+  const { user, loading, groupMembership, refreshUserData } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -181,8 +181,9 @@ const Onboarding = () => {
         description: `Your Ikimina "${createForm.groupName}" is ready. Share code: ${groupData.id.slice(0, 8).toUpperCase()}`,
       });
 
-      // Force refresh and navigate
-      window.location.href = '/dashboard';
+      // Refresh auth-derived context (roles + membership) then navigate
+      await refreshUserData();
+      navigate('/dashboard', { replace: true });
     } catch (error: any) {
       toast({
         title: "Failed to create group",
@@ -257,8 +258,9 @@ const Onboarding = () => {
         description: `You are now a member of "${group.name}".`,
       });
 
-      // Force refresh and navigate
-      window.location.href = '/member';
+      // Refresh auth-derived context (roles + membership) then navigate
+      await refreshUserData();
+      navigate('/member', { replace: true });
     } catch (error: any) {
       toast({
         title: "Failed to join group",

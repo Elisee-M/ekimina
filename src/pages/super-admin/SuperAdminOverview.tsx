@@ -151,7 +151,7 @@ export default function SuperAdminOverview() {
                         <TableCell>{new Date(g.created_at).toLocaleDateString()}</TableCell>
                         <TableCell className="text-right">
                           <Button asChild size="sm" variant="outline">
-                            <Link to={`/super-admin/groups/${g.id}`}>Open</Link>
+                            <Link to={`/super-admin/groups`}>Open</Link>
                           </Button>
                         </TableCell>
                       </TableRow>

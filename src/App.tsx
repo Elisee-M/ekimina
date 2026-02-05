@@ -19,9 +19,8 @@ import History from "./pages/History";
 import Announcements from "./pages/Announcements";
 import SuperAdminOverview from "./pages/super-admin/SuperAdminOverview";
 import SuperAdminGroups from "./pages/super-admin/SuperAdminGroups";
-import SuperAdminGroupDetail from "./pages/super-admin/SuperAdminGroupDetail";
-import SuperAdminAnnouncements from "./pages/super-admin/SuperAdminAnnouncements";
 import SuperAdminAdmins from "./pages/super-admin/SuperAdminAdmins";
+import SuperAdminAnnouncements from "./pages/super-admin/SuperAdminAnnouncements";
 import SuperAdminSettings from "./pages/super-admin/SuperAdminSettings";
 import MemberDashboard from "./pages/MemberDashboard";
 import MemberHistory from "./pages/MemberHistory";
@@ -149,24 +148,19 @@ const App = () => (
                 <SuperAdminGroups />
               </ProtectedRoute>
             } />
-            <Route path="/super-admin/groups/:groupId" element={
-              <ProtectedRoute requiredRole="super_admin">
-                <SuperAdminGroupDetail />
-              </ProtectedRoute>
-            } />
             <Route path="/super-admin/admins" element={
               <ProtectedRoute requiredRole="super_admin">
                 <SuperAdminAdmins />
               </ProtectedRoute>
             } />
-            <Route path="/super-admin/announcements" element={
-              <ProtectedRoute requiredRole="super_admin">
-                <SuperAdminAnnouncements />
-              </ProtectedRoute>
-            } />
             <Route path="/super-admin/settings" element={
               <ProtectedRoute requiredRole="super_admin">
                 <SuperAdminSettings />
+              </ProtectedRoute>
+            } />
+            <Route path="/super-admin/announcements" element={
+              <ProtectedRoute requiredRole="super_admin">
+                <SuperAdminAnnouncements />
               </ProtectedRoute>
             } />
             <Route path="/super-admin/*" element={

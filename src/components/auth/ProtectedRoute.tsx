@@ -19,7 +19,7 @@ export function ProtectedRoute({
   requireGroupAdmin = false,
   allowNoGroup = false,
 }: ProtectedRouteProps) {
-  const { user, loading, roles, isGroupAdmin, isSuperAdmin, groupMembership, groupMembershipLoaded } = useAuth();
+  const { user, loading, roles, isGroupAdmin, isSuperAdmin, groupMembership, groupMembershipLoaded, rolesLoaded } = useAuth();
   const location = useLocation();
 
   // Wait for base auth state
@@ -39,7 +39,19 @@ export function ProtectedRoute({
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // Signed in but group membership still loading (prevents hosted race redirects)
+  // Signed in but roles still loading - wait to determine if super admin
+  if (!rolesLoaded) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+          <p className="text-muted-foreground">Checking permissions...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Signed in but group membership still loading (skip for super admins)
   if (!isSuperAdmin && !groupMembershipLoaded) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">

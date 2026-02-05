@@ -116,68 +116,6 @@ export type Database = {
           },
         ]
       }
-      platform_announcements: {
-        Row: {
-          id: string
-          title: string
-          content: string
-          target_audience: string
-          comments_allowed: boolean
-          created_by: string | null
-          created_at: string
-        }
-        Insert: {
-          id?: string
-          title: string
-          content: string
-          target_audience: "admins" | "all_members"
-          comments_allowed?: boolean
-          created_by?: string | null
-          created_at?: string
-        }
-        Update: {
-          id?: string
-          title?: string
-          content?: string
-          target_audience?: "admins" | "all_members"
-          comments_allowed?: boolean
-          created_by?: string | null
-          created_at?: string
-        }
-        Relationships: []
-      }
-      platform_announcement_comments: {
-        Row: {
-          id: string
-          platform_announcement_id: string
-          user_id: string
-          content: string
-          created_at: string
-        }
-        Insert: {
-          id?: string
-          platform_announcement_id: string
-          user_id: string
-          content: string
-          created_at?: string
-        }
-        Update: {
-          id?: string
-          platform_announcement_id?: string
-          user_id?: string
-          content?: string
-          created_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "platform_announcement_comments_platform_announcement_id_fkey"
-            columns: ["platform_announcement_id"]
-            isOneToOne: false
-            referencedRelation: "platform_announcements"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       contributions: {
         Row: {
           amount: number
@@ -438,6 +376,33 @@ export type Database = {
           },
         ]
       }
+      system_announcements: {
+        Row: {
+          audience: string
+          content: string
+          created_at: string
+          created_by: string | null
+          id: string
+          title: string
+        }
+        Insert: {
+          audience?: string
+          content: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          title: string
+        }
+        Update: {
+          audience?: string
+          content?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          title?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -470,6 +435,19 @@ export type Database = {
           id: string
           name: string
         }[]
+      }
+      get_my_group_membership: {
+        Args: never
+        Returns: {
+          group_id: string
+          group_name: string
+          is_admin: boolean
+          status: string
+        }[]
+      }
+      get_my_roles: {
+        Args: never
+        Returns: Database["public"]["Enums"]["app_role"][]
       }
       get_user_previous_groups: {
         Args: { _user_id: string }
