@@ -30,6 +30,7 @@ import MemberAnnouncements from "./pages/MemberAnnouncements";
 import MemberSettings from "./pages/MemberSettings";
 import Unauthorized from "./pages/Unauthorized";
 import NotFound from "./pages/NotFound";
+import SystemNotices from "./pages/SystemNotices";
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -134,6 +135,13 @@ const App = () => (
             <Route path="/member/*" element={
               <ProtectedRoute>
                 <MemberDashboard />
+              </ProtectedRoute>
+            } />
+            
+            {/* System Notices - accessible by all authenticated users */}
+            <Route path="/system-notices" element={
+              <ProtectedRoute>
+                <SystemNotices />
               </ProtectedRoute>
             } />
             

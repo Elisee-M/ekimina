@@ -33,6 +33,8 @@ const superAdminNav = [
   { icon: Settings, label: "Settings", href: "/super-admin/settings" },
 ];
 
+import { Megaphone } from "lucide-react";
+
 const adminNav = [
   { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
   { icon: Users, label: "Members", href: "/dashboard/members" },
@@ -41,6 +43,7 @@ const adminNav = [
   { icon: History, label: "History", href: "/dashboard/history" },
   { icon: FileText, label: "Reports", href: "/dashboard/reports" },
   { icon: Bell, label: "Announcements", href: "/dashboard/announcements" },
+  { icon: Megaphone, label: "System Notices", href: "/system-notices" },
   { icon: Settings, label: "Settings", href: "/dashboard/settings" },
 ];
 
@@ -50,6 +53,7 @@ const memberNav = [
   { icon: TrendingUp, label: "My Loans", href: "/member/loans" },
   { icon: History, label: "History", href: "/member/history" },
   { icon: Bell, label: "Announcements", href: "/member/announcements" },
+  { icon: Megaphone, label: "System Notices", href: "/system-notices" },
   { icon: Settings, label: "Settings", href: "/member/settings" },
 ];
 
