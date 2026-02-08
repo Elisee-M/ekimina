@@ -441,6 +441,7 @@ export type Database = {
         Returns: {
           group_id: string
           group_name: string
+          group_status: string
           is_admin: boolean
           status: string
         }[]

@@ -17,6 +17,7 @@ interface GroupMembership {
   group_id: string;
   group_name: string;
   is_admin: boolean;
+  group_status: string;
 }
 
 interface AuthContextType {
@@ -55,99 +56,129 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
-  // Prevent a stale getSession()/INITIAL_SESSION race from overwriting a fresh SIGNED_IN session.
-  // We rely on onAuthStateChange's INITIAL_SESSION event for initialization.
-  const hasReceivedAuthEventRef = useRef(false);
+  // Track if we're in the middle of a manual sign-in to prevent duplicate fetches
+  const isManualAuthRef = useRef(false);
+  const isMountedRef = useRef(true);
+
+  // Fetch user data helper - does NOT control loading state externally
+  const fetchUserDataInternal = async (userId: string): Promise<{
+    profile: UserProfile | null;
+    roles: AppRole[];
+    groupMembership: GroupMembership | null;
+  }> => {
+    try {
+      // Fetch all data in parallel
+      const [profileResult, rolesResult, membershipResult] = await Promise.all([
+        supabase.from('profiles').select('*').eq('id', userId).maybeSingle(),
+        supabase.rpc('get_my_roles'),
+        supabase.rpc('get_my_group_membership'),
+      ]);
+
+      const profileData = profileResult.data ? (profileResult.data as UserProfile) : null;
+      const rolesData = (rolesResult.data || []) as AppRole[];
+
+      let groupMembershipData: GroupMembership | null = null;
+      if (membershipResult.data && membershipResult.data.length > 0) {
+        const membership = membershipResult.data[0];
+        groupMembershipData = {
+          group_id: membership.group_id,
+          group_name: membership.group_name,
+          is_admin: membership.is_admin,
+          group_status: membership.group_status || 'active',
+        };
+      }
+
+      return { profile: profileData, roles: rolesData, groupMembership: groupMembershipData };
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+      return { profile: null, roles: [], groupMembership: null };
+    }
+  };
 
   useEffect(() => {
+    isMountedRef.current = true;
+
+    // INITIAL LOAD - controls loading state
+    const initializeAuth = async () => {
+      try {
+        const { data: { session: initialSession } } = await supabase.auth.getSession();
+        
+        if (!isMountedRef.current) return;
+
+        setSession(initialSession);
+        setUser(initialSession?.user ?? null);
+
+        if (initialSession?.user) {
+          // Fetch all user data BEFORE setting loading to false
+          const userData = await fetchUserDataInternal(initialSession.user.id);
+          
+          if (!isMountedRef.current) return;
+          
+          setProfile(userData.profile);
+          setRoles(userData.roles);
+          setGroupMembership(userData.groupMembership);
+          setRolesLoaded(true);
+          setGroupMembershipLoaded(true);
+        } else {
+          setRolesLoaded(true);
+          setGroupMembershipLoaded(true);
+        }
+      } catch (error) {
+        console.error('Error initializing auth:', error);
+        if (isMountedRef.current) {
+          setRolesLoaded(true);
+          setGroupMembershipLoaded(true);
+        }
+      } finally {
+        if (isMountedRef.current) {
+          setLoading(false);
+        }
+      }
+    };
+
+    // ONGOING AUTH CHANGES - does NOT control loading state (except on logout)
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, nextSession) => {
-        hasReceivedAuthEventRef.current = true;
+      (event, nextSession) => {
+        if (!isMountedRef.current) return;
+
+        // Skip if this is triggered by our own manual auth
+        if (isManualAuthRef.current) {
+          return;
+        }
 
         setSession(nextSession);
         setUser(nextSession?.user ?? null);
 
         if (nextSession?.user) {
-          // Defer to avoid any potential listener/event-loop deadlocks.
-          setTimeout(() => {
-            fetchUserData(nextSession.user.id);
-          }, 0);
+          // Fire and forget - don't await, don't set loading
+          // This handles cases like token refresh
+          fetchUserDataInternal(nextSession.user.id).then((userData) => {
+            if (!isMountedRef.current) return;
+            setProfile(userData.profile);
+            setRoles(userData.roles);
+            setGroupMembership(userData.groupMembership);
+            setRolesLoaded(true);
+            setGroupMembershipLoaded(true);
+          });
         } else {
+          // User logged out
           setProfile(null);
           setRoles([]);
           setGroupMembership(null);
-          setGroupMembershipLoaded(false);
-          setRolesLoaded(false);
+          setGroupMembershipLoaded(true);
+          setRolesLoaded(true);
           setLoading(false);
         }
       }
     );
 
-    // If the library does not emit INITIAL_SESSION for any reason, fall back once.
-    // (This is a guard; in normal cases, INITIAL_SESSION will fire.)
-    const fallbackTimer = setTimeout(() => {
-      if (hasReceivedAuthEventRef.current) return;
-      supabase.auth.getSession().then(({ data: { session: s } }) => {
-        // Only apply if still no auth event happened.
-        if (hasReceivedAuthEventRef.current) return;
-        setSession(s);
-        setUser(s?.user ?? null);
-        if (s?.user) fetchUserData(s.user.id);
-        else setLoading(false);
-      });
-    }, 1000);
+    initializeAuth();
 
     return () => {
-      clearTimeout(fallbackTimer);
+      isMountedRef.current = false;
       subscription.unsubscribe();
     };
   }, []);
-
-  const fetchUserData = async (userId: string) => {
-    // Mark sub-loaders as pending for this user fetch
-    setRolesLoaded(false);
-    setGroupMembershipLoaded(false);
-    setLoading(true);
-
-    try {
-      // Fetch profile
-      const { data: profileData } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', userId)
-        .maybeSingle();
-
-      setProfile(profileData ? (profileData as UserProfile) : null);
-
-      // Fetch roles using RPC to bypass RLS recursion
-      const { data: rolesData } = await supabase.rpc('get_my_roles');
-      setRoles((rolesData || []) as AppRole[]);
-
-      // Fetch group membership using RPC to bypass RLS recursion
-      const { data: membershipData } = await supabase.rpc('get_my_group_membership');
-
-      if (membershipData && membershipData.length > 0) {
-        const membership = membershipData[0];
-        setGroupMembership({
-          group_id: membership.group_id,
-          group_name: membership.group_name,
-          is_admin: membership.is_admin,
-        });
-      } else {
-        setGroupMembership(null);
-      }
-    } catch (error) {
-      console.error('Error fetching user data:', error);
-      // Fail closed on data, but allow UI to proceed (so user sees screens + toasts instead of infinite loaders)
-      setProfile(null);
-      setRoles([]);
-      setGroupMembership(null);
-    } finally {
-      setRolesLoaded(true);
-      setGroupMembershipLoaded(true);
-      setLoading(false);
-    }
-  };
 
   const signUp = async (email: string, password: string, fullName: string, phone?: string) => {
     try {
@@ -168,6 +199,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (error) throw error;
 
       const didSignIn = Boolean(data.session);
+
+      if (didSignIn && data.session?.user) {
+        // Mark as manual auth to prevent duplicate fetches
+        isManualAuthRef.current = true;
+        
+        setSession(data.session);
+        setUser(data.session.user);
+        
+        // Fetch user data
+        const userData = await fetchUserDataInternal(data.session.user.id);
+        setProfile(userData.profile);
+        setRoles(userData.roles);
+        setGroupMembership(userData.groupMembership);
+        setRolesLoaded(true);
+        setGroupMembershipLoaded(true);
+        
+        // Reset manual auth flag after a short delay
+        setTimeout(() => {
+          isManualAuthRef.current = false;
+        }, 100);
+      }
 
       toast({
         title: "Account created!",
@@ -190,20 +242,37 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signIn = async (email: string, password: string) => {
     try {
+      // Mark as manual auth to prevent duplicate fetches from onAuthStateChange
+      isManualAuthRef.current = true;
+
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
-      if (error) throw error;
+      if (error) {
+        isManualAuthRef.current = false;
+        throw error;
+      }
 
-      // Eagerly set state from returned session to avoid any auth-event race,
-      // then load the rest of the user context.
       if (data.session?.user) {
         setSession(data.session);
         setUser(data.session.user);
-        await fetchUserData(data.session.user.id);
+        
+        // Fetch all user data before navigation
+        const userData = await fetchUserDataInternal(data.session.user.id);
+        
+        setProfile(userData.profile);
+        setRoles(userData.roles);
+        setGroupMembership(userData.groupMembership);
+        setRolesLoaded(true);
+        setGroupMembershipLoaded(true);
       }
+
+      // Reset manual auth flag after a short delay to allow state to settle
+      setTimeout(() => {
+        isManualAuthRef.current = false;
+      }, 100);
 
       toast({
         title: "Welcome back!",
@@ -212,6 +281,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       return { error: null };
     } catch (error) {
+      isManualAuthRef.current = false;
       const err = error as Error;
       toast({
         title: "Sign in failed",
@@ -239,7 +309,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const refreshUserData = async () => {
     if (!user) return;
-    await fetchUserData(user.id);
+    const userData = await fetchUserDataInternal(user.id);
+    setProfile(userData.profile);
+    setRoles(userData.roles);
+    setGroupMembership(userData.groupMembership);
+    setRolesLoaded(true);
+    setGroupMembershipLoaded(true);
   };
 
   const isSuperAdmin = roles.includes('super_admin');

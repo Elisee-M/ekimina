@@ -68,6 +68,11 @@ export function ProtectedRoute({
     return <Navigate to="/onboarding" replace />;
   }
 
+  // Check if user's group is disabled (redirect to group-disabled page)
+  if (!isSuperAdmin && groupMembership && groupMembership.group_status === 'disabled') {
+    return <Navigate to="/group-disabled" replace />;
+  }
+
   // Check role requirements
   if (requiredRole && !roles.includes(requiredRole) && !isSuperAdmin) {
     return <Navigate to="/unauthorized" replace />;

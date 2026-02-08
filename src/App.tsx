@@ -31,6 +31,7 @@ import MemberSettings from "./pages/MemberSettings";
 import Unauthorized from "./pages/Unauthorized";
 import NotFound from "./pages/NotFound";
 import SystemNotices from "./pages/SystemNotices";
+import GroupDisabled from "./pages/GroupDisabled";
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -46,7 +47,7 @@ const App = () => (
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/unauthorized" element={<Unauthorized />} />
-            
+            <Route path="/group-disabled" element={<GroupDisabled />} />
             {/* Onboarding Route - signed-in users without a group */}
             <Route path="/onboarding" element={
               <ProtectedRoute allowNoGroup>
