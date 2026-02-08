@@ -10,56 +10,17 @@ import {
   BarChart3,
   Lock
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
-const features = [
-  {
-    icon: Wallet,
-    title: "Contribution Tracking",
-    description: "Track monthly or weekly contributions with automatic reminders and late payment indicators.",
-    color: "primary"
-  },
-  {
-    icon: TrendingUp,
-    title: "Smart Loans",
-    description: "Manage loans with configurable interest rates, automatic profit calculation, and repayment schedules.",
-    color: "secondary"
-  },
-  {
-    icon: Users,
-    title: "Member Management",
-    description: "Easy member onboarding, role assignment, and individual contribution history tracking.",
-    color: "accent"
-  },
-  {
-    icon: Shield,
-    title: "Group Isolation",
-    description: "Complete data privacy between Ikimina groups. Each group only sees their own data.",
-    color: "primary"
-  },
-  {
-    icon: BarChart3,
-    title: "Reports & Analytics",
-    description: "Real-time dashboards showing total savings, active loans, profit earned, and member performance.",
-    color: "secondary"
-  },
-  {
-    icon: Bell,
-    title: "Smart Notifications",
-    description: "Automatic reminders for contribution due dates, loan repayments, and important updates.",
-    color: "accent"
-  },
-  {
-    icon: FileText,
-    title: "Export Reports",
-    description: "Download detailed reports in PDF or CSV format for record-keeping and audits.",
-    color: "primary"
-  },
-  {
-    icon: Lock,
-    title: "Secure Authentication",
-    description: "Bank-level security with role-based access control for Admins, Leaders, and Members.",
-    color: "secondary"
-  }
+const featureKeys = [
+  { icon: Wallet, key: "contributionTracking", color: "primary" },
+  { icon: TrendingUp, key: "smartLoans", color: "secondary" },
+  { icon: Users, key: "memberManagement", color: "accent" },
+  { icon: Shield, key: "groupIsolation", color: "primary" },
+  { icon: BarChart3, key: "reportsAnalytics", color: "secondary" },
+  { icon: Bell, key: "smartNotifications", color: "accent" },
+  { icon: FileText, key: "exportReports", color: "primary" },
+  { icon: Lock, key: "secureAuth", color: "secondary" }
 ];
 
 const colorClasses = {
@@ -69,6 +30,8 @@ const colorClasses = {
 };
 
 export function FeaturesSection() {
+  const { t } = useTranslation();
+
   return (
     <section id="features" className="py-24 bg-background">
       <div className="container mx-auto px-4">
@@ -80,18 +43,17 @@ export function FeaturesSection() {
           className="text-center max-w-3xl mx-auto mb-16"
         >
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-            Everything Your <span className="text-primary">Ikimina</span> Needs
+            {t('features.title')} <span className="text-primary">{t('features.titleHighlight')}</span> {t('features.titleEnd')}
           </h2>
           <p className="text-lg text-muted-foreground">
-            Powerful features designed specifically for Rwandan savings groups. 
-            Simple to use, secure by design.
+            {t('features.description')}
           </p>
         </motion.div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {features.map((feature, index) => (
+          {featureKeys.map((feature, index) => (
             <motion.div
-              key={feature.title}
+              key={feature.key}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -102,8 +64,12 @@ export function FeaturesSection() {
                   <div className={`w-12 h-12 rounded-xl ${colorClasses[feature.color as keyof typeof colorClasses]} flex items-center justify-center transition-transform group-hover:scale-110`}>
                     <feature.icon className="w-6 h-6" />
                   </div>
-                  <h3 className="text-lg font-semibold text-foreground">{feature.title}</h3>
-                  <p className="text-sm text-muted-foreground">{feature.description}</p>
+                  <h3 className="text-lg font-semibold text-foreground">
+                    {t(`features.${feature.key}.title`)}
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    {t(`features.${feature.key}.description`)}
+                  </p>
                 </CardContent>
               </Card>
             </motion.div>

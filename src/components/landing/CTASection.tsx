@@ -2,8 +2,11 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export function CTASection() {
+  const { t } = useTranslation();
+
   return (
     <section className="py-24 gradient-hero relative overflow-hidden">
       {/* Background Pattern */}
@@ -21,25 +24,24 @@ export function CTASection() {
           className="text-center max-w-3xl mx-auto space-y-8"
         >
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-primary-foreground">
-            Ready to Transform Your Ikimina?
+            {t('cta.title')}
           </h2>
           <p className="text-lg text-primary-foreground/80">
-            Join hundreds of Rwandan savings groups already using eKimina to build 
-            community wealth with transparency and trust.
+            {t('cta.description')}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button variant="gold" size="xl" asChild>
               <Link to="/register">
-                Start Free Today
+                {t('cta.primary')}
                 <ArrowRight className="w-5 h-5" />
               </Link>
             </Button>
             <Button variant="outline-light" size="xl" asChild>
-              <Link to="/contact">Talk to Us</Link>
+              <Link to="/contact">{t('cta.secondary')}</Link>
             </Button>
           </div>
           <p className="text-sm text-primary-foreground/60">
-            No credit card required • Free forever for small groups
+            {t('cta.note')}
           </p>
         </motion.div>
       </div>

@@ -1,7 +1,10 @@
 import { Link } from "react-router-dom";
 import { Heart } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export function Footer() {
+  const { t } = useTranslation();
+
   return (
     <footer className="bg-sidebar text-sidebar-foreground py-12">
       <div className="container mx-auto px-4">
@@ -15,43 +18,43 @@ export function Footer() {
               <span className="text-xl font-bold">Kimina</span>
             </Link>
             <p className="text-sidebar-foreground/70 text-sm">
-              Empowering Rwandan communities through transparent savings and lending.
+              {t('footer.description')}
             </p>
           </div>
 
           {/* Product */}
           <div className="space-y-4">
-            <h4 className="font-semibold text-sidebar-primary">Product</h4>
+            <h4 className="font-semibold text-sidebar-primary">{t('footer.product')}</h4>
             <ul className="space-y-2 text-sm text-sidebar-foreground/70">
-              <li><Link to="/#features" className="hover:text-sidebar-foreground transition-colors">Features</Link></li>
-              <li><Link to="/#pricing" className="hover:text-sidebar-foreground transition-colors">Pricing</Link></li>
-              <li><Link to="/#how-it-works" className="hover:text-sidebar-foreground transition-colors">How It Works</Link></li>
+              <li><Link to="/#features" className="hover:text-sidebar-foreground transition-colors">{t('nav.features')}</Link></li>
+              <li><Link to="/#pricing" className="hover:text-sidebar-foreground transition-colors">{t('nav.pricing')}</Link></li>
+              <li><Link to="/#how-it-works" className="hover:text-sidebar-foreground transition-colors">{t('nav.howItWorks')}</Link></li>
             </ul>
           </div>
 
           {/* Company */}
           <div className="space-y-4">
-            <h4 className="font-semibold text-sidebar-primary">Company</h4>
+            <h4 className="font-semibold text-sidebar-primary">{t('footer.company')}</h4>
             <ul className="space-y-2 text-sm text-sidebar-foreground/70">
-              <li><Link to="/about" className="hover:text-sidebar-foreground transition-colors">About Us</Link></li>
-              <li><Link to="/contact" className="hover:text-sidebar-foreground transition-colors">Contact</Link></li>
-              <li><Link to="/careers" className="hover:text-sidebar-foreground transition-colors">Careers</Link></li>
+              <li><Link to="/about" className="hover:text-sidebar-foreground transition-colors">{t('footer.about')}</Link></li>
+              <li><Link to="/contact" className="hover:text-sidebar-foreground transition-colors">{t('footer.contact')}</Link></li>
+              <li><Link to="/careers" className="hover:text-sidebar-foreground transition-colors">{t('footer.careers')}</Link></li>
             </ul>
           </div>
 
           {/* Legal */}
           <div className="space-y-4">
-            <h4 className="font-semibold text-sidebar-primary">Legal</h4>
+            <h4 className="font-semibold text-sidebar-primary">{t('footer.legal')}</h4>
             <ul className="space-y-2 text-sm text-sidebar-foreground/70">
-              <li><Link to="/privacy" className="hover:text-sidebar-foreground transition-colors">Privacy Policy</Link></li>
-              <li><Link to="/terms" className="hover:text-sidebar-foreground transition-colors">Terms of Service</Link></li>
+              <li><Link to="/privacy" className="hover:text-sidebar-foreground transition-colors">{t('footer.privacy')}</Link></li>
+              <li><Link to="/terms" className="hover:text-sidebar-foreground transition-colors">{t('footer.terms')}</Link></li>
             </ul>
           </div>
         </div>
 
         <div className="border-t border-sidebar-border mt-8 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-sm text-sidebar-foreground/60">
-            © 2024 eKimina. All rights reserved.
+            {t('footer.copyright')}
           </p>
           <p className="text-sm text-sidebar-foreground/60 flex items-center gap-1">
             Made with <Heart className="w-4 h-4 text-destructive fill-destructive" /> in Rwanda

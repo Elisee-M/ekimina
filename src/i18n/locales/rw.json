@@ -1,0 +1,262 @@
+{
+  "common": {
+    "appName": "eKimina",
+    "loading": "Birimo gutangira...",
+    "save": "Kubika",
+    "cancel": "Guhagarika",
+    "delete": "Gusiba",
+    "edit": "Guhindura",
+    "create": "Gukora",
+    "submit": "Kohereza",
+    "back": "Gusubira",
+    "next": "Komeza",
+    "close": "Gufunga",
+    "search": "Gushakisha",
+    "filter": "Gutondeka",
+    "export": "Gukura",
+    "noData": "Nta makuru aboneka",
+    "error": "Habaye ikosa",
+    "success": "Byagenze neza",
+    "confirm": "Kwemeza",
+    "signOut": "Gusohoka",
+    "language": "Ururimi",
+    "english": "Icyongereza",
+    "kinyarwanda": "Ikinyarwanda"
+  },
+  "nav": {
+    "features": "Ibikoresho",
+    "howItWorks": "Uko Bikora",
+    "pricing": "Ibiciro",
+    "login": "Kwinjira",
+    "getStarted": "Tangira",
+    "backToHome": "Gusubira Ahabanza"
+  },
+  "hero": {
+    "badge": "Amatsinda 500+ abyizera",
+    "title": "Kuza",
+    "titleHighlight": "Ikimina",
+    "titleEnd": "cyawe hamwe na",
+    "titleGradient": "Icyizere n'Ubumwe",
+    "description": "Urubuga rugezweho rw'amatsinda y'ubwizigame mu Rwanda. Kurikirana imisanzu, gucunga inguzanyo, no kubaka ubutunzi bw'umuryango—byose ahantu hamwe hizewe.",
+    "ctaPrimary": "Tangira Ku Buntu",
+    "ctaSecondary": "Reba Ibisobanuro",
+    "trustBadge1": "Umutekano nk'uw'Ibanki",
+    "trustBadge2": "Abanyamuryango 10,000+",
+    "trustBadge3": "RWF 2B+ Bicungwa",
+    "groupBalance": "Umutungo w'Itsinda",
+    "members": "Abanyamuryango",
+    "activeLoans": "Inguzanyo Zikora",
+    "profit": "Inyungu",
+    "recentActivity": "Ibikorwa Biheruka",
+    "contributed": "yatanze",
+    "repaid": "yarishyuye",
+    "thisMonth": "Uku Kwezi",
+    "onTime": "100% Ku Gihe",
+    "demoTitle": "Uko eKimina Ikora",
+    "demoDescription": "Reba uko byoroshye gucunga itsinda ryawe ry'Ikimina n'urubuga rwacu"
+  },
+  "features": {
+    "title": "Ibyo",
+    "titleHighlight": "Ikimina",
+    "titleEnd": "yawe Ikeneye Byose",
+    "description": "Ibikoresho bikomeye byateguwe cyane cyane ku matsinda y'ubwizigame y'u Rwanda. Byoroshye gukoresha, byizewe by'agateganyo.",
+    "contributionTracking": {
+      "title": "Gukurikirana Imisanzu",
+      "description": "Kurikirana imisanzu ya buri kwezi cyangwa buri cyumweru hamwe n'ibirikumbuzo byikora no kwerekana abishyuye batinze."
+    },
+    "smartLoans": {
+      "title": "Inguzanyo Zihanga",
+      "description": "Gucunga inguzanyo hamwe n'ingingo z'inyungu zihinduka, kubara inyungu bikora, n'imishinga yo kwishyura."
+    },
+    "memberManagement": {
+      "title": "Gucunga Abanyamuryango",
+      "description": "Kwinjiza abanyamuryango bashya byoroshye, gutanga inshingano, no gukurikirana amateka y'imisanzu ku muntu ku muntu."
+    },
+    "groupIsolation": {
+      "title": "Ubuzima Bwite bw'Itsinda",
+      "description": "Amakuru yose aba yibanda ku itsinda ryawe gusa. Buri tsinda ribona amakuru yaryo gusa."
+    },
+    "reportsAnalytics": {
+      "title": "Raporo n'Isesengura",
+      "description": "Imibare y'igihe nyacyo igaragaza ubwizigame bwose, inguzanyo zikora, inyungu zabonetse, n'imikoreshereze y'abanyamuryango."
+    },
+    "smartNotifications": {
+      "title": "Ibimenyetso Bihanga",
+      "description": "Ibirikumbuzo bikora byikora ku munsi w'imisanzu, kwishyura inguzanyo, n'amakuru y'ingenzi."
+    },
+    "exportReports": {
+      "title": "Gukura Raporo",
+      "description": "Kuramo raporo zuzuye mu buryo bwa PDF cyangwa CSV ku kubika inyandiko no kugenzura."
+    },
+    "secureAuth": {
+      "title": "Kwemererwa Gutewe",
+      "description": "Umutekano nk'uw'ibanki hamwe n'uburenganzira bw'abayobozi, abamukarani, n'abanyamuryango."
+    }
+  },
+  "howItWorks": {
+    "title": "Uko",
+    "titleHighlight": "eKimina",
+    "titleEnd": "Ikora",
+    "description": "Tangira ikimina cyawe mu ntambwe enye zoroshye",
+    "step1": {
+      "title": "Kora Itsinda Ryawe",
+      "description": "Shiraho Ikimina yawe mu minota mike. Ongeraho abanyamuryango kandi ushyireho amategeko y'imisanzu."
+    },
+    "step2": {
+      "title": "Kwakira Imisanzu",
+      "description": "Abanyamuryango batanga imisanzu buri gihe. Kurikirana kwishyura no kohereza ibirikumbuzo bikora."
+    },
+    "step3": {
+      "title": "Gucunga Inguzanyo",
+      "description": "Gutanga inguzanyo n'inyungu. Kurikirana kwishyura no kubara inyungu bikora."
+    },
+    "step4": {
+      "title": "Gukura Hamwe",
+      "description": "Reba ubutunzi bw'itsinda ryawe bukura. Bona raporo kandi mwishimire intsinzi hamwe."
+    }
+  },
+  "pricing": {
+    "title": "Ibiciro Byoroheje,",
+    "titleHighlight": "Bisobanutse",
+    "description": "Hitamo gahunda ikwiriye itsinda ryawe. Ibiciro byose mu mafaranga y'u Rwanda (RWF).",
+    "mostPopular": "Ikunzwe Cyane",
+    "perMonth": "/ukwezi",
+    "starter": {
+      "name": "Gutangira",
+      "price": "Ubuntu",
+      "description": "Ikwiriye amatsinda mato atangiye",
+      "features": [
+        "Kugeza ku banyamuryango 15",
+        "Gukurikirana imisanzu byoroshye",
+        "Gucunga inguzanyo byoroshye",
+        "Ibimenyetso kuri email",
+        "Gukoresha kuri telefoni"
+      ],
+      "cta": "Tangira Ku Buntu"
+    },
+    "growth": {
+      "name": "Gukura",
+      "price": "25,000",
+      "description": "Ku matsinda y'Ikimina akura",
+      "features": [
+        "Kugeza ku banyamuryango 50",
+        "Isesengura ryimbitse",
+        "Inyungu zigenga",
+        "Ibimenyetso kuri SMS",
+        "Gukura raporo (PDF/CSV)",
+        "Ubufasha bwihutirwa"
+      ],
+      "cta": "Tangira"
+    },
+    "enterprise": {
+      "name": "Ikigo Kinini",
+      "price": "Biravugana",
+      "description": "Ku makompanyi manini n'amashyirahamwe",
+      "features": [
+        "Abanyamuryango batagira imipaka",
+        "Gucunga amatsinda menshi",
+        "Kugera kuri API",
+        "Ubufasha bwihariye",
+        "Kwerekana ibimenyetso byawe",
+        "Umutekano wimbitse"
+      ],
+      "cta": "Vugana n'Abaguzi"
+    },
+    "paymentInfo": {
+      "title": "Amakuru y'Ubwishyu",
+      "description": "Kugira ngo wiyandikishe ku gahunda yishyurwa, ohereza kwishyu kwawe binyuze muri Mobile Money kuri:",
+      "note": "Nyuma yo kwishyura, twandikire hamwe na nimero y'ubwishyu kugira ngo dutangire gahunda yawe."
+    }
+  },
+  "cta": {
+    "title": "Witeguye Guhindura Ikimina Yawe?",
+    "description": "Ifatanye n'amatsinda y'ubwizigame y'u Rwanda amaze gukoresha eKimina mu kubaka ubutunzi bw'umuryango mu buziranenge no kwizerwa.",
+    "primary": "Tangira Ku Buntu",
+    "secondary": "Tuvugishe",
+    "note": "Nta karita y'amafaranga isabwa • Ubuntu buhoraho ku matsinda mato"
+  },
+  "footer": {
+    "description": "Urubuga rugezweho rw'amatsinda y'ubwizigame y'u Rwanda. Kubaka ubutunzi bw'umuryango mu cyizere no kumarana neza.",
+    "product": "Ibicuruzwa",
+    "company": "Isosiyete",
+    "legal": "Amategeko",
+    "about": "Abo Turi",
+    "contact": "Twandikire",
+    "careers": "Akazi",
+    "privacy": "Politiki y'Ubuzima Bwite",
+    "terms": "Amabwiriza y'Ikoreshwa",
+    "copyright": "© 2024 eKimina. Uburenganzira bwose bwarabikiwe."
+  },
+  "auth": {
+    "welcomeBack": "Murakaza Neza",
+    "signInDescription": "Injira kugira ngo ucunge itsinda ry'Ikimina ryawe",
+    "email": "Imeli",
+    "emailPlaceholder": "wowe@urugero.com",
+    "password": "Ijambo ry'Ibanga",
+    "passwordPlaceholder": "Andika ijambo ry'ibanga",
+    "forgotPassword": "Wibagiwe ijambo ry'ibanga?",
+    "signIn": "Kwinjira",
+    "signingIn": "Birimo kwinjira...",
+    "noAccount": "Ntabwo ufite konti?",
+    "createOne": "Kora imwe",
+    "securityNote": "🔒 Byizewe n'umutekano nk'uw'ibanki",
+    "createAccount": "Kora Konti Yawe",
+    "createAccountDescription": "Tangira gucunga Ikimina yawe uyu munsi",
+    "fullName": "Amazina Yose",
+    "fullNamePlaceholder": "Jean Claude Ndayisaba",
+    "phone": "Nimero ya Telefoni (Ntiyisabwa)",
+    "phonePlaceholder": "+250 78X XXX XXX",
+    "createPassword": "Kora ijambo ry'ibanga rikomeye",
+    "confirmPassword": "Emeza Ijambo ry'Ibanga",
+    "confirmPasswordPlaceholder": "Emeza ijambo ry'ibanga",
+    "createAccountBtn": "Kora Konti",
+    "creatingAccount": "Birimo gukora konti...",
+    "termsAgree": "Ugize konti, wemera",
+    "terms": "Amabwiriza",
+    "and": "na",
+    "privacyPolicy": "Politiki y'Ubuzima Bwite",
+    "haveAccount": "Usanzwe ufite konti?",
+    "signInLink": "Injira",
+    "benefits": {
+      "free": "Ubuntu ku matsinda afite abanyamuryango 15",
+      "noCard": "Nta karita y'amafaranga isabwa",
+      "quickSetup": "Shiraho mu minota itanu"
+    },
+    "validation": {
+      "emailRequired": "Nyamuneka andika imeli yemewe",
+      "passwordMin": "Ijambo ry'ibanga rigomba kugira nibura inyuguti 6",
+      "nameMin": "Izina rigomba kugira nibura inyuguti 2",
+      "passwordsMatch": "Amagambo y'ibanga ntahura"
+    }
+  },
+  "dashboard": {
+    "title": "Ikibanza Cy'Imikorere",
+    "overview": "Incamake",
+    "members": "Abanyamuryango",
+    "contributions": "Imisanzu",
+    "loans": "Inguzanyo",
+    "history": "Amateka",
+    "reports": "Raporo",
+    "announcements": "Amatangazo",
+    "systemNotices": "Amatangazo y'Urubuga",
+    "settings": "Igenamiterere",
+    "myDashboard": "Ikibanza Cyanjye",
+    "myContributions": "Imisanzu Yanjye",
+    "myLoans": "Inguzanyo Zanjye",
+    "allGroups": "Amatsinda Yose",
+    "admins": "Abayobozi",
+    "superAdmin": "Umuyobozi Mukuru",
+    "groupAdmin": "Umuyobozi w'Itsinda",
+    "member": "Umunyamuryango",
+    "systemOverview": "Incamake y'Uburyo",
+    "noGroup": "Nta Tsinda"
+  },
+  "systemNotices": {
+    "title": "Amatangazo y'Urubuga",
+    "description": "Amatangazo y'ingenzi aturuka ku rubuga rwa eKimina",
+    "noNotices": "Nta matangazo y'urubuga aboneka.",
+    "checkBack": "Garuka nyuma ku makuru y'ingenzi y'urubuga.",
+    "forAdmins": "Ku Bayobozi Gusa",
+    "forAll": "Ku Bakoresha Bose"
+  }
+}

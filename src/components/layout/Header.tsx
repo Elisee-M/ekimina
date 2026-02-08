@@ -3,11 +3,14 @@ import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslation } from "react-i18next";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const scrollToSection = (sectionId: string) => {
     setMobileMenuOpen(false);
@@ -44,29 +47,30 @@ export function Header() {
               onClick={() => scrollToSection("features")} 
               className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
             >
-              Features
+              {t('nav.features')}
             </button>
             <button 
               onClick={() => scrollToSection("how-it-works")} 
               className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
             >
-              How It Works
+              {t('nav.howItWorks')}
             </button>
             <button 
               onClick={() => scrollToSection("pricing")} 
               className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
             >
-              Pricing
+              {t('nav.pricing')}
             </button>
           </nav>
 
           {/* Desktop CTA */}
           <div className="hidden md:flex items-center gap-3">
+            <LanguageSwitcher />
             <Button variant="ghost" asChild>
-              <Link to="/login">Log In</Link>
+              <Link to="/login">{t('nav.login')}</Link>
             </Button>
             <Button variant="default" asChild>
-              <Link to="/register">Get Started</Link>
+              <Link to="/register">{t('nav.getStarted')}</Link>
             </Button>
           </div>
 
@@ -94,26 +98,29 @@ export function Header() {
                 onClick={() => scrollToSection("features")}
                 className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors py-2 text-left"
               >
-                Features
+                {t('nav.features')}
               </button>
               <button 
                 onClick={() => scrollToSection("how-it-works")}
                 className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors py-2 text-left"
               >
-                How It Works
+                {t('nav.howItWorks')}
               </button>
               <button 
                 onClick={() => scrollToSection("pricing")}
                 className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors py-2 text-left"
               >
-                Pricing
+                {t('nav.pricing')}
               </button>
+              <div className="py-2">
+                <LanguageSwitcher />
+              </div>
               <div className="flex flex-col gap-2 pt-4 border-t border-border">
                 <Button variant="ghost" asChild className="justify-center">
-                  <Link to="/login">Log In</Link>
+                  <Link to="/login">{t('nav.login')}</Link>
                 </Button>
                 <Button variant="default" asChild className="justify-center">
-                  <Link to="/register">Get Started</Link>
+                  <Link to="/register">{t('nav.getStarted')}</Link>
                 </Button>
               </div>
             </nav>

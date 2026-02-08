@@ -1,0 +1,262 @@
+{
+  "common": {
+    "appName": "eKimina",
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "submit": "Submit",
+    "back": "Back",
+    "next": "Next",
+    "close": "Close",
+    "search": "Search",
+    "filter": "Filter",
+    "export": "Export",
+    "noData": "No data available",
+    "error": "An error occurred",
+    "success": "Success",
+    "confirm": "Confirm",
+    "signOut": "Sign Out",
+    "language": "Language",
+    "english": "English",
+    "kinyarwanda": "Kinyarwanda"
+  },
+  "nav": {
+    "features": "Features",
+    "howItWorks": "How It Works",
+    "pricing": "Pricing",
+    "login": "Log In",
+    "getStarted": "Get Started",
+    "backToHome": "Back to Home"
+  },
+  "hero": {
+    "badge": "Trusted by 500+ Ikimina Groups",
+    "title": "Grow Your",
+    "titleHighlight": "Ikimina",
+    "titleEnd": "with",
+    "titleGradient": "Trust & Transparency",
+    "description": "The modern platform for Rwandan savings groups. Track contributions, manage loans, and build community wealth—all in one secure place.",
+    "ctaPrimary": "Start Free Today",
+    "ctaSecondary": "Watch Demo",
+    "trustBadge1": "Bank-Level Security",
+    "trustBadge2": "10,000+ Members",
+    "trustBadge3": "RWF 2B+ Managed",
+    "groupBalance": "Group Balance",
+    "members": "Members",
+    "activeLoans": "Active Loans",
+    "profit": "Profit",
+    "recentActivity": "Recent Activity",
+    "contributed": "contributed",
+    "repaid": "repaid",
+    "thisMonth": "This Month",
+    "onTime": "100% On-Time",
+    "demoTitle": "How eKimina Works",
+    "demoDescription": "See how easy it is to manage your Ikimina group with our platform"
+  },
+  "features": {
+    "title": "Everything Your",
+    "titleHighlight": "Ikimina",
+    "titleEnd": "Needs",
+    "description": "Powerful features designed specifically for Rwandan savings groups. Simple to use, secure by design.",
+    "contributionTracking": {
+      "title": "Contribution Tracking",
+      "description": "Track monthly or weekly contributions with automatic reminders and late payment indicators."
+    },
+    "smartLoans": {
+      "title": "Smart Loans",
+      "description": "Manage loans with configurable interest rates, automatic profit calculation, and repayment schedules."
+    },
+    "memberManagement": {
+      "title": "Member Management",
+      "description": "Easy member onboarding, role assignment, and individual contribution history tracking."
+    },
+    "groupIsolation": {
+      "title": "Group Isolation",
+      "description": "Complete data privacy between Ikimina groups. Each group only sees their own data."
+    },
+    "reportsAnalytics": {
+      "title": "Reports & Analytics",
+      "description": "Real-time dashboards showing total savings, active loans, profit earned, and member performance."
+    },
+    "smartNotifications": {
+      "title": "Smart Notifications",
+      "description": "Automatic reminders for contribution due dates, loan repayments, and important updates."
+    },
+    "exportReports": {
+      "title": "Export Reports",
+      "description": "Download detailed reports in PDF or CSV format for record-keeping and audits."
+    },
+    "secureAuth": {
+      "title": "Secure Authentication",
+      "description": "Bank-level security with role-based access control for Admins, Leaders, and Members."
+    }
+  },
+  "howItWorks": {
+    "title": "How",
+    "titleHighlight": "eKimina",
+    "titleEnd": "Works",
+    "description": "Get your Ikimina group running in just four simple steps",
+    "step1": {
+      "title": "Create Your Group",
+      "description": "Set up your Ikimina in minutes. Add members and define contribution rules."
+    },
+    "step2": {
+      "title": "Collect Contributions",
+      "description": "Members contribute regularly. Track payments and send automatic reminders."
+    },
+    "step3": {
+      "title": "Manage Loans",
+      "description": "Lend to members with interest. Track repayments and calculate profits automatically."
+    },
+    "step4": {
+      "title": "Grow Together",
+      "description": "Watch your group wealth grow. Access reports and celebrate success together."
+    }
+  },
+  "pricing": {
+    "title": "Simple, Transparent",
+    "titleHighlight": "Pricing",
+    "description": "Choose the plan that fits your group. All prices in Rwandan Francs (RWF).",
+    "mostPopular": "Most Popular",
+    "perMonth": "/month",
+    "starter": {
+      "name": "Starter",
+      "price": "Free",
+      "description": "Perfect for small groups getting started",
+      "features": [
+        "Up to 15 members",
+        "Basic contribution tracking",
+        "Simple loan management",
+        "Email notifications",
+        "Mobile-friendly access"
+      ],
+      "cta": "Start Free"
+    },
+    "growth": {
+      "name": "Growth",
+      "price": "25,000",
+      "description": "For growing Ikimina groups",
+      "features": [
+        "Up to 50 members",
+        "Advanced analytics",
+        "Custom interest rates",
+        "SMS notifications",
+        "Export reports (PDF/CSV)",
+        "Priority support"
+      ],
+      "cta": "Get Started"
+    },
+    "enterprise": {
+      "name": "Enterprise",
+      "price": "Custom",
+      "description": "For large organizations & federations",
+      "features": [
+        "Unlimited members",
+        "Multi-group management",
+        "API access",
+        "Dedicated support",
+        "Custom branding",
+        "Advanced security"
+      ],
+      "cta": "Contact Sales"
+    },
+    "paymentInfo": {
+      "title": "Payment Information",
+      "description": "To subscribe to a paid plan, send your payment via Mobile Money to:",
+      "note": "After payment, contact us with your transaction ID to activate your plan."
+    }
+  },
+  "cta": {
+    "title": "Ready to Transform Your Ikimina?",
+    "description": "Join hundreds of Rwandan savings groups already using eKimina to build community wealth with transparency and trust.",
+    "primary": "Start Free Today",
+    "secondary": "Talk to Us",
+    "note": "No credit card required • Free forever for small groups"
+  },
+  "footer": {
+    "description": "The modern platform for Rwandan savings groups. Building community wealth with trust and transparency.",
+    "product": "Product",
+    "company": "Company",
+    "legal": "Legal",
+    "about": "About Us",
+    "contact": "Contact",
+    "careers": "Careers",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "copyright": "© 2024 eKimina. All rights reserved."
+  },
+  "auth": {
+    "welcomeBack": "Welcome Back",
+    "signInDescription": "Sign in to manage your Ikimina group",
+    "email": "Email",
+    "emailPlaceholder": "you@example.com",
+    "password": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "forgotPassword": "Forgot password?",
+    "signIn": "Sign In",
+    "signingIn": "Signing in...",
+    "noAccount": "Don't have an account?",
+    "createOne": "Create one",
+    "securityNote": "🔒 Secured with bank-level encryption",
+    "createAccount": "Create Your Account",
+    "createAccountDescription": "Start managing your Ikimina today",
+    "fullName": "Full Name",
+    "fullNamePlaceholder": "Jean Claude Ndayisaba",
+    "phone": "Phone Number (Optional)",
+    "phonePlaceholder": "+250 78X XXX XXX",
+    "createPassword": "Create a strong password",
+    "confirmPassword": "Confirm Password",
+    "confirmPasswordPlaceholder": "Confirm your password",
+    "createAccountBtn": "Create Account",
+    "creatingAccount": "Creating account...",
+    "termsAgree": "By creating an account, you agree to our",
+    "terms": "Terms",
+    "and": "and",
+    "privacyPolicy": "Privacy Policy",
+    "haveAccount": "Already have an account?",
+    "signInLink": "Sign in",
+    "benefits": {
+      "free": "Free for groups up to 15 members",
+      "noCard": "No credit card required",
+      "quickSetup": "Set up in under 5 minutes"
+    },
+    "validation": {
+      "emailRequired": "Please enter a valid email",
+      "passwordMin": "Password must be at least 6 characters",
+      "nameMin": "Name must be at least 2 characters",
+      "passwordsMatch": "Passwords don't match"
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "overview": "Overview",
+    "members": "Members",
+    "contributions": "Contributions",
+    "loans": "Loans",
+    "history": "History",
+    "reports": "Reports",
+    "announcements": "Announcements",
+    "systemNotices": "System Notices",
+    "settings": "Settings",
+    "myDashboard": "My Dashboard",
+    "myContributions": "My Contributions",
+    "myLoans": "My Loans",
+    "allGroups": "All Groups",
+    "admins": "Admins",
+    "superAdmin": "Super Admin",
+    "groupAdmin": "Group Admin",
+    "member": "Member",
+    "systemOverview": "System Overview",
+    "noGroup": "No Group"
+  },
+  "systemNotices": {
+    "title": "System Notices",
+    "description": "Important announcements from the eKimina platform",
+    "noNotices": "No system notices available.",
+    "checkBack": "Check back later for important updates from the platform.",
+    "forAdmins": "For Admins Only",
+    "forAll": "For All Users"
+  }
+}

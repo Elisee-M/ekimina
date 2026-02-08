@@ -11,57 +11,59 @@ import {
   Bell,
   LogOut,
   Menu,
-  X,
   ChevronDown,
   Building2,
-  History
+  History,
+  Megaphone,
+  Globe
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/hooks/useAuth";
+import { useTranslation } from "react-i18next";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
   role: "super-admin" | "admin" | "member";
 }
 
-const superAdminNav = [
-  { icon: LayoutDashboard, label: "Overview", href: "/super-admin" },
-  { icon: Building2, label: "All Groups", href: "/super-admin/groups" },
-  { icon: Users, label: "Admins", href: "/super-admin/admins" },
-  { icon: Bell, label: "Announcements", href: "/super-admin/announcements" },
-  { icon: Settings, label: "Settings", href: "/super-admin/settings" },
-];
-
-import { Megaphone } from "lucide-react";
-
-const adminNav = [
-  { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
-  { icon: Users, label: "Members", href: "/dashboard/members" },
-  { icon: Wallet, label: "Contributions", href: "/dashboard/contributions" },
-  { icon: TrendingUp, label: "Loans", href: "/dashboard/loans" },
-  { icon: History, label: "History", href: "/dashboard/history" },
-  { icon: FileText, label: "Reports", href: "/dashboard/reports" },
-  { icon: Bell, label: "Announcements", href: "/dashboard/announcements" },
-  { icon: Megaphone, label: "System Notices", href: "/system-notices" },
-  { icon: Settings, label: "Settings", href: "/dashboard/settings" },
-];
-
-const memberNav = [
-  { icon: LayoutDashboard, label: "My Dashboard", href: "/member" },
-  { icon: Wallet, label: "My Contributions", href: "/member/contributions" },
-  { icon: TrendingUp, label: "My Loans", href: "/member/loans" },
-  { icon: History, label: "History", href: "/member/history" },
-  { icon: Bell, label: "Announcements", href: "/member/announcements" },
-  { icon: Megaphone, label: "System Notices", href: "/system-notices" },
-  { icon: Settings, label: "Settings", href: "/member/settings" },
-];
-
 export function DashboardLayout({ children, role }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { profile, groupMembership, signOut } = useAuth();
+  const { t } = useTranslation();
+
+  const superAdminNav = [
+    { icon: LayoutDashboard, label: t('dashboard.overview'), href: "/super-admin" },
+    { icon: Building2, label: t('dashboard.allGroups'), href: "/super-admin/groups" },
+    { icon: Users, label: t('dashboard.admins'), href: "/super-admin/admins" },
+    { icon: Bell, label: t('dashboard.announcements'), href: "/super-admin/announcements" },
+    { icon: Settings, label: t('dashboard.settings'), href: "/super-admin/settings" },
+  ];
+
+  const adminNav = [
+    { icon: LayoutDashboard, label: t('dashboard.title'), href: "/dashboard" },
+    { icon: Users, label: t('dashboard.members'), href: "/dashboard/members" },
+    { icon: Wallet, label: t('dashboard.contributions'), href: "/dashboard/contributions" },
+    { icon: TrendingUp, label: t('dashboard.loans'), href: "/dashboard/loans" },
+    { icon: History, label: t('dashboard.history'), href: "/dashboard/history" },
+    { icon: FileText, label: t('dashboard.reports'), href: "/dashboard/reports" },
+    { icon: Bell, label: t('dashboard.announcements'), href: "/dashboard/announcements" },
+    { icon: Megaphone, label: t('dashboard.systemNotices'), href: "/system-notices" },
+    { icon: Settings, label: t('dashboard.settings'), href: "/dashboard/settings" },
+  ];
+
+  const memberNav = [
+    { icon: LayoutDashboard, label: t('dashboard.myDashboard'), href: "/member" },
+    { icon: Wallet, label: t('dashboard.myContributions'), href: "/member/contributions" },
+    { icon: TrendingUp, label: t('dashboard.myLoans'), href: "/member/loans" },
+    { icon: History, label: t('dashboard.history'), href: "/member/history" },
+    { icon: Bell, label: t('dashboard.announcements'), href: "/member/announcements" },
+    { icon: Megaphone, label: t('dashboard.systemNotices'), href: "/system-notices" },
+    { icon: Settings, label: t('dashboard.settings'), href: "/member/settings" },
+  ];
 
   const navItems = role === "super-admin" 
     ? superAdminNav 
@@ -70,12 +72,12 @@ export function DashboardLayout({ children, role }: DashboardLayoutProps) {
     : memberNav;
 
   const roleLabels = {
-    "super-admin": "Super Admin",
-    "admin": "Group Admin",
-    "member": "Member"
+    "super-admin": t('dashboard.superAdmin'),
+    "admin": t('dashboard.groupAdmin'),
+    "member": t('dashboard.member')
   };
 
-  const groupName = groupMembership?.group_name || (role === "super-admin" ? "System Overview" : "No Group");
+  const groupName = groupMembership?.group_name || (role === "super-admin" ? t('dashboard.systemOverview') : t('dashboard.noGroup'));
   const displayName = profile?.full_name || "User";
   const displayEmail = profile?.email || "";
   const initials = displayName.split(" ").slice(0, 2).map(n => n[0]).join("").toUpperCase();
@@ -130,6 +132,11 @@ export function DashboardLayout({ children, role }: DashboardLayoutProps) {
                 </Link>
               );
             })}
+            
+            {/* Language Switcher in Sidebar */}
+            <div className="pt-2 border-t border-sidebar-border mt-2">
+              <LanguageSwitcher variant="sidebar" />
+            </div>
           </nav>
 
           {/* User Section */}
@@ -150,7 +157,7 @@ export function DashboardLayout({ children, role }: DashboardLayoutProps) {
               onClick={handleSignOut}
             >
               <LogOut className="w-4 h-4" />
-              Sign Out
+              {t('common.signOut')}
             </Button>
           </div>
         </div>

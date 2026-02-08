@@ -8,6 +8,7 @@ import { Bell, Loader2, Calendar, Megaphone } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
+import { useTranslation } from "react-i18next";
 
 interface SystemAnnouncement {
   id: string;
@@ -21,6 +22,7 @@ const SystemNotices = () => {
   const { isGroupAdmin, isSuperAdmin } = useAuth();
   const [loading, setLoading] = useState(true);
   const [announcements, setAnnouncements] = useState<SystemAnnouncement[]>([]);
+  const { t } = useTranslation();
 
   // Determine the user's role for layout
   const userRole = isSuperAdmin ? "super-admin" : isGroupAdmin ? "admin" : "member";
@@ -63,10 +65,10 @@ const SystemNotices = () => {
         <div>
           <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground flex items-center gap-2">
             <Megaphone className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
-            System Notices
+            {t('systemNotices.title')}
           </h1>
           <p className="text-sm sm:text-base text-muted-foreground">
-            Important announcements from platform administrators
+            {t('systemNotices.description')}
           </p>
         </div>
 
@@ -79,8 +81,8 @@ const SystemNotices = () => {
           {announcements.length === 0 ? (
             <EmptyState
               icon={Bell}
-              title="No system notices"
-              description="Platform-wide announcements will appear here when posted by administrators."
+              title={t('systemNotices.noNotices')}
+              description={t('systemNotices.checkBack')}
             />
           ) : (
             <div className="space-y-4">
@@ -109,7 +111,7 @@ const SystemNotices = () => {
                               </span>
                               {isGroupAdmin && announcement.audience === "admins_only" && (
                                 <Badge variant="secondary" className="text-xs">
-                                  Admins Only
+                                  {t('systemNotices.forAdmins')}
                                 </Badge>
                               )}
                             </div>

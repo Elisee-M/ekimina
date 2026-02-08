@@ -8,19 +8,23 @@ import { Label } from "@/components/ui/label";
 import { Eye, EyeOff, ArrowLeft, Check, Loader2 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { z } from "zod";
-
-const registerSchema = z.object({
-  fullName: z.string().trim().min(2, { message: "Name must be at least 2 characters" }).max(100),
-  email: z.string().trim().email({ message: "Please enter a valid email" }).max(255),
-  phone: z.string().optional(),
-  password: z.string().min(6, { message: "Password must be at least 6 characters" }),
-  confirmPassword: z.string()
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ["confirmPassword"],
-});
+import { useTranslation } from "react-i18next";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 const Register = () => {
+  const { t } = useTranslation();
+
+  const registerSchema = z.object({
+    fullName: z.string().trim().min(2, { message: t('auth.validation.nameMin') }).max(100),
+    email: z.string().trim().email({ message: t('auth.validation.emailRequired') }).max(255),
+    phone: z.string().optional(),
+    password: z.string().min(6, { message: t('auth.validation.passwordMin') }),
+    confirmPassword: z.string()
+  }).refine((data) => data.password === data.confirmPassword, {
+    message: t('auth.validation.passwordsMatch'),
+    path: ["confirmPassword"],
+  });
+
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -40,7 +44,6 @@ const Register = () => {
       ...prev,
       [e.target.name]: e.target.value
     }));
-    // Clear error when user types
     if (errors[e.target.name]) {
       setErrors(prev => ({ ...prev, [e.target.name]: '' }));
     }
@@ -50,7 +53,6 @@ const Register = () => {
     e.preventDefault();
     setErrors({});
 
-    // Validate input
     const result = registerSchema.safeParse(formData);
     if (!result.success) {
       const fieldErrors: Record<string, string> = {};
@@ -77,9 +79,9 @@ const Register = () => {
   };
 
   const benefits = [
-    "Free for groups up to 15 members",
-    "No credit card required",
-    "Set up in under 5 minutes"
+    t('auth.benefits.free'),
+    t('auth.benefits.noCard'),
+    t('auth.benefits.quickSetup')
   ];
 
   if (loading) {
@@ -104,14 +106,17 @@ const Register = () => {
         transition={{ duration: 0.5 }}
         className="w-full max-w-md relative z-10"
       >
-        {/* Back Link */}
-        <Link 
-          to="/" 
-          className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors mb-6 text-sm"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Back to Home
-        </Link>
+        {/* Back Link and Language Switcher */}
+        <div className="flex items-center justify-between mb-6">
+          <Link 
+            to="/" 
+            className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors text-sm"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            {t('nav.backToHome')}
+          </Link>
+          <LanguageSwitcher />
+        </div>
 
         <Card variant="elevated" className="border-border">
           <CardHeader className="text-center space-y-2 px-4 sm:px-6">
@@ -122,8 +127,8 @@ const Register = () => {
               </div>
               <span className="text-2xl font-bold text-foreground">Kimina</span>
             </Link>
-            <CardTitle className="text-xl sm:text-2xl">Create Your Account</CardTitle>
-            <CardDescription>Start managing your Ikimina today</CardDescription>
+            <CardTitle className="text-xl sm:text-2xl">{t('auth.createAccount')}</CardTitle>
+            <CardDescription>{t('auth.createAccountDescription')}</CardDescription>
           </CardHeader>
 
           <CardContent className="px-4 sm:px-6">
@@ -141,12 +146,12 @@ const Register = () => {
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="fullName">Full Name</Label>
+                <Label htmlFor="fullName">{t('auth.fullName')}</Label>
                 <Input
                   id="fullName"
                   name="fullName"
                   type="text"
-                  placeholder="Jean Claude Ndayisaba"
+                  placeholder={t('auth.fullNamePlaceholder')}
                   value={formData.fullName}
                   onChange={handleChange}
                   required
@@ -159,12 +164,12 @@ const Register = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">{t('auth.email')}</Label>
                 <Input
                   id="email"
                   name="email"
                   type="email"
-                  placeholder="you@example.com"
+                  placeholder={t('auth.emailPlaceholder')}
                   value={formData.email}
                   onChange={handleChange}
                   required
@@ -177,12 +182,12 @@ const Register = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="phone">Phone Number (Optional)</Label>
+                <Label htmlFor="phone">{t('auth.phone')}</Label>
                 <Input
                   id="phone"
                   name="phone"
                   type="tel"
-                  placeholder="+250 78X XXX XXX"
+                  placeholder={t('auth.phonePlaceholder')}
                   value={formData.phone}
                   onChange={handleChange}
                   className="h-12"
@@ -191,13 +196,13 @@ const Register = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password">{t('auth.password')}</Label>
                 <div className="relative">
                   <Input
                     id="password"
                     name="password"
                     type={showPassword ? "text" : "password"}
-                    placeholder="Create a strong password"
+                    placeholder={t('auth.createPassword')}
                     value={formData.password}
                     onChange={handleChange}
                     required
@@ -219,12 +224,12 @@ const Register = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Confirm Password</Label>
+                <Label htmlFor="confirmPassword">{t('auth.confirmPassword')}</Label>
                 <Input
                   id="confirmPassword"
                   name="confirmPassword"
                   type="password"
-                  placeholder="Confirm your password"
+                  placeholder={t('auth.confirmPasswordPlaceholder')}
                   value={formData.confirmPassword}
                   onChange={handleChange}
                   required
@@ -246,25 +251,25 @@ const Register = () => {
                 {isLoading ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Creating account...
+                    {t('auth.creatingAccount')}
                   </>
                 ) : (
-                  'Create Account'
+                  t('auth.createAccountBtn')
                 )}
               </Button>
 
               <p className="text-xs text-center text-muted-foreground">
-                By creating an account, you agree to our{" "}
-                <Link to="/terms" className="text-primary hover:underline">Terms</Link> and{" "}
-                <Link to="/privacy" className="text-primary hover:underline">Privacy Policy</Link>
+                {t('auth.termsAgree')}{" "}
+                <Link to="/terms" className="text-primary hover:underline">{t('auth.terms')}</Link> {t('auth.and')}{" "}
+                <Link to="/privacy" className="text-primary hover:underline">{t('auth.privacyPolicy')}</Link>
               </p>
             </form>
 
             <div className="mt-6 text-center">
               <p className="text-sm text-muted-foreground">
-                Already have an account?{" "}
+                {t('auth.haveAccount')}{" "}
                 <Link to="/login" className="text-primary font-semibold hover:underline">
-                  Sign in
+                  {t('auth.signInLink')}
                 </Link>
               </p>
             </div>

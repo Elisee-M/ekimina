@@ -8,13 +8,17 @@ import { Label } from "@/components/ui/label";
 import { Eye, EyeOff, ArrowLeft, Loader2 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { z } from "zod";
-
-const loginSchema = z.object({
-  email: z.string().trim().email({ message: "Please enter a valid email" }),
-  password: z.string().min(6, { message: "Password must be at least 6 characters" })
-});
+import { useTranslation } from "react-i18next";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 const Login = () => {
+  const { t } = useTranslation();
+  
+  const loginSchema = z.object({
+    email: z.string().trim().email({ message: t('auth.validation.emailRequired') }),
+    password: z.string().min(6, { message: t('auth.validation.passwordMin') })
+  });
+
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -25,15 +29,12 @@ const Login = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Only redirect if user is logged in AND all auth data is fully loaded
     if (!loading && user && groupMembershipLoaded && rolesLoaded) {
-      // Super admin check should come FIRST before any other redirects
       if (isSuperAdmin) {
         navigate('/super-admin', { replace: true });
         return;
       }
       
-      // Check if user has a group
       if (!groupMembership) {
         navigate('/onboarding', { replace: true });
       } else if (isGroupAdmin) {
@@ -48,7 +49,6 @@ const Login = () => {
     e.preventDefault();
     setErrors({});
 
-    // Validate input
     const result = loginSchema.safeParse({ email, password });
     if (!result.success) {
       const fieldErrors: { email?: string; password?: string } = {};
@@ -91,14 +91,17 @@ const Login = () => {
         transition={{ duration: 0.5 }}
         className="w-full max-w-md relative z-10"
       >
-        {/* Back Link */}
-        <Link 
-          to="/" 
-          className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors mb-6 text-sm"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Back to Home
-        </Link>
+        {/* Back Link and Language Switcher */}
+        <div className="flex items-center justify-between mb-6">
+          <Link 
+            to="/" 
+            className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors text-sm"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            {t('nav.backToHome')}
+          </Link>
+          <LanguageSwitcher />
+        </div>
 
         <Card variant="elevated" className="border-border">
           <CardHeader className="text-center space-y-2 px-4 sm:px-6">
@@ -109,18 +112,18 @@ const Login = () => {
               </div>
               <span className="text-2xl font-bold text-foreground">Kimina</span>
             </Link>
-            <CardTitle className="text-xl sm:text-2xl">Welcome Back</CardTitle>
-            <CardDescription>Sign in to manage your Ikimina group</CardDescription>
+            <CardTitle className="text-xl sm:text-2xl">{t('auth.welcomeBack')}</CardTitle>
+            <CardDescription>{t('auth.signInDescription')}</CardDescription>
           </CardHeader>
 
           <CardContent className="px-4 sm:px-6">
             <form onSubmit={handleSubmit} className="space-y-5">
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">{t('auth.email')}</Label>
                 <Input
                   id="email"
                   type="email"
-                  placeholder="you@example.com"
+                  placeholder={t('auth.emailPlaceholder')}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
@@ -134,16 +137,16 @@ const Login = () => {
 
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="password">Password</Label>
+                  <Label htmlFor="password">{t('auth.password')}</Label>
                   <Link to="/forgot-password" className="text-sm text-primary hover:underline">
-                    Forgot password?
+                    {t('auth.forgotPassword')}
                   </Link>
                 </div>
                 <div className="relative">
                   <Input
                     id="password"
                     type={showPassword ? "text" : "password"}
-                    placeholder="Enter your password"
+                    placeholder={t('auth.passwordPlaceholder')}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
@@ -174,19 +177,19 @@ const Login = () => {
                 {isLoading ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Signing in...
+                    {t('auth.signingIn')}
                   </>
                 ) : (
-                  'Sign In'
+                  t('auth.signIn')
                 )}
               </Button>
             </form>
 
             <div className="mt-6 text-center">
               <p className="text-sm text-muted-foreground">
-                Don't have an account?{" "}
+                {t('auth.noAccount')}{" "}
                 <Link to="/register" className="text-primary font-semibold hover:underline">
-                  Create one
+                  {t('auth.createOne')}
                 </Link>
               </p>
             </div>
@@ -195,7 +198,7 @@ const Login = () => {
 
         {/* Trust Indicator */}
         <p className="text-center text-sm text-muted-foreground mt-6">
-          🔒 Secured with bank-level encryption
+          {t('auth.securityNote')}
         </p>
       </motion.div>
     </div>

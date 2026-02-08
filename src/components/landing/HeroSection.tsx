@@ -5,9 +5,11 @@ import { Link } from "react-router-dom";
 import { ArrowRight, Shield, Users, TrendingUp, Play } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { DemoWalkthrough } from "./DemoWalkthrough";
+import { useTranslation } from "react-i18next";
 
 export function HeroSection() {
   const [showDemo, setShowDemo] = useState(false);
+  const { t } = useTranslation();
 
   return (
     <section className="relative min-h-screen flex items-center pt-16 overflow-hidden">
@@ -29,29 +31,28 @@ export function HeroSection() {
           >
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full border border-primary/20">
               <span className="w-2 h-2 bg-primary rounded-full animate-pulse" />
-              <span className="text-sm font-medium text-primary">Trusted by 500+ Ikimina Groups</span>
+              <span className="text-sm font-medium text-primary">{t('hero.badge')}</span>
             </div>
 
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-foreground leading-tight">
-              Grow Your <span className="text-primary">Ikimina</span> with{" "}
-              <span className="gradient-hero bg-clip-text text-transparent">Trust & Transparency</span>
+              {t('hero.title')} <span className="text-primary">{t('hero.titleHighlight')}</span> {t('hero.titleEnd')}{" "}
+              <span className="gradient-hero bg-clip-text text-transparent">{t('hero.titleGradient')}</span>
             </h1>
 
             <p className="text-lg text-muted-foreground max-w-xl">
-              The modern platform for Rwandan savings groups. Track contributions, manage loans, 
-              and build community wealth—all in one secure place.
+              {t('hero.description')}
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4">
               <Button variant="hero" size="xl" asChild>
                 <Link to="/register">
-                  Start Free Today
+                  {t('hero.ctaPrimary')}
                   <ArrowRight className="w-5 h-5" />
                 </Link>
               </Button>
               <Button variant="outline" size="xl" onClick={() => setShowDemo(true)}>
                 <Play className="w-5 h-5 mr-2" />
-                Watch Demo
+                {t('hero.ctaSecondary')}
               </Button>
             </div>
 
@@ -59,15 +60,15 @@ export function HeroSection() {
             <div className="flex flex-wrap gap-6 pt-4">
               <div className="flex items-center gap-2 text-muted-foreground">
                 <Shield className="w-5 h-5 text-primary" />
-                <span className="text-sm">Bank-Level Security</span>
+                <span className="text-sm">{t('hero.trustBadge1')}</span>
               </div>
               <div className="flex items-center gap-2 text-muted-foreground">
                 <Users className="w-5 h-5 text-primary" />
-                <span className="text-sm">10,000+ Members</span>
+                <span className="text-sm">{t('hero.trustBadge2')}</span>
               </div>
               <div className="flex items-center gap-2 text-muted-foreground">
                 <TrendingUp className="w-5 h-5 text-primary" />
-                <span className="text-sm">RWF 2B+ Managed</span>
+                <span className="text-sm">{t('hero.trustBadge3')}</span>
               </div>
             </div>
           </motion.div>
@@ -85,7 +86,7 @@ export function HeroSection() {
                 {/* Header */}
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-muted-foreground">Group Balance</p>
+                    <p className="text-sm text-muted-foreground">{t('hero.groupBalance')}</p>
                     <p className="text-3xl font-bold text-foreground">RWF 2,450,000</p>
                   </div>
                   <div className="w-12 h-12 rounded-xl gradient-hero flex items-center justify-center">
@@ -96,27 +97,27 @@ export function HeroSection() {
                 {/* Stats Row */}
                 <div className="grid grid-cols-3 gap-4">
                   <div className="bg-muted rounded-lg p-3 text-center">
-                    <p className="text-xs text-muted-foreground">Members</p>
+                    <p className="text-xs text-muted-foreground">{t('hero.members')}</p>
                     <p className="text-lg font-semibold text-foreground">24</p>
                   </div>
                   <div className="bg-muted rounded-lg p-3 text-center">
-                    <p className="text-xs text-muted-foreground">Active Loans</p>
+                    <p className="text-xs text-muted-foreground">{t('hero.activeLoans')}</p>
                     <p className="text-lg font-semibold text-foreground">8</p>
                   </div>
                   <div className="bg-muted rounded-lg p-3 text-center">
-                    <p className="text-xs text-muted-foreground">Profit</p>
+                    <p className="text-xs text-muted-foreground">{t('hero.profit')}</p>
                     <p className="text-lg font-semibold text-success">+12%</p>
                   </div>
                 </div>
 
                 {/* Recent Activity */}
                 <div className="space-y-3">
-                  <p className="text-sm font-medium text-foreground">Recent Activity</p>
+                  <p className="text-sm font-medium text-foreground">{t('hero.recentActivity')}</p>
                   <div className="space-y-2">
                     {[
-                      { name: "Jean Claude", action: "contributed", amount: "50,000 RWF" },
-                      { name: "Marie Claire", action: "repaid", amount: "75,000 RWF" },
-                      { name: "Patrick", action: "contributed", amount: "50,000 RWF" },
+                      { name: "Jean Claude", action: t('hero.contributed'), amount: "50,000 RWF" },
+                      { name: "Marie Claire", action: t('hero.repaid'), amount: "75,000 RWF" },
+                      { name: "Patrick", action: t('hero.contributed'), amount: "50,000 RWF" },
                     ].map((activity, i) => (
                       <div key={i} className="flex items-center justify-between py-2 border-b border-border last:border-0">
                         <div className="flex items-center gap-3">
@@ -149,8 +150,8 @@ export function HeroSection() {
                     <Shield className="w-5 h-5 text-secondary-foreground" />
                   </div>
                   <div>
-                    <p className="text-xs text-muted-foreground">This Month</p>
-                    <p className="text-sm font-bold text-foreground">100% On-Time</p>
+                    <p className="text-xs text-muted-foreground">{t('hero.thisMonth')}</p>
+                    <p className="text-sm font-bold text-foreground">{t('hero.onTime')}</p>
                   </div>
                 </div>
               </motion.div>
@@ -163,9 +164,9 @@ export function HeroSection() {
       <Dialog open={showDemo} onOpenChange={setShowDemo}>
         <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="text-2xl font-bold">How eKimina Works</DialogTitle>
+            <DialogTitle className="text-2xl font-bold">{t('hero.demoTitle')}</DialogTitle>
             <DialogDescription>
-              See how easy it is to manage your Ikimina group with our platform
+              {t('hero.demoDescription')}
             </DialogDescription>
           </DialogHeader>
           <DemoWalkthrough />

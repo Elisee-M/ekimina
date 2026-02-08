@@ -4,61 +4,25 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Check } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
-const plans = [
-  {
-    name: "Starter",
-    price: "Free",
-    period: "",
-    description: "Perfect for small groups getting started",
-    features: [
-      "Up to 15 members",
-      "Basic contribution tracking",
-      "Simple loan management",
-      "Email notifications",
-      "Mobile-friendly access"
-    ],
-    cta: "Start Free",
-    variant: "outline" as const,
-    popular: false
-  },
-  {
-    name: "Growth",
-    price: "25,000",
-    period: "/month",
-    description: "For growing Ikimina groups",
-    features: [
-      "Up to 50 members",
-      "Advanced analytics",
-      "Custom interest rates",
-      "SMS notifications",
-      "Export reports (PDF/CSV)",
-      "Priority support"
-    ],
-    cta: "Get Started",
-    variant: "hero" as const,
-    popular: true
-  },
-  {
-    name: "Enterprise",
-    price: "Custom",
-    period: "",
-    description: "For large organizations & federations",
-    features: [
-      "Unlimited members",
-      "Multi-group management",
-      "API access",
-      "Dedicated support",
-      "Custom branding",
-      "Advanced security"
-    ],
-    cta: "Contact Sales",
-    variant: "outline" as const,
-    popular: false
-  }
-];
+const planKeys = ["starter", "growth", "enterprise"];
 
 export function PricingSection() {
+  const { t } = useTranslation();
+
+  const plans = planKeys.map((key, index) => ({
+    key,
+    name: t(`pricing.${key}.name`),
+    price: t(`pricing.${key}.price`),
+    period: key === "growth" ? t('pricing.perMonth') : "",
+    description: t(`pricing.${key}.description`),
+    features: t(`pricing.${key}.features`, { returnObjects: true }) as string[],
+    cta: t(`pricing.${key}.cta`),
+    variant: key === "growth" ? "hero" : "outline" as const,
+    popular: key === "growth"
+  }));
+
   return (
     <section id="pricing" className="py-24 bg-background">
       <div className="container mx-auto px-4">
@@ -70,17 +34,17 @@ export function PricingSection() {
           className="text-center max-w-3xl mx-auto mb-16"
         >
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-            Simple, Transparent <span className="text-primary">Pricing</span>
+            {t('pricing.title')} <span className="text-primary">{t('pricing.titleHighlight')}</span>
           </h2>
           <p className="text-lg text-muted-foreground">
-            Choose the plan that fits your group. All prices in Rwandan Francs (RWF).
+            {t('pricing.description')}
           </p>
         </motion.div>
 
         <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
           {plans.map((plan, index) => (
             <motion.div
-              key={plan.name}
+              key={plan.key}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -89,7 +53,7 @@ export function PricingSection() {
             >
               {plan.popular && (
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10">
-                  <Badge variant="gold" className="px-4 py-1">Most Popular</Badge>
+                  <Badge variant="gold" className="px-4 py-1">{t('pricing.mostPopular')}</Badge>
                 </div>
               )}
               <Card 
@@ -100,7 +64,9 @@ export function PricingSection() {
                   <CardTitle className="text-xl">{plan.name}</CardTitle>
                   <div className="mt-4">
                     <span className="text-4xl font-bold text-foreground">
-                      {plan.price === "Free" || plan.price === "Custom" ? plan.price : `RWF ${plan.price}`}
+                      {plan.price === "Free" || plan.price === "Ubuntu" || plan.price === "Custom" || plan.price === "Biravugana" 
+                        ? plan.price 
+                        : `RWF ${plan.price}`}
                     </span>
                     {plan.period && <span className="text-muted-foreground">{plan.period}</span>}
                   </div>
@@ -117,7 +83,7 @@ export function PricingSection() {
                       </li>
                     ))}
                   </ul>
-                  <Button variant={plan.variant} className="w-full" size="lg" asChild>
+                  <Button variant={plan.variant as any} className="w-full" size="lg" asChild>
                     <Link to="/register">{plan.cta}</Link>
                   </Button>
                 </CardContent>
@@ -136,15 +102,15 @@ export function PricingSection() {
         >
           <Card variant="elevated" className="max-w-xl mx-auto">
             <CardContent className="p-6">
-              <h3 className="text-lg font-semibold text-foreground mb-2">Payment Information</h3>
+              <h3 className="text-lg font-semibold text-foreground mb-2">{t('pricing.paymentInfo.title')}</h3>
               <p className="text-muted-foreground mb-4">
-                To subscribe to a paid plan, send your payment via Mobile Money to:
+                {t('pricing.paymentInfo.description')}
               </p>
               <div className="bg-primary/10 rounded-lg p-4 inline-block">
                 <span className="text-xl font-bold text-primary">+250 798 809 812</span>
               </div>
               <p className="text-sm text-muted-foreground mt-4">
-                After payment, contact us with your transaction ID to activate your plan.
+                {t('pricing.paymentInfo.note')}
               </p>
             </CardContent>
           </Card>
