@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Heart } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import ekiminaLogo from "@/assets/ekimina-logo.png";
 
 export function Footer() {
   const { t } = useTranslation();
@@ -12,13 +13,16 @@ export function Footer() {
           {/* Brand */}
           <div className="space-y-4">
             <Link to="/" className="flex items-center gap-2">
-              <div className="w-9 h-9 rounded-lg gradient-gold flex items-center justify-center">
-                <span className="text-secondary-foreground font-bold text-lg">e</span>
-              </div>
-              <span className="text-xl font-bold">Kimina</span>
+              <img src={ekiminaLogo} alt="eKimina" className="h-12 w-auto" />
             </Link>
             <p className="text-sidebar-foreground/70 text-sm">
               {t('footer.description')}
+            </p>
+            <p className="text-sidebar-foreground/70 text-sm">
+              {t('footer.needHelp')}{" "}
+              <a href="mailto:mugiranezaelisee0@gmail.com" className="text-sidebar-primary hover:underline">
+                mugiranezaelisee0@gmail.com
+              </a>
             </p>
           </div>
 

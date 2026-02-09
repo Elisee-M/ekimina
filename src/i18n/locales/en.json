@@ -177,6 +177,7 @@
   },
   "footer": {
     "description": "The modern platform for Rwandan savings groups. Building community wealth with trust and transparency.",
+    "needHelp": "Need help?",
     "product": "Product",
     "company": "Company",
     "legal": "Legal",
@@ -258,5 +259,33 @@
     "checkBack": "Check back later for important updates from the platform.",
     "forAdmins": "For Admins Only",
     "forAll": "For All Users"
+  },
+  "contact": {
+    "title": "Contact Us",
+    "description": "Have questions or need help? We're here for you. Reach out and we'll get back to you as soon as possible.",
+    "emailUs": "Email Us",
+    "callUs": "Call Us",
+    "mobileMoneyNote": "Also accepts Mobile Money payments",
+    "formTitle": "Send us a Message",
+    "formDescription": "Fill out the form below and we'll respond within 24 hours",
+    "name": "Your Name",
+    "namePlaceholder": "Jean Claude",
+    "email": "Email Address",
+    "emailPlaceholder": "you@example.com",
+    "subject": "Subject",
+    "subjectPlaceholder": "How can we help you?",
+    "message": "Message",
+    "messagePlaceholder": "Tell us more about your question or issue...",
+    "send": "Send Message",
+    "sending": "Sending...",
+    "successTitle": "Message Sent!",
+    "successMessage": "Thank you for reaching out. We'll get back to you soon.",
+    "sendAnother": "Send Another Message",
+    "validation": {
+      "nameMin": "Name must be at least 2 characters",
+      "emailRequired": "Please enter a valid email",
+      "subjectMin": "Subject must be at least 3 characters",
+      "messageMin": "Message must be at least 10 characters"
+    }
   }
 }

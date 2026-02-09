@@ -5,6 +5,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import ekiminaLogo from "@/assets/ekimina-logo.png";
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -35,10 +36,7 @@ export function Header() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2">
-            <div className="w-9 h-9 rounded-lg gradient-hero flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-lg">e</span>
-            </div>
-            <span className="text-xl font-bold text-foreground">Kimina</span>
+            <img src={ekiminaLogo} alt="eKimina" className="h-12 w-auto" />
           </Link>
 
           {/* Desktop Navigation */}

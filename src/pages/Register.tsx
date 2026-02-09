@@ -10,6 +10,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { z } from "zod";
 import { useTranslation } from "react-i18next";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import ekiminaLogo from "@/assets/ekimina-logo.png";
 
 const Register = () => {
   const { t } = useTranslation();
@@ -122,10 +123,7 @@ const Register = () => {
           <CardHeader className="text-center space-y-2 px-4 sm:px-6">
             {/* Logo */}
             <Link to="/" className="flex items-center gap-2 justify-center mb-4">
-              <div className="w-10 h-10 rounded-lg gradient-hero flex items-center justify-center">
-                <span className="text-primary-foreground font-bold text-xl">e</span>
-              </div>
-              <span className="text-2xl font-bold text-foreground">Kimina</span>
+              <img src={ekiminaLogo} alt="eKimina" className="h-14 w-auto" />
             </Link>
             <CardTitle className="text-xl sm:text-2xl">{t('auth.createAccount')}</CardTitle>
             <CardDescription>{t('auth.createAccountDescription')}</CardDescription>

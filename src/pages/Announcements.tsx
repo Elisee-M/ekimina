@@ -37,14 +37,6 @@ interface Announcement {
   created_by: string | null;
 }
 
-interface SystemAnnouncement {
-  id: string;
-  title: string;
-  content: string;
-  audience: "all" | "admins_only";
-  created_at: string;
-}
-
 interface Comment {
   id: string;
   content: string;
@@ -58,7 +50,6 @@ const Announcements = () => {
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
-  const [systemAnnouncements, setSystemAnnouncements] = useState<SystemAnnouncement[]>([]);
   const [comments, setComments] = useState<Record<string, Comment[]>>({});
   const [expandedAnnouncement, setExpandedAnnouncement] = useState<string | null>(null);
   const [newComment, setNewComment] = useState<Record<string, string>>({});
@@ -84,20 +75,6 @@ const Announcements = () => {
       console.error("Error fetching announcements:", error);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const fetchSystemAnnouncements = async () => {
-    try {
-      const { data, error } = await supabase
-        .from("system_announcements")
-        .select("*")
-        .order("created_at", { ascending: false });
-
-      if (error) throw error;
-      setSystemAnnouncements((data || []) as SystemAnnouncement[]);
-    } catch (error) {
-      console.error("Error fetching system announcements:", error);
     }
   };
 
@@ -133,7 +110,6 @@ const Announcements = () => {
 
   useEffect(() => {
     fetchAnnouncements();
-    fetchSystemAnnouncements();
   }, [groupId]);
 
   const handleCreateAnnouncement = async () => {
@@ -286,67 +262,6 @@ const Announcements = () => {
               </div>
             </DialogContent>
           </Dialog>
-        </div>
-
-        <div className="space-y-3">
-          <h2 className="text-lg font-semibold">System Announcements</h2>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            {systemAnnouncements.length === 0 ? (
-              <EmptyState
-                icon={Bell}
-                title="No system announcements"
-                description="Messages from super admin will appear here."
-              />
-            ) : (
-              <div className="space-y-4">
-                {systemAnnouncements.map((announcement, index) => (
-                  <motion.div
-                    key={announcement.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3, delay: index * 0.05 }}
-                  >
-                    <Card variant="elevated">
-                      <CardHeader className="p-4 sm:p-6">
-                        <div className="flex items-start justify-between gap-4">
-                          <div className="flex items-start gap-3">
-                            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                              <Bell className="w-5 h-5 text-primary" />
-                            </div>
-                            <div>
-                              <div className="flex items-center gap-2 flex-wrap">
-                                <CardTitle className="text-base sm:text-lg">{announcement.title}</CardTitle>
-                                <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs ${
-                                  announcement.audience === "admins_only"
-                                    ? "bg-secondary/20 text-secondary"
-                                    : "bg-primary/20 text-primary"
-                                }`}>
-                                  {announcement.audience === "admins_only" ? "Admins Only" : "All Users"}
-                                </span>
-                              </div>
-                              <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
-                                <Calendar className="w-3 h-3" />
-                                {format(new Date(announcement.created_at), "MMM d, yyyy 'at' h:mm a")}
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      </CardHeader>
-                      <CardContent className="p-4 sm:p-6 pt-0">
-                        <p className="text-sm text-muted-foreground whitespace-pre-wrap">
-                          {announcement.content}
-                        </p>
-                      </CardContent>
-                    </Card>
-                  </motion.div>
-                ))}
-              </div>
-            )}
-          </motion.div>
         </div>
 
         {/* Announcements List */}

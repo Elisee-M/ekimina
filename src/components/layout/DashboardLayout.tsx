@@ -22,6 +22,7 @@ import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import ekiminaLogo from "@/assets/ekimina-logo.png";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -99,10 +100,7 @@ export function DashboardLayout({ children, role }: DashboardLayoutProps) {
           {/* Logo */}
           <div className="p-4 border-b border-sidebar-border">
             <Link to="/" className="flex items-center gap-2">
-              <div className="w-9 h-9 rounded-lg gradient-gold flex items-center justify-center">
-                <span className="text-secondary-foreground font-bold text-lg">e</span>
-              </div>
-              <span className="text-xl font-bold">Kimina</span>
+              <img src={ekiminaLogo} alt="eKimina" className="h-12 w-auto" />
             </Link>
           </div>
 

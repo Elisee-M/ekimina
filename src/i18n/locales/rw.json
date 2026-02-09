@@ -177,6 +177,7 @@
   },
   "footer": {
     "description": "Urubuga rugezweho rw'amatsinda y'ubwizigame y'u Rwanda. Kubaka ubutunzi bw'umuryango mu cyizere no kumarana neza.",
+    "needHelp": "Ukeneye ubufasha?",
     "product": "Ibicuruzwa",
     "company": "Isosiyete",
     "legal": "Amategeko",
@@ -258,5 +259,33 @@
     "checkBack": "Garuka nyuma ku makuru y'ingenzi y'urubuga.",
     "forAdmins": "Ku Bayobozi Gusa",
     "forAll": "Ku Bakoresha Bose"
+  },
+  "contact": {
+    "title": "Twandikire",
+    "description": "Ufite ibibazo cyangwa ukeneye ubufasha? Turi hano ku bwawe. Twandikire kandi tuzagusubiza vuba.",
+    "emailUs": "Imeli Yacu",
+    "callUs": "Tuhamagare",
+    "mobileMoneyNote": "Nakemeza kwishyura kuri Mobile Money",
+    "formTitle": "Twohereze Ubutumwa",
+    "formDescription": "Uzuza ifishi ikurikira kandi tuzagusubiza mu masaha 24",
+    "name": "Izina Ryawe",
+    "namePlaceholder": "Jean Claude",
+    "email": "Imeli",
+    "emailPlaceholder": "wowe@urugero.com",
+    "subject": "Insanganyamatsiko",
+    "subjectPlaceholder": "Twagufasha dute?",
+    "message": "Ubutumwa",
+    "messagePlaceholder": "Tubwire byinshi ku kibazo cyawe...",
+    "send": "Ohereza Ubutumwa",
+    "sending": "Birimo koherezwa...",
+    "successTitle": "Ubutumwa Bwoherejwe!",
+    "successMessage": "Urakoze kutwandikira. Tuzagusubiza vuba.",
+    "sendAnother": "Ohereza Ubundi Butumwa",
+    "validation": {
+      "nameMin": "Izina rigomba kugira nibura inyuguti 2",
+      "emailRequired": "Nyamuneka andika imeli yemewe",
+      "subjectMin": "Insanganyamatsiko igomba kugira nibura inyuguti 3",
+      "messageMin": "Ubutumwa bugomba kugira nibura inyuguti 10"
+    }
   }
 }
