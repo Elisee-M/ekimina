@@ -22,6 +22,7 @@ import SuperAdminGroups from "./pages/super-admin/SuperAdminGroups";
 import SuperAdminAdmins from "./pages/super-admin/SuperAdminAdmins";
 import SuperAdminAnnouncements from "./pages/super-admin/SuperAdminAnnouncements";
 import SuperAdminSettings from "./pages/super-admin/SuperAdminSettings";
+import SuperAdminMessages from "./pages/super-admin/SuperAdminMessages";
 import MemberDashboard from "./pages/MemberDashboard";
 import MemberHistory from "./pages/MemberHistory";
 import MemberContributions from "./pages/MemberContributions";
@@ -33,6 +34,7 @@ import NotFound from "./pages/NotFound";
 import SystemNotices from "./pages/SystemNotices";
 import GroupDisabled from "./pages/GroupDisabled";
 import Contact from "./pages/Contact";
+import { ChatWidget } from "@/components/chat/ChatWidget";
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -174,6 +176,11 @@ const App = () => (
                 <SuperAdminAnnouncements />
               </ProtectedRoute>
             } />
+            <Route path="/super-admin/messages" element={
+              <ProtectedRoute requiredRole="super_admin">
+                <SuperAdminMessages />
+              </ProtectedRoute>
+            } />
             <Route path="/super-admin/*" element={
               <ProtectedRoute requiredRole="super_admin">
                 <SuperAdminOverview />
@@ -183,6 +190,7 @@ const App = () => (
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
+          <ChatWidget />
         </BrowserRouter>
       </TooltipProvider>
     </AuthProvider>

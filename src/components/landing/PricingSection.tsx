@@ -84,7 +84,7 @@ export function PricingSection() {
                     ))}
                   </ul>
                   <Button variant={plan.variant as any} className="w-full" size="lg" asChild>
-                    <Link to="/register">{plan.cta}</Link>
+                    <Link to={plan.key === "enterprise" ? "/contact" : `/register?plan=${plan.key}`}>{plan.cta}</Link>
                   </Button>
                 </CardContent>
               </Card>

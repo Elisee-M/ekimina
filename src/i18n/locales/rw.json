@@ -203,6 +203,8 @@
     "securityNote": "🔒 Byizewe n'umutekano nk'uw'ibanki",
     "createAccount": "Kora Konti Yawe",
     "createAccountDescription": "Tangira gucunga Ikimina yawe uyu munsi",
+    "plan": "Gahunda",
+    "planIncludes": "Ibikubiyemo",
     "fullName": "Amazina Yose",
     "fullNamePlaceholder": "Jean Claude Ndayisaba",
     "phone": "Nimero ya Telefoni (Ntiyisabwa)",
@@ -250,7 +252,8 @@
     "groupAdmin": "Umuyobozi w'Itsinda",
     "member": "Umunyamuryango",
     "systemOverview": "Incamake y'Uburyo",
-    "noGroup": "Nta Tsinda"
+    "noGroup": "Nta Tsinda",
+    "messages": "Ubutumwa"
   },
   "systemNotices": {
     "title": "Amatangazo y'Urubuga",

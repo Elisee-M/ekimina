@@ -112,6 +112,7 @@ const { data: membershipData } = await supabase.rpc('get_my_group_membership');
 
 ## Expected Outcome
 
+
 After implementing these changes:
 1. Login will complete successfully without hanging
 2. Users will be redirected to the correct dashboard based on their role

@@ -1,19 +1,24 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Eye, EyeOff, ArrowLeft, Check, Loader2 } from "lucide-react";
+import { Eye, EyeOff, ArrowLeft, Check, Loader2, Crown, Zap } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { z } from "zod";
 import { useTranslation } from "react-i18next";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { Badge } from "@/components/ui/badge";
 import ekiminaLogo from "@/assets/ekimina-logo.png";
+
+type PlanKey = "starter" | "growth";
 
 const Register = () => {
   const { t } = useTranslation();
+  const [searchParams] = useSearchParams();
+  const selectedPlan = (searchParams.get("plan") as PlanKey) || "starter";
 
   const registerSchema = z.object({
     fullName: z.string().trim().min(2, { message: t('auth.validation.nameMin') }).max(100),
@@ -79,6 +84,23 @@ const Register = () => {
     }
   };
 
+  const planConfig = {
+    starter: {
+      icon: <Zap className="w-5 h-5" />,
+      color: "bg-muted",
+      badgeVariant: "secondary" as const,
+      features: t('pricing.starter.features', { returnObjects: true }) as string[],
+    },
+    growth: {
+      icon: <Crown className="w-5 h-5" />,
+      color: "bg-secondary/10",
+      badgeVariant: "gold" as const,
+      features: t('pricing.growth.features', { returnObjects: true }) as string[],
+    },
+  };
+
+  const currentPlan = planConfig[selectedPlan] || planConfig.starter;
+
   const benefits = [
     t('auth.benefits.free'),
     t('auth.benefits.noCard'),
@@ -122,22 +144,58 @@ const Register = () => {
         <Card variant="elevated" className="border-border">
           <CardHeader className="text-center space-y-2 px-4 sm:px-6">
             {/* Logo */}
-            <Link to="/" className="flex items-center gap-2 justify-center mb-4">
+            <Link to="/" className="flex items-center gap-2 justify-center mb-2">
               <img src={ekiminaLogo} alt="eKimina" className="h-14 w-auto" />
             </Link>
+
+            {/* Plan Badge */}
+            <div className="flex justify-center">
+              <Badge variant={currentPlan.badgeVariant} className="gap-1.5 px-3 py-1">
+                {currentPlan.icon}
+                {t(`pricing.${selectedPlan}.name`)} {t('auth.plan')}
+              </Badge>
+            </div>
+
             <CardTitle className="text-xl sm:text-2xl">{t('auth.createAccount')}</CardTitle>
             <CardDescription>{t('auth.createAccountDescription')}</CardDescription>
+
+            {/* Plan Switcher */}
+            <div className="flex gap-2 justify-center pt-2">
+              <Link
+                to="/register?plan=starter"
+                className={`text-xs px-3 py-1.5 rounded-full border transition-colors ${
+                  selectedPlan === 'starter'
+                    ? 'bg-primary text-primary-foreground border-primary'
+                    : 'bg-background text-muted-foreground border-border hover:border-primary/50'
+                }`}
+              >
+                {t('pricing.starter.name')} — {t('pricing.starter.price')}
+              </Link>
+              <Link
+                to="/register?plan=growth"
+                className={`text-xs px-3 py-1.5 rounded-full border transition-colors ${
+                  selectedPlan === 'growth'
+                    ? 'bg-primary text-primary-foreground border-primary'
+                    : 'bg-background text-muted-foreground border-border hover:border-primary/50'
+                }`}
+              >
+                {t('pricing.growth.name')} — RWF {t('pricing.growth.price')}
+              </Link>
+            </div>
           </CardHeader>
 
           <CardContent className="px-4 sm:px-6">
-            {/* Benefits */}
-            <div className="bg-primary/5 rounded-lg p-3 sm:p-4 mb-6 space-y-2">
-              {benefits.map((benefit, i) => (
+            {/* Plan Features */}
+            <div className={`${currentPlan.color} rounded-lg p-3 sm:p-4 mb-6 space-y-2`}>
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+                {t('auth.planIncludes')}
+              </p>
+              {currentPlan.features.map((feature, i) => (
                 <div key={i} className="flex items-center gap-2 text-sm text-foreground">
                   <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
                     <Check className="w-3 h-3 text-primary" />
                   </div>
-                  {benefit}
+                  {feature}
                 </div>
               ))}
             </div>

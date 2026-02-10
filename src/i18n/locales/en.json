@@ -203,6 +203,8 @@
     "securityNote": "🔒 Secured with bank-level encryption",
     "createAccount": "Create Your Account",
     "createAccountDescription": "Start managing your Ikimina today",
+    "plan": "Plan",
+    "planIncludes": "What's included",
     "fullName": "Full Name",
     "fullNamePlaceholder": "Jean Claude Ndayisaba",
     "phone": "Phone Number (Optional)",
@@ -250,7 +252,8 @@
     "groupAdmin": "Group Admin",
     "member": "Member",
     "systemOverview": "System Overview",
-    "noGroup": "No Group"
+    "noGroup": "No Group",
+    "messages": "Messages"
   },
   "systemNotices": {
     "title": "System Notices",

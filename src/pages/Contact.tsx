@@ -12,6 +12,9 @@ import { useTranslation } from "react-i18next";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { ChatWidget } from "@/components/chat/ChatWidget";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "@/hooks/use-toast";
 
 const Contact = () => {
   const { t } = useTranslation();
@@ -60,10 +63,20 @@ const Contact = () => {
 
     setIsLoading(true);
     
-    // Simulate sending - in production, this would call an edge function
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
+    const { error } = await supabase.from("contact_messages").insert({
+      name: result.data.name,
+      email: result.data.email,
+      subject: result.data.subject,
+      message: result.data.message,
+    });
+
     setIsLoading(false);
+
+    if (error) {
+      toast({ variant: "destructive", title: t('common.error'), description: error.message });
+      return;
+    }
+
     setIsSuccess(true);
     setFormData({ name: "", email: "", subject: "", message: "" });
   };
@@ -271,6 +284,7 @@ const Contact = () => {
       </main>
 
       <Footer />
+      <ChatWidget />
     </div>
   );
 };

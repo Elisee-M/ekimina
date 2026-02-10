@@ -15,7 +15,8 @@ import {
   Building2,
   History,
   Megaphone,
-  Globe
+  Globe,
+  Mail
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -41,6 +42,7 @@ export function DashboardLayout({ children, role }: DashboardLayoutProps) {
     { icon: Building2, label: t('dashboard.allGroups'), href: "/super-admin/groups" },
     { icon: Users, label: t('dashboard.admins'), href: "/super-admin/admins" },
     { icon: Bell, label: t('dashboard.announcements'), href: "/super-admin/announcements" },
+    { icon: Mail, label: t('dashboard.messages'), href: "/super-admin/messages" },
     { icon: Settings, label: t('dashboard.settings'), href: "/super-admin/settings" },
   ];
 
