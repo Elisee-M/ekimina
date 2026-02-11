@@ -1,0 +1,2 @@
+ALTER TABLE public.ikimina_groups DROP CONSTRAINT IF EXISTS ikimina_groups_status_check;
+ALTER TABLE public.ikimina_groups ADD CONSTRAINT ikimina_groups_status_check CHECK (status IN ('active', 'disabled', 'pending_approval'));

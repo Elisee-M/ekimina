@@ -242,6 +242,9 @@ export type Database = {
           id: string
           interest_rate: number
           name: string
+          payment_confirmed_at: string | null
+          payment_confirmed_by: string | null
+          plan: string
           status: string
           updated_at: string
         }
@@ -255,6 +258,9 @@ export type Database = {
           id?: string
           interest_rate?: number
           name: string
+          payment_confirmed_at?: string | null
+          payment_confirmed_by?: string | null
+          plan?: string
           status?: string
           updated_at?: string
         }
@@ -268,6 +274,9 @@ export type Database = {
           id?: string
           interest_rate?: number
           name?: string
+          payment_confirmed_at?: string | null
+          payment_confirmed_by?: string | null
+          plan?: string
           status?: string
           updated_at?: string
         }

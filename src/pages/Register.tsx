@@ -75,7 +75,8 @@ const Register = () => {
       formData.email,
       formData.password,
       formData.fullName,
-      formData.phone || undefined
+      formData.phone || undefined,
+      selectedPlan
     );
     setIsLoading(false);
 

@@ -73,6 +73,11 @@ export function ProtectedRoute({
     return <Navigate to="/group-disabled" replace />;
   }
 
+  // Check if user's group is pending approval (Growth plan payment not confirmed)
+  if (!isSuperAdmin && groupMembership && groupMembership.group_status === 'pending_approval') {
+    return <Navigate to="/pending-approval" replace />;
+  }
+
   // Check role requirements
   if (requiredRole && !roles.includes(requiredRole) && !isSuperAdmin) {
     return <Navigate to="/unauthorized" replace />;

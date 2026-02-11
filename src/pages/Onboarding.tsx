@@ -142,6 +142,10 @@ const Onboarding = () => {
 
     setIsLoading(true);
     try {
+      // Determine plan from user metadata or URL
+      const userPlan = user.user_metadata?.selected_plan || 'starter';
+      const groupStatus = userPlan === 'growth' ? 'pending_approval' : 'active';
+
       // Create the group
       const { data: groupData, error: groupError } = await supabase
         .from('ikimina_groups')
@@ -149,7 +153,9 @@ const Onboarding = () => {
           name: createForm.groupName,
           contribution_frequency: createForm.contributionFrequency,
           contribution_amount: createForm.contributionAmount ? parseFloat(createForm.contributionAmount) : 0,
-          created_by: user.id
+          created_by: user.id,
+          plan: userPlan,
+          status: groupStatus,
         })
         .select()
         .single();
@@ -183,7 +189,11 @@ const Onboarding = () => {
 
       // Refresh auth-derived context (roles + membership) then navigate
       await refreshUserData();
-      navigate('/dashboard', { replace: true });
+      if (groupStatus === 'pending_approval') {
+        navigate('/pending-approval', { replace: true });
+      } else {
+        navigate('/dashboard', { replace: true });
+      }
     } catch (error: any) {
       toast({
         title: "Failed to create group",

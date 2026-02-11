@@ -33,6 +33,8 @@ import Unauthorized from "./pages/Unauthorized";
 import NotFound from "./pages/NotFound";
 import SystemNotices from "./pages/SystemNotices";
 import GroupDisabled from "./pages/GroupDisabled";
+import PendingApproval from "./pages/PendingApproval";
+import SuperAdminApprovals from "./pages/super-admin/SuperAdminApprovals";
 import Contact from "./pages/Contact";
 import { ChatWidget } from "@/components/chat/ChatWidget";
 const queryClient = new QueryClient();
@@ -52,6 +54,7 @@ const App = () => (
             <Route path="/unauthorized" element={<Unauthorized />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/group-disabled" element={<GroupDisabled />} />
+            <Route path="/pending-approval" element={<PendingApproval />} />
             {/* Onboarding Route - signed-in users without a group */}
             <Route path="/onboarding" element={
               <ProtectedRoute allowNoGroup>
@@ -179,6 +182,11 @@ const App = () => (
             <Route path="/super-admin/messages" element={
               <ProtectedRoute requiredRole="super_admin">
                 <SuperAdminMessages />
+              </ProtectedRoute>
+            } />
+            <Route path="/super-admin/approvals" element={
+              <ProtectedRoute requiredRole="super_admin">
+                <SuperAdminApprovals />
               </ProtectedRoute>
             } />
             <Route path="/super-admin/*" element={

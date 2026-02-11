@@ -33,7 +33,8 @@ interface AuthContextType {
     email: string,
     password: string,
     fullName: string,
-    phone?: string
+    phone?: string,
+    selectedPlan?: string
   ) => Promise<{ error: Error | null; didSignIn: boolean }>;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
@@ -180,7 +181,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  const signUp = async (email: string, password: string, fullName: string, phone?: string) => {
+  const signUp = async (email: string, password: string, fullName: string, phone?: string, selectedPlan?: string) => {
     try {
       const redirectUrl = `${window.location.origin}/`;
 
@@ -192,6 +193,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           data: {
             full_name: fullName,
             phone: phone || null,
+            selected_plan: selectedPlan || 'starter',
           },
         },
       });

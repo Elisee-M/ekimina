@@ -16,7 +16,8 @@ import {
   History,
   Megaphone,
   Globe,
-  Mail
+  Mail,
+  ShieldCheck
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -40,6 +41,7 @@ export function DashboardLayout({ children, role }: DashboardLayoutProps) {
   const superAdminNav = [
     { icon: LayoutDashboard, label: t('dashboard.overview'), href: "/super-admin" },
     { icon: Building2, label: t('dashboard.allGroups'), href: "/super-admin/groups" },
+    { icon: ShieldCheck, label: "Approvals", href: "/super-admin/approvals" },
     { icon: Users, label: t('dashboard.admins'), href: "/super-admin/admins" },
     { icon: Bell, label: t('dashboard.announcements'), href: "/super-admin/announcements" },
     { icon: Mail, label: t('dashboard.messages'), href: "/super-admin/messages" },
