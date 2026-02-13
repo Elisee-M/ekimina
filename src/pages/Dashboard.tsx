@@ -91,6 +91,11 @@ const Dashboard = () => {
               Welcome back{profile?.full_name ? `, ${profile.full_name.split(' ')[0]}` : ''}!
               {groupInfo && <span className="ml-1">Managing <span className="font-medium text-foreground">{groupInfo.name}</span></span>}
             </p>
+            {groupInfo && (
+              <Badge variant={groupInfo.plan === "growth" ? "gold" : "muted"} className="mt-1 capitalize w-fit">
+                {groupInfo.plan} Plan
+              </Badge>
+            )}
           </div>
           
           {/* Group Code Card */}

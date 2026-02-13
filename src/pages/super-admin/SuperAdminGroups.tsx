@@ -28,6 +28,7 @@ interface GroupRow {
   contribution_frequency: string;
   contribution_amount: number;
   status: string;
+  plan: string;
 }
 
 export default function SuperAdminGroups() {
@@ -47,7 +48,7 @@ export default function SuperAdminGroups() {
         setLoading(true);
         const { data } = await supabase
           .from("ikimina_groups")
-          .select("id,name,created_at,contribution_frequency,contribution_amount,status")
+          .select("id,name,created_at,contribution_frequency,contribution_amount,status,plan")
           .order("created_at", { ascending: false });
         setGroups((data || []) as GroupRow[]);
       } finally {
@@ -153,6 +154,7 @@ export default function SuperAdminGroups() {
                   <TableHeader>
                     <TableRow>
                       <TableHead>Name</TableHead>
+                      <TableHead>Plan</TableHead>
                       <TableHead>Status</TableHead>
                       <TableHead>Frequency</TableHead>
                       <TableHead>Contribution</TableHead>
@@ -164,6 +166,11 @@ export default function SuperAdminGroups() {
                     {filtered.map((g) => (
                       <TableRow key={g.id}>
                         <TableCell className="font-medium">{g.name}</TableCell>
+                        <TableCell>
+                          <Badge variant={g.plan === "growth" ? "gold" : "muted"} className="capitalize">
+                            {g.plan || "starter"}
+                          </Badge>
+                        </TableCell>
                         <TableCell>
                           <Badge variant={g.status === "active" ? "default" : "secondary"}>
                             {g.status}

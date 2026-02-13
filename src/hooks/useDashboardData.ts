@@ -35,6 +35,7 @@ interface GroupInfo {
   contributionFrequency: string;
   interestRate: number;
   groupCode: string;
+  plan: string;
 }
 
 export function useDashboardData() {
@@ -81,7 +82,8 @@ export function useDashboardData() {
           contributionAmount: groupData.contribution_amount,
           contributionFrequency: groupData.contribution_frequency,
           interestRate: groupData.interest_rate,
-          groupCode: groupData.id.slice(0, 8).toUpperCase()
+          groupCode: groupData.id.slice(0, 8).toUpperCase(),
+          plan: groupData.plan || 'starter'
         });
       }
 

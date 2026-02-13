@@ -52,6 +52,11 @@ const MemberDashboard = () => {
             Welcome back, {displayName}!
             {groupInfo && <span className="ml-1">Member of <span className="font-medium text-foreground">{groupInfo.name}</span></span>}
           </p>
+          {groupInfo && (
+            <Badge variant={groupInfo.plan === "growth" ? "gold" : "muted"} className="mt-1 capitalize w-fit">
+              {groupInfo.plan} Plan
+            </Badge>
+          )}
         </div>
 
         {/* Stats Cards */}
