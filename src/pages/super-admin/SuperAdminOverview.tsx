@@ -8,6 +8,8 @@ import { Loader2, Building2, Users, Wallet, TrendingUp, ArrowRight } from "lucid
 import { supabase } from "@/integrations/supabase/client";
 import { usePageSeo } from "@/hooks/usePageSeo";
 import { Link } from "react-router-dom";
+import { GroupGrowthChart } from "@/components/charts/GroupGrowthChart";
+import { FinancialOverviewChart } from "@/components/charts/FinancialOverviewChart";
 
 interface GroupRow {
   id: string;
@@ -24,6 +26,9 @@ export default function SuperAdminOverview() {
 
   const [loading, setLoading] = useState(true);
   const [groups, setGroups] = useState<GroupRow[]>([]);
+  const [allGroups, setAllGroups] = useState<Array<{ created_at: string }>>([]);
+  const [allContributions, setAllContributions] = useState<Array<{ amount: number; created_at: string }>>([]);
+  const [allLoans, setAllLoans] = useState<Array<{ principal_amount: number; created_at: string }>>([]);
   const [stats, setStats] = useState({
     totalGroups: 0,
     totalMembers: 0,
@@ -36,11 +41,12 @@ export default function SuperAdminOverview() {
       try {
         setLoading(true);
 
-        const [{ data: groupRows }, { data: memberRows }, { data: contributionRows }, { data: loanRows }] = await Promise.all([
+        const [{ data: groupRows }, { data: memberRows }, { data: contributionRows }, { data: loanRows }, { data: allGroupRows }] = await Promise.all([
           supabase.from("ikimina_groups").select("id,name,created_at").order("created_at", { ascending: false }).limit(10),
           supabase.from("group_members").select("id,status").eq("status", "active"),
-          supabase.from("contributions").select("amount"),
-          supabase.from("loans").select("principal_amount"),
+          supabase.from("contributions").select("amount,created_at"),
+          supabase.from("loans").select("principal_amount,created_at"),
+          supabase.from("ikimina_groups").select("created_at"),
         ]);
 
         const recentGroups = (groupRows || []) as GroupRow[];
@@ -49,6 +55,9 @@ export default function SuperAdminOverview() {
         const totalLoans = (loanRows || []).reduce((sum, r: any) => sum + Number(r.principal_amount || 0), 0);
 
         setGroups(recentGroups);
+        setAllGroups((allGroupRows || []).map((g: any) => ({ created_at: g.created_at })));
+        setAllContributions((contributionRows || []).map((c: any) => ({ amount: Number(c.amount), created_at: c.created_at })));
+        setAllLoans((loanRows || []).map((l: any) => ({ principal_amount: Number(l.principal_amount), created_at: l.created_at })));
         setStats({
           totalGroups: (groupRows || []).length,
           totalMembers,
@@ -123,6 +132,12 @@ export default function SuperAdminOverview() {
               </CardContent>
             </Card>
           ))}
+        </section>
+
+        {/* Charts */}
+        <section className="grid lg:grid-cols-2 gap-4">
+          <GroupGrowthChart groups={allGroups} />
+          <FinancialOverviewChart contributions={allContributions} loans={allLoans} />
         </section>
 
         <section>

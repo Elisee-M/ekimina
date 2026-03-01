@@ -20,12 +20,13 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useDashboardData } from "@/hooks/useDashboardData";
+import { ContributionTrendsChart } from "@/components/charts/ContributionTrendsChart";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 
 const Dashboard = () => {
   const { profile } = useAuth();
-  const { loading, stats, recentContributions, activeLoans, groupInfo, pendingContributionsCount } = useDashboardData();
+  const { loading, stats, recentContributions, activeLoans, groupInfo, pendingContributionsCount, rawContributions } = useDashboardData();
   const [copied, setCopied] = useState(false);
   const { toast } = useToast();
 
@@ -157,6 +158,17 @@ const Dashboard = () => {
             </motion.div>
           ))}
         </div>
+
+        {/* Contribution Trends Chart */}
+        {rawContributions.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: 0.35 }}
+          >
+            <ContributionTrendsChart contributions={rawContributions} />
+          </motion.div>
+        )}
 
         {/* Main Content Grid */}
         <div className="grid lg:grid-cols-2 gap-4 sm:gap-6">

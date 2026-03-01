@@ -52,6 +52,7 @@ export function useDashboardData() {
   const [activeLoans, setActiveLoans] = useState<ActiveLoan[]>([]);
   const [groupInfo, setGroupInfo] = useState<GroupInfo | null>(null);
   const [pendingContributionsCount, setPendingContributionsCount] = useState(0);
+  const [rawContributions, setRawContributions] = useState<Array<{ amount: number; status: string; paid_date: string | null; due_date: string; created_at: string }>>([]);
 
   useEffect(() => {
     if (!user || !groupMembership) {
@@ -97,12 +98,23 @@ export function useDashboardData() {
       // Fetch total contributions (paid)
       const { data: contributionsData } = await supabase
         .from('contributions')
-        .select('amount, status')
+        .select('amount, status, paid_date, due_date, created_at')
         .eq('group_id', groupId);
 
       const totalSavings = contributionsData?.reduce((sum, c) => 
         c.status === 'paid' ? sum + Number(c.amount) : sum, 0
       ) || 0;
+
+      // Store raw contributions for charts
+      setRawContributions(
+        (contributionsData || []).map((c) => ({
+          amount: Number(c.amount),
+          status: c.status,
+          paid_date: c.paid_date,
+          due_date: c.due_date,
+          created_at: c.created_at,
+        }))
+      );
 
       // Fetch loans data (without join, profiles fetched separately if needed)
       const { data: loansData } = await supabase
@@ -213,6 +225,7 @@ export function useDashboardData() {
     activeLoans,
     groupInfo,
     pendingContributionsCount,
+    rawContributions,
     refetch: fetchDashboardData
   };
 }
