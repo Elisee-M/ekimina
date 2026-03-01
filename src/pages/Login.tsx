@@ -38,6 +38,10 @@ const Login = () => {
       
       if (!groupMembership) {
         navigate('/onboarding', { replace: true });
+      } else if (groupMembership.group_status === 'pending_approval') {
+        navigate('/pending-approval', { replace: true });
+      } else if (groupMembership.group_status === 'disabled') {
+        navigate('/group-disabled', { replace: true });
       } else if (isGroupAdmin) {
         navigate('/dashboard', { replace: true });
       } else {

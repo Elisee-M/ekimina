@@ -60,6 +60,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Track if we're in the middle of a manual sign-in to prevent duplicate fetches
   const isManualAuthRef = useRef(false);
   const isMountedRef = useRef(true);
+  const lastFetchRef = useRef<number>(0);
 
   // Fetch user data helper - does NOT control loading state externally
   const fetchUserDataInternal = async (userId: string): Promise<{
@@ -147,12 +148,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           return;
         }
 
+        // Skip TOKEN_REFRESHED events - they don't change user data
+        if (event === 'TOKEN_REFRESHED') {
+          setSession(nextSession);
+          return;
+        }
+
         setSession(nextSession);
         setUser(nextSession?.user ?? null);
 
         if (nextSession?.user) {
+          // Debounce: skip if we fetched recently (within 5s)
+          const now = Date.now();
+          if (now - lastFetchRef.current < 5000) {
+            return;
+          }
+          lastFetchRef.current = now;
+
           // Fire and forget - don't await, don't set loading
-          // This handles cases like token refresh
           fetchUserDataInternal(nextSession.user.id).then((userData) => {
             if (!isMountedRef.current) return;
             setProfile(userData.profile);
@@ -161,7 +174,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             setRolesLoaded(true);
             setGroupMembershipLoaded(true);
           });
-        } else {
+        } else if (event === 'SIGNED_OUT') {
           // User logged out
           setProfile(null);
           setRoles([]);
@@ -217,10 +230,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setRolesLoaded(true);
         setGroupMembershipLoaded(true);
         
-        // Reset manual auth flag after a short delay
         setTimeout(() => {
           isManualAuthRef.current = false;
-        }, 100);
+        }, 2000);
       }
 
       toast({
@@ -271,10 +283,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setGroupMembershipLoaded(true);
       }
 
-      // Reset manual auth flag after a short delay to allow state to settle
+      // Reset manual auth flag after state settles
       setTimeout(() => {
         isManualAuthRef.current = false;
-      }, 100);
+      }, 2000);
 
       toast({
         title: "Welcome back!",
