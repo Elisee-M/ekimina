@@ -20,12 +20,12 @@ export function GroupGrowthChart({ groups }: GroupGrowthChartProps) {
     const now = new Date();
     for (let i = 5; i >= 0; i--) {
       const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-      const key = d.toLocaleDateString("en-US", { month: "short", year: "2-digit" });
+      const key = d.toLocaleDateString("en-US", { month: "short" }) + " '" + d.toLocaleDateString("en-US", { year: "2-digit" });
       months[key] = 0;
     }
     groups.forEach((g) => {
       const date = new Date(g.created_at);
-      const key = date.toLocaleDateString("en-US", { month: "short", year: "2-digit" });
+      const key = date.toLocaleDateString("en-US", { month: "short" }) + " '" + date.toLocaleDateString("en-US", { year: "2-digit" });
       if (months[key] !== undefined) months[key]++;
     });
     let cumulative = 0;

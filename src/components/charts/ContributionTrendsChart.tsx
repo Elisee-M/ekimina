@@ -21,12 +21,12 @@ export function ContributionTrendsChart({ contributions }: ContributionTrendsCha
     const now = new Date();
     for (let i = 5; i >= 0; i--) {
       const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-      const key = d.toLocaleDateString("en-US", { month: "short", year: "2-digit" });
+      const key = d.toLocaleDateString("en-US", { month: "short" }) + " '" + d.toLocaleDateString("en-US", { year: "2-digit" });
       months[key] = { paid: 0, pending: 0 };
     }
     contributions.forEach((c) => {
       const date = new Date(c.paid_date || c.due_date || c.created_at);
-      const key = date.toLocaleDateString("en-US", { month: "short", year: "2-digit" });
+      const key = date.toLocaleDateString("en-US", { month: "short" }) + " '" + date.toLocaleDateString("en-US", { year: "2-digit" });
       if (months[key]) {
         if (c.status === "paid") months[key].paid += Number(c.amount);
         else months[key].pending += Number(c.amount);

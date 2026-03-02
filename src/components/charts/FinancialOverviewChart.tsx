@@ -22,15 +22,17 @@ export function FinancialOverviewChart({ contributions, loans }: FinancialOvervi
     const now = new Date();
     for (let i = 5; i >= 0; i--) {
       const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-      const key = d.toLocaleDateString("en-US", { month: "short", year: "2-digit" });
+      const key = d.toLocaleDateString("en-US", { month: "short" }) + " '" + d.toLocaleDateString("en-US", { year: "2-digit" });
       months[key] = { contributions: 0, loans: 0 };
     }
     contributions.forEach((c) => {
-      const key = new Date(c.created_at).toLocaleDateString("en-US", { month: "short", year: "2-digit" });
+      const d = new Date(c.created_at);
+      const key = d.toLocaleDateString("en-US", { month: "short" }) + " '" + d.toLocaleDateString("en-US", { year: "2-digit" });
       if (months[key]) months[key].contributions += Number(c.amount);
     });
     loans.forEach((l) => {
-      const key = new Date(l.created_at).toLocaleDateString("en-US", { month: "short", year: "2-digit" });
+      const d = new Date(l.created_at);
+      const key = d.toLocaleDateString("en-US", { month: "short" }) + " '" + d.toLocaleDateString("en-US", { year: "2-digit" });
       if (months[key]) months[key].loans += Number(l.principal_amount);
     });
     return Object.entries(months).map(([month, vals]) => ({ month, ...vals }));
