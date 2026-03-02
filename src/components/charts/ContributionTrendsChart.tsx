@@ -1,21 +1,11 @@
 import { useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-  type ChartConfig,
-} from "@/components/ui/chart";
+import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
+import { useTranslation } from "react-i18next";
 
 interface ContributionTrendsChartProps {
-  contributions: Array<{
-    amount: number;
-    status: string;
-    paid_date?: string | null;
-    due_date: string;
-    created_at: string;
-  }>;
+  contributions: Array<{ amount: number; status: string; paid_date?: string | null; due_date: string; created_at: string; }>;
 }
 
 const chartConfig: ChartConfig = {
@@ -24,16 +14,16 @@ const chartConfig: ChartConfig = {
 };
 
 export function ContributionTrendsChart({ contributions }: ContributionTrendsChartProps) {
+  const { t } = useTranslation();
+
   const data = useMemo(() => {
     const months: Record<string, { paid: number; pending: number }> = {};
-
     const now = new Date();
     for (let i = 5; i >= 0; i--) {
       const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
       const key = d.toLocaleDateString("en-US", { month: "short", year: "2-digit" });
       months[key] = { paid: 0, pending: 0 };
     }
-
     contributions.forEach((c) => {
       const date = new Date(c.paid_date || c.due_date || c.created_at);
       const key = date.toLocaleDateString("en-US", { month: "short", year: "2-digit" });
@@ -42,15 +32,14 @@ export function ContributionTrendsChart({ contributions }: ContributionTrendsCha
         else months[key].pending += Number(c.amount);
       }
     });
-
     return Object.entries(months).map(([month, vals]) => ({ month, ...vals }));
   }, [contributions]);
 
   return (
     <Card variant="elevated">
       <CardHeader className="p-4 sm:p-6">
-        <CardTitle className="text-base sm:text-lg">Contribution Trends</CardTitle>
-        <p className="text-sm text-muted-foreground">Last 6 months overview</p>
+        <CardTitle className="text-base sm:text-lg">{t('charts.contributionTrends')}</CardTitle>
+        <p className="text-sm text-muted-foreground">{t('charts.last6Months')}</p>
       </CardHeader>
       <CardContent className="p-4 sm:p-6 pt-0">
         <ChartContainer config={chartConfig} className="h-[250px] w-full">

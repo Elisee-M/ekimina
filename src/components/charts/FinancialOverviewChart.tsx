@@ -1,12 +1,8 @@
 import { useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-  type ChartConfig,
-} from "@/components/ui/chart";
+import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid } from "recharts";
+import { useTranslation } from "react-i18next";
 
 interface FinancialOverviewChartProps {
   contributions: Array<{ amount: number; created_at: string }>;
@@ -19,6 +15,8 @@ const chartConfig: ChartConfig = {
 };
 
 export function FinancialOverviewChart({ contributions, loans }: FinancialOverviewChartProps) {
+  const { t } = useTranslation();
+
   const data = useMemo(() => {
     const months: Record<string, { contributions: number; loans: number }> = {};
     const now = new Date();
@@ -27,25 +25,22 @@ export function FinancialOverviewChart({ contributions, loans }: FinancialOvervi
       const key = d.toLocaleDateString("en-US", { month: "short", year: "2-digit" });
       months[key] = { contributions: 0, loans: 0 };
     }
-
     contributions.forEach((c) => {
       const key = new Date(c.created_at).toLocaleDateString("en-US", { month: "short", year: "2-digit" });
       if (months[key]) months[key].contributions += Number(c.amount);
     });
-
     loans.forEach((l) => {
       const key = new Date(l.created_at).toLocaleDateString("en-US", { month: "short", year: "2-digit" });
       if (months[key]) months[key].loans += Number(l.principal_amount);
     });
-
     return Object.entries(months).map(([month, vals]) => ({ month, ...vals }));
   }, [contributions, loans]);
 
   return (
     <Card variant="elevated">
       <CardHeader className="p-4 sm:p-6">
-        <CardTitle className="text-base sm:text-lg">Financial Overview</CardTitle>
-        <p className="text-sm text-muted-foreground">Contributions vs Loans (last 6 months)</p>
+        <CardTitle className="text-base sm:text-lg">{t('charts.financialOverview')}</CardTitle>
+        <p className="text-sm text-muted-foreground">{t('charts.contributionsVsLoans')}</p>
       </CardHeader>
       <CardContent className="p-4 sm:p-6 pt-0">
         <ChartContainer config={chartConfig} className="h-[250px] w-full">

@@ -1,12 +1,8 @@
 import { useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-  type ChartConfig,
-} from "@/components/ui/chart";
+import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid } from "recharts";
+import { useTranslation } from "react-i18next";
 
 interface GroupGrowthChartProps {
   groups: Array<{ created_at: string }>;
@@ -17,6 +13,8 @@ const chartConfig: ChartConfig = {
 };
 
 export function GroupGrowthChart({ groups }: GroupGrowthChartProps) {
+  const { t } = useTranslation();
+
   const data = useMemo(() => {
     const months: Record<string, number> = {};
     const now = new Date();
@@ -25,32 +23,24 @@ export function GroupGrowthChart({ groups }: GroupGrowthChartProps) {
       const key = d.toLocaleDateString("en-US", { month: "short", year: "2-digit" });
       months[key] = 0;
     }
-
     groups.forEach((g) => {
       const date = new Date(g.created_at);
       const key = date.toLocaleDateString("en-US", { month: "short", year: "2-digit" });
       if (months[key] !== undefined) months[key]++;
     });
-
-    // Convert to cumulative
     let cumulative = 0;
     const keys = Object.keys(months);
-    // Count groups before the window
     const windowStart = new Date(now.getFullYear(), now.getMonth() - 5, 1);
     const beforeWindow = groups.filter((g) => new Date(g.created_at) < windowStart).length;
     cumulative = beforeWindow;
-
-    return keys.map((month) => {
-      cumulative += months[month];
-      return { month, groups: cumulative };
-    });
+    return keys.map((month) => { cumulative += months[month]; return { month, groups: cumulative }; });
   }, [groups]);
 
   return (
     <Card variant="elevated">
       <CardHeader className="p-4 sm:p-6">
-        <CardTitle className="text-base sm:text-lg">Group Growth</CardTitle>
-        <p className="text-sm text-muted-foreground">Total groups over time</p>
+        <CardTitle className="text-base sm:text-lg">{t('charts.groupGrowth')}</CardTitle>
+        <p className="text-sm text-muted-foreground">{t('charts.totalGroupsOverTime')}</p>
       </CardHeader>
       <CardContent className="p-4 sm:p-6 pt-0">
         <ChartContainer config={chartConfig} className="h-[250px] w-full">
@@ -65,13 +55,7 @@ export function GroupGrowthChart({ groups }: GroupGrowthChartProps) {
                 <stop offset="100%" stopColor="var(--color-groups)" stopOpacity={0.05} />
               </linearGradient>
             </defs>
-            <Area
-              type="monotone"
-              dataKey="groups"
-              stroke="var(--color-groups)"
-              fill="url(#groupsFill)"
-              strokeWidth={2}
-            />
+            <Area type="monotone" dataKey="groups" stroke="var(--color-groups)" fill="url(#groupsFill)" strokeWidth={2} />
           </AreaChart>
         </ChartContainer>
       </CardContent>
