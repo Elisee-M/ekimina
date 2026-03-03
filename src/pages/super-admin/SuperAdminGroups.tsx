@@ -5,10 +5,11 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Building2, Loader2, Search, ToggleLeft, ToggleRight, Trash2 } from "lucide-react";
+import { Building2, Eye, Loader2, Search, ToggleLeft, ToggleRight, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { usePageSeo } from "@/hooks/usePageSeo";
 import { toast } from "sonner";
+import { Link } from "react-router-dom";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -180,6 +181,11 @@ export default function SuperAdminGroups() {
                         <TableCell>RWF {formatCurrency(Number(g.contribution_amount || 0))}</TableCell>
                         <TableCell>{new Date(g.created_at).toLocaleDateString()}</TableCell>
                         <TableCell className="text-right space-x-2">
+                          <Button asChild variant="ghost" size="sm" title="View details">
+                            <Link to={`/super-admin/groups/${g.id}`}>
+                              <Eye className="w-4 h-4" />
+                            </Link>
+                          </Button>
                           <Button
                             variant="ghost"
                             size="sm"

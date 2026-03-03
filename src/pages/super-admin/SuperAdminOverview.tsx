@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Loader2, Building2, Users, Wallet, TrendingUp, ArrowRight } from "lucide-react";
+import { Loader2, Building2, Users, Wallet, TrendingUp, ArrowRight, DollarSign } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { usePageSeo } from "@/hooks/usePageSeo";
 import { Link } from "react-router-dom";
@@ -34,6 +34,7 @@ export default function SuperAdminOverview() {
     totalMembers: 0,
     totalContributions: 0,
     totalLoans: 0,
+    totalProfit: 0,
   });
 
   useEffect(() => {
@@ -45,7 +46,7 @@ export default function SuperAdminOverview() {
           supabase.from("ikimina_groups").select("id,name,created_at").order("created_at", { ascending: false }).limit(10),
           supabase.from("group_members").select("id,status").eq("status", "active"),
           supabase.from("contributions").select("amount,created_at"),
-          supabase.from("loans").select("principal_amount,created_at"),
+          supabase.from("loans").select("principal_amount,profit,created_at"),
           supabase.from("ikimina_groups").select("created_at"),
         ]);
 
@@ -53,6 +54,7 @@ export default function SuperAdminOverview() {
         const totalMembers = (memberRows || []).length;
         const totalContributions = (contributionRows || []).reduce((sum, r: any) => sum + Number(r.amount || 0), 0);
         const totalLoans = (loanRows || []).reduce((sum, r: any) => sum + Number(r.principal_amount || 0), 0);
+        const totalProfit = (loanRows || []).reduce((sum, r: any) => sum + Number(r.profit || 0), 0);
 
         setGroups(recentGroups);
         setAllGroups((allGroupRows || []).map((g: any) => ({ created_at: g.created_at })));
@@ -63,9 +65,9 @@ export default function SuperAdminOverview() {
           totalMembers,
           totalContributions,
           totalLoans,
+          totalProfit,
         });
 
-        // Total groups needs a real count query
         const { count: groupsCount } = await supabase
           .from("ikimina_groups")
           .select("id", { count: "exact", head: true });
@@ -87,6 +89,7 @@ export default function SuperAdminOverview() {
       { title: "Active Members", value: stats.totalMembers.toLocaleString(), icon: Users },
       { title: "Total Contributions", value: `RWF ${formatCurrency(stats.totalContributions)}`, icon: Wallet },
       { title: "Total Loans Issued", value: `RWF ${formatCurrency(stats.totalLoans)}`, icon: TrendingUp },
+      { title: "Total Loan Profit", value: `RWF ${formatCurrency(stats.totalProfit)}`, icon: DollarSign },
     ],
     [stats]
   );
@@ -116,14 +119,14 @@ export default function SuperAdminOverview() {
           </Button>
         </header>
 
-        <section className="grid grid-cols-2 lg:grid-cols-4 gap-4" aria-label="System stats">
+        <section className="grid grid-cols-2 lg:grid-cols-5 gap-4" aria-label="System stats">
           {statCards.map((c) => (
             <Card key={c.title}>
               <CardContent className="p-4">
                 <div className="flex items-center justify-between gap-3">
                   <div className="min-w-0">
                     <p className="text-sm text-muted-foreground truncate">{c.title}</p>
-                    <p className="text-2xl font-bold text-foreground truncate">{c.value}</p>
+                    <p className="text-xl font-bold text-foreground truncate">{c.value}</p>
                   </div>
                   <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
                     <c.icon className="w-5 h-5 text-primary" />
@@ -166,7 +169,7 @@ export default function SuperAdminOverview() {
                         <TableCell>{new Date(g.created_at).toLocaleDateString()}</TableCell>
                         <TableCell className="text-right">
                           <Button asChild size="sm" variant="outline">
-                            <Link to={`/super-admin/groups`}>Open</Link>
+                            <Link to={`/super-admin/groups/${g.id}`}>View Details</Link>
                           </Button>
                         </TableCell>
                       </TableRow>

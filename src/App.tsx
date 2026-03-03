@@ -35,6 +35,7 @@ import SystemNotices from "./pages/SystemNotices";
 import GroupDisabled from "./pages/GroupDisabled";
 import PendingApproval from "./pages/PendingApproval";
 import SuperAdminApprovals from "./pages/super-admin/SuperAdminApprovals";
+import SuperAdminGroupDetail from "./pages/super-admin/SuperAdminGroupDetail";
 import Contact from "./pages/Contact";
 import { ChatWidget } from "@/components/chat/ChatWidget";
 const queryClient = new QueryClient();
@@ -187,6 +188,11 @@ const App = () => (
             <Route path="/super-admin/approvals" element={
               <ProtectedRoute requiredRole="super_admin">
                 <SuperAdminApprovals />
+              </ProtectedRoute>
+            } />
+            <Route path="/super-admin/groups/:groupId" element={
+              <ProtectedRoute requiredRole="super_admin">
+                <SuperAdminGroupDetail />
               </ProtectedRoute>
             } />
             <Route path="/super-admin/*" element={
