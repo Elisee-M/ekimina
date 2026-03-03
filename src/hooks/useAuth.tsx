@@ -36,7 +36,7 @@ interface AuthContextType {
     phone?: string,
     selectedPlan?: string
   ) => Promise<{ error: Error | null; didSignIn: boolean }>;
-  signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
+  signIn: (email: string, password: string) => Promise<{ error: Error | null; isSuperAdmin?: boolean; isGroupAdmin?: boolean; hasGroup?: boolean; groupStatus?: string }>;
   signOut: () => Promise<void>;
   refreshUserData: () => Promise<void>;
   isSuperAdmin: boolean;
@@ -269,6 +269,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         throw error;
       }
 
+      let signInResult = { isSuperAdmin: false, isGroupAdmin: false, hasGroup: false, groupStatus: 'active' };
+
       if (data.session?.user) {
         setSession(data.session);
         setUser(data.session.user);
@@ -281,6 +283,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setGroupMembership(userData.groupMembership);
         setRolesLoaded(true);
         setGroupMembershipLoaded(true);
+
+        signInResult = {
+          isSuperAdmin: userData.roles.includes('super_admin'),
+          isGroupAdmin: userData.groupMembership?.is_admin ?? false,
+          hasGroup: userData.groupMembership !== null,
+          groupStatus: userData.groupMembership?.group_status ?? 'active',
+        };
       }
 
       // Reset manual auth flag after state settles
@@ -293,7 +302,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         description: "You have successfully signed in.",
       });
 
-      return { error: null };
+      return { error: null, ...signInResult };
     } catch (error) {
       isManualAuthRef.current = false;
       const err = error as Error;

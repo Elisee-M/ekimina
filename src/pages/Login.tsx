@@ -29,6 +29,7 @@ const Login = () => {
   const { signIn, user, loading, isSuperAdmin, isGroupAdmin, groupMembership, groupMembershipLoaded, rolesLoaded } = useAuth();
   const navigate = useNavigate();
 
+  // If user is already logged in, redirect immediately
   useEffect(() => {
     if (!loading && user && groupMembershipLoaded && rolesLoaded) {
       if (isSuperAdmin) {
@@ -66,11 +67,24 @@ const Login = () => {
     }
 
     setIsLoading(true);
-    const { error } = await signIn(email, password);
+    const { error, isSuperAdmin: sa, isGroupAdmin: ga, hasGroup, groupStatus } = await signIn(email, password);
     setIsLoading(false);
 
     if (!error) {
-      // Navigation handled by useEffect
+      // Navigate immediately using the fresh data returned from signIn
+      if (sa) {
+        navigate('/super-admin', { replace: true });
+      } else if (!hasGroup) {
+        navigate('/onboarding', { replace: true });
+      } else if (groupStatus === 'pending_approval') {
+        navigate('/pending-approval', { replace: true });
+      } else if (groupStatus === 'disabled') {
+        navigate('/group-disabled', { replace: true });
+      } else if (ga) {
+        navigate('/dashboard', { replace: true });
+      } else {
+        navigate('/member', { replace: true });
+      }
     }
   };
 
