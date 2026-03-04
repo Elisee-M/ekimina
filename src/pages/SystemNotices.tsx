@@ -9,6 +9,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import { useTranslation } from "react-i18next";
+import { markAsSeen } from "@/hooks/useNotifications";
 
 interface SystemAnnouncement {
   id: string;
@@ -24,16 +25,15 @@ const SystemNotices = () => {
   const [announcements, setAnnouncements] = useState<SystemAnnouncement[]>([]);
   const { t } = useTranslation();
 
-  // Determine the user's role for layout
   const userRole = isSuperAdmin ? "super-admin" : isGroupAdmin ? "admin" : "member";
 
   useEffect(() => {
+    markAsSeen("system_notices");
     fetchAnnouncements();
   }, []);
 
   const fetchAnnouncements = async () => {
     try {
-      // RLS policies will automatically filter based on user's role
       const { data, error } = await supabase
         .from("system_announcements")
         .select("*")
@@ -61,7 +61,6 @@ const SystemNotices = () => {
   return (
     <DashboardLayout role={userRole}>
       <div className="space-y-6 sm:space-y-8">
-        {/* Header */}
         <div>
           <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground flex items-center gap-2">
             <Megaphone className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
@@ -72,7 +71,6 @@ const SystemNotices = () => {
           </p>
         </div>
 
-        {/* Announcements List */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

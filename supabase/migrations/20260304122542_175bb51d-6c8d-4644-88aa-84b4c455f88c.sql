@@ -1,0 +1,1 @@
+ALTER TABLE public.system_announcements ADD COLUMN comments_enabled boolean NOT NULL DEFAULT true;

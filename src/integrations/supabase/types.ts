@@ -418,6 +418,7 @@ export type Database = {
       system_announcements: {
         Row: {
           audience: string
+          comments_enabled: boolean
           content: string
           created_at: string
           created_by: string | null
@@ -426,6 +427,7 @@ export type Database = {
         }
         Insert: {
           audience?: string
+          comments_enabled?: boolean
           content: string
           created_at?: string
           created_by?: string | null
@@ -434,6 +436,7 @@ export type Database = {
         }
         Update: {
           audience?: string
+          comments_enabled?: boolean
           content?: string
           created_at?: string
           created_by?: string | null

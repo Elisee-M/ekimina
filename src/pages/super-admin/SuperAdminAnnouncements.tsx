@@ -7,6 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/EmptyState";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 import { 
   Dialog,
   DialogContent,
@@ -28,18 +30,22 @@ import {
   Plus,
   Trash2,
   Users,
-  Shield
+  Shield,
+  MessageSquare,
+  MessageSquareOff
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
+import { markAsSeen } from "@/hooks/useNotifications";
 
 interface SystemAnnouncement {
   id: string;
   title: string;
   content: string;
   audience: "all" | "admins_only";
+  comments_enabled: boolean;
   created_at: string;
   created_by: string | null;
 }
@@ -54,7 +60,8 @@ const SuperAdminAnnouncements = () => {
   const [newAnnouncement, setNewAnnouncement] = useState({ 
     title: "", 
     content: "",
-    audience: "all" as "all" | "admins_only"
+    audience: "all" as "all" | "admins_only",
+    comments_enabled: true,
   });
 
   const fetchAnnouncements = async () => {
@@ -74,6 +81,7 @@ const SuperAdminAnnouncements = () => {
   };
 
   useEffect(() => {
+    markAsSeen("sa_announcements");
     fetchAnnouncements();
   }, []);
 
@@ -88,8 +96,9 @@ const SuperAdminAnnouncements = () => {
           title: newAnnouncement.title.trim(),
           content: newAnnouncement.content.trim(),
           audience: newAnnouncement.audience,
+          comments_enabled: newAnnouncement.comments_enabled,
           created_by: user?.id
-        });
+        } as any);
 
       if (error) throw error;
 
@@ -97,7 +106,7 @@ const SuperAdminAnnouncements = () => {
         title: "Announcement sent", 
         description: `Your announcement has been sent to ${newAnnouncement.audience === 'all' ? 'all users' : 'group admins only'}.` 
       });
-      setNewAnnouncement({ title: "", content: "", audience: "all" });
+      setNewAnnouncement({ title: "", content: "", audience: "all", comments_enabled: true });
       setDialogOpen(false);
       fetchAnnouncements();
     } catch (error: any) {
@@ -199,6 +208,19 @@ const SuperAdminAnnouncements = () => {
                     </SelectContent>
                   </Select>
                 </div>
+                <div className="flex items-center justify-between rounded-lg border border-border p-3">
+                  <div className="space-y-0.5">
+                    <Label htmlFor="comments-toggle" className="text-sm font-medium">Allow Comments</Label>
+                    <p className="text-xs text-muted-foreground">Let users comment on this announcement</p>
+                  </div>
+                  <Switch
+                    id="comments-toggle"
+                    checked={newAnnouncement.comments_enabled}
+                    onCheckedChange={(checked) => 
+                      setNewAnnouncement(prev => ({ ...prev, comments_enabled: checked }))
+                    }
+                  />
+                </div>
                 <Button 
                   className="w-full" 
                   onClick={handleCreateAnnouncement}
@@ -250,6 +272,15 @@ const SuperAdminAnnouncements = () => {
                                   <><Shield className="w-3 h-3 mr-1" /> Admins Only</>
                                 )}
                               </Badge>
+                              {announcement.comments_enabled ? (
+                                <Badge variant="muted" className="gap-1">
+                                  <MessageSquare className="w-3 h-3" /> Comments On
+                                </Badge>
+                              ) : (
+                                <Badge variant="outline" className="gap-1">
+                                  <MessageSquareOff className="w-3 h-3" /> Comments Off
+                                </Badge>
+                              )}
                             </div>
                             <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
                               <Calendar className="w-3 h-3" />

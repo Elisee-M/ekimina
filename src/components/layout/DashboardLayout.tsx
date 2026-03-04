@@ -24,6 +24,9 @@ import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { NotificationDropdown } from "@/components/layout/NotificationDropdown";
+import { UserSearchCommand } from "@/components/layout/UserSearchCommand";
+import { useNotifications } from "@/hooks/useNotifications";
 import ekiminaLogo from "@/assets/ekimina-logo.png";
 
 interface DashboardLayoutProps {
@@ -37,6 +40,17 @@ export function DashboardLayout({ children, role }: DashboardLayoutProps) {
   const navigate = useNavigate();
   const { profile, groupMembership, signOut } = useAuth();
   const { t } = useTranslation();
+  const counts = useNotifications();
+
+  // Map href to notification count
+  const badgeMap: Record<string, number> = {
+    "/super-admin/announcements": counts.announcements,
+    "/super-admin/messages": counts.messages,
+    "/super-admin/approvals": counts.approvals,
+    "/dashboard/announcements": counts.announcements,
+    "/member/announcements": counts.announcements,
+    "/system-notices": counts.systemNotices,
+  };
 
   const superAdminNav = [
     { icon: LayoutDashboard, label: t('dashboard.overview'), href: "/super-admin" },
@@ -118,6 +132,7 @@ export function DashboardLayout({ children, role }: DashboardLayoutProps) {
           <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
             {navItems.map((item) => {
               const isActive = location.pathname === item.href;
+              const badgeCount = badgeMap[item.href] || 0;
               return (
                 <Link
                   key={item.href}
@@ -130,7 +145,12 @@ export function DashboardLayout({ children, role }: DashboardLayoutProps) {
                   onClick={() => setSidebarOpen(false)}
                 >
                   <item.icon className="w-5 h-5 flex-shrink-0" />
-                  <span className="text-sm font-medium">{item.label}</span>
+                  <span className="text-sm font-medium flex-1">{item.label}</span>
+                  {badgeCount > 0 && (
+                    <span className="min-w-[20px] h-5 flex items-center justify-center rounded-full bg-destructive text-destructive-foreground text-[10px] font-bold px-1.5">
+                      {badgeCount > 99 ? "99+" : badgeCount}
+                    </span>
+                  )}
                 </Link>
               );
             })}
@@ -193,11 +213,9 @@ export function DashboardLayout({ children, role }: DashboardLayoutProps) {
 
             <div className="flex-1" />
 
-            <div className="flex items-center gap-2 sm:gap-3">
-              <button className="relative p-2 text-muted-foreground hover:text-foreground transition-colors touch-manipulation">
-                <Bell className="w-5 h-5" />
-                <span className="absolute top-1 right-1 w-2 h-2 bg-destructive rounded-full" />
-              </button>
+            <div className="flex items-center gap-1 sm:gap-2">
+              <UserSearchCommand />
+              <NotificationDropdown role={role} />
             </div>
           </div>
         </header>
