@@ -13,6 +13,7 @@ import Dashboard from "./pages/Dashboard";
 import Members from "./pages/Members";
 import Contributions from "./pages/Contributions";
 import Loans from "./pages/Loans";
+import Dividends from "./pages/Dividends";
 import Reports from "./pages/Reports";
 import Settings from "./pages/Settings";
 import History from "./pages/History";
@@ -29,6 +30,7 @@ import MemberContributions from "./pages/MemberContributions";
 import MemberLoans from "./pages/MemberLoans";
 import MemberAnnouncements from "./pages/MemberAnnouncements";
 import MemberSettings from "./pages/MemberSettings";
+import MemberDividends from "./pages/MemberDividends";
 import Unauthorized from "./pages/Unauthorized";
 import NotFound from "./pages/NotFound";
 import SystemNotices from "./pages/SystemNotices";
@@ -104,6 +106,11 @@ const App = () => (
                 <Announcements />
               </ProtectedRoute>
             } />
+            <Route path="/dashboard/dividends" element={
+              <ProtectedRoute requireGroupAdmin>
+                <Dividends />
+              </ProtectedRoute>
+            } />
             <Route path="/dashboard/*" element={
               <ProtectedRoute requireGroupAdmin>
                 <Dashboard />
@@ -139,6 +146,11 @@ const App = () => (
             <Route path="/member/settings" element={
               <ProtectedRoute>
                 <MemberSettings />
+              </ProtectedRoute>
+            } />
+            <Route path="/member/dividends" element={
+              <ProtectedRoute>
+                <MemberDividends />
               </ProtectedRoute>
             } />
             <Route path="/member/*" element={

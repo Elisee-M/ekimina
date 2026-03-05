@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { PenaltySettings } from "@/components/penalties/PenaltySettings";
 import {
   Select,
   SelectContent,
@@ -478,6 +479,8 @@ const Settings = () => {
                   </div>
                 </CardContent>
               </Card>
+              {/* Penalty Settings */}
+              <PenaltySettings />
             </motion.div>
           </TabsContent>
 

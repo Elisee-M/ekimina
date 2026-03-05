@@ -25,13 +25,15 @@ import {
   Wallet,
   AlertCircle,
   Plus,
-  Send
+  Send,
+  Users
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useMemberData } from "@/hooks/useMemberData";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "react-i18next";
+import { LoanVoting } from "@/components/loans/LoanVoting";
 
 interface LoanRecord {
   id: string;
@@ -57,6 +59,8 @@ const MemberLoans = () => {
   const { user, groupMembership } = useAuth();
   const { loading: memberLoading, stats, groupInfo } = useMemberData();
   const [loans, setLoans] = useState<LoanRecord[]>([]);
+  const [groupPendingLoans, setGroupPendingLoans] = useState<Array<{ id: string; borrower_id: string; borrower_name: string; principal_amount: number; total_payable: number; interest_rate: number; duration_months: number; notes: string | null }>>([]);
+  const [voteThreshold, setVoteThreshold] = useState(60);
   const [repayments, setRepayments] = useState<RepaymentRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [showRequestDialog, setShowRequestDialog] = useState(false);
@@ -125,7 +129,50 @@ const MemberLoans = () => {
 
   useEffect(() => {
     fetchLoansAndRepayments();
+    fetchGroupPendingLoans();
   }, [user, groupMembership?.group_id]);
+
+  const fetchGroupPendingLoans = async () => {
+    if (!user || !groupMembership?.group_id) return;
+    try {
+      // Fetch threshold
+      const { data: groupData } = await supabase
+        .from('ikimina_groups')
+        .select('vote_approval_threshold')
+        .eq('id', groupMembership.group_id)
+        .single();
+      if (groupData) setVoteThreshold(groupData.vote_approval_threshold);
+
+      // Fetch all pending loans in the group (not just user's own)
+      const { data: pendingData } = await supabase
+        .from('loans')
+        .select('*')
+        .eq('group_id', groupMembership.group_id)
+        .eq('status', 'pending')
+        .neq('borrower_id', user.id);
+
+      if (pendingData && pendingData.length > 0) {
+        const borrowerIds = [...new Set(pendingData.map(l => l.borrower_id))];
+        const { data: profiles } = await supabase.from('profiles').select('id, full_name').in('id', borrowerIds);
+        const map = (profiles || []).reduce((acc, p) => { acc[p.id] = p.full_name; return acc; }, {} as Record<string, string>);
+
+        setGroupPendingLoans(pendingData.map(l => ({
+          id: l.id,
+          borrower_id: l.borrower_id,
+          borrower_name: map[l.borrower_id] || 'Unknown',
+          principal_amount: Number(l.principal_amount),
+          total_payable: Number(l.total_payable),
+          interest_rate: Number(l.interest_rate),
+          duration_months: l.duration_months,
+          notes: l.notes,
+        })));
+      } else {
+        setGroupPendingLoans([]);
+      }
+    } catch (error) {
+      console.error('Error fetching group pending loans:', error);
+    }
+  };
 
   const handleRequestLoan = async () => {
     if (!user || !groupMembership?.group_id || !groupInfo) return;
@@ -292,6 +339,33 @@ const MemberLoans = () => {
                       {t('memberLoans.awaitingApproval')}
                     </Badge>
                   </div>
+                ))}
+              </CardContent>
+            </Card>
+          </motion.div>
+        )}
+
+        {/* Vote on Other Members' Loan Requests */}
+        {groupPendingLoans.length > 0 && (
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: 0.27 }}>
+            <Card>
+              <CardHeader className="p-4 sm:p-6">
+                <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+                  <Users className="w-5 h-5 text-primary" />
+                  Vote on Loan Requests
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-4 sm:p-6 pt-0 space-y-4">
+                {groupPendingLoans.map(loan => (
+                  <LoanVoting
+                    key={loan.id}
+                    loanId={loan.id}
+                    borrowerId={loan.borrower_id}
+                    borrowerName={loan.borrower_name}
+                    principalAmount={loan.principal_amount}
+                    groupId={groupMembership!.group_id}
+                    threshold={voteThreshold}
+                  />
                 ))}
               </CardContent>
             </Card>

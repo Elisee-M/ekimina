@@ -11,6 +11,8 @@ import {
 import { useAuth } from "@/hooks/useAuth";
 import { useMemberData } from "@/hooks/useMemberData";
 import { useTranslation } from "react-i18next";
+import { MemberSavingsChart } from "@/components/charts/MemberSavingsChart";
+import { ContributionStreakCard } from "@/components/charts/ContributionStreakCard";
 
 const MemberDashboard = () => {
   const { profile } = useAuth();
@@ -42,7 +44,8 @@ const MemberDashboard = () => {
           )}
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <ContributionStreakCard contributions={contributions.map(c => ({ status: c.status, date: c.date }))} />
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
             <Card variant="stat">
               <CardContent className="p-4 sm:p-6">
@@ -128,6 +131,9 @@ const MemberDashboard = () => {
             </Card>
           </motion.div>
         )}
+
+        {/* Savings Growth Chart */}
+        <MemberSavingsChart contributions={contributions.map(c => ({ amount: c.amount, status: c.status, date: c.date }))} />
 
         <div className="grid lg:grid-cols-3 gap-4 sm:gap-6">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: 0.3 }} className="lg:col-span-2">

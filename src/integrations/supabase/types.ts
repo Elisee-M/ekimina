@@ -247,6 +247,7 @@ export type Database = {
           plan: string
           status: string
           updated_at: string
+          vote_approval_threshold: number
         }
         Insert: {
           constitution?: string | null
@@ -263,6 +264,7 @@ export type Database = {
           plan?: string
           status?: string
           updated_at?: string
+          vote_approval_threshold?: number
         }
         Update: {
           constitution?: string | null
@@ -279,8 +281,41 @@ export type Database = {
           plan?: string
           status?: string
           updated_at?: string
+          vote_approval_threshold?: number
         }
         Relationships: []
+      }
+      loan_votes: {
+        Row: {
+          created_at: string
+          id: string
+          loan_id: string
+          vote: string
+          voter_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          loan_id: string
+          vote: string
+          voter_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          loan_id?: string
+          vote?: string
+          voter_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "loan_votes_loan_id_fkey"
+            columns: ["loan_id"]
+            isOneToOne: false
+            referencedRelation: "loans"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       loans: {
         Row: {
@@ -342,6 +377,95 @@ export type Database = {
             foreignKeyName: "loans_group_id_fkey"
             columns: ["group_id"]
             isOneToOne: false
+            referencedRelation: "ikimina_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      penalties: {
+        Row: {
+          amount: number
+          contribution_id: string | null
+          created_at: string
+          group_id: string
+          id: string
+          member_id: string
+          reason: string
+          status: string
+        }
+        Insert: {
+          amount: number
+          contribution_id?: string | null
+          created_at?: string
+          group_id: string
+          id?: string
+          member_id: string
+          reason?: string
+          status?: string
+        }
+        Update: {
+          amount?: number
+          contribution_id?: string | null
+          created_at?: string
+          group_id?: string
+          id?: string
+          member_id?: string
+          reason?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "penalties_contribution_id_fkey"
+            columns: ["contribution_id"]
+            isOneToOne: false
+            referencedRelation: "contributions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "penalties_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "ikimina_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      penalty_rules: {
+        Row: {
+          created_at: string
+          enabled: boolean
+          grace_period_days: number
+          group_id: string
+          id: string
+          penalty_type: string
+          penalty_value: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          enabled?: boolean
+          grace_period_days?: number
+          group_id: string
+          id?: string
+          penalty_type?: string
+          penalty_value?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          enabled?: boolean
+          grace_period_days?: number
+          group_id?: string
+          id?: string
+          penalty_type?: string
+          penalty_value?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "penalty_rules_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: true
             referencedRelation: "ikimina_groups"
             referencedColumns: ["id"]
           },

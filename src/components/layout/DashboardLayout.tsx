@@ -17,7 +17,8 @@ import {
   Megaphone,
   Globe,
   Mail,
-  ShieldCheck
+  ShieldCheck,
+  PieChart
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -67,6 +68,7 @@ export function DashboardLayout({ children, role }: DashboardLayoutProps) {
     { icon: Users, label: t('dashboard.members'), href: "/dashboard/members" },
     { icon: Wallet, label: t('dashboard.contributions'), href: "/dashboard/contributions" },
     { icon: TrendingUp, label: t('dashboard.loans'), href: "/dashboard/loans" },
+    { icon: PieChart, label: "Dividends", href: "/dashboard/dividends" },
     { icon: History, label: t('dashboard.history'), href: "/dashboard/history" },
     { icon: FileText, label: t('dashboard.reports'), href: "/dashboard/reports" },
     { icon: Bell, label: t('dashboard.announcements'), href: "/dashboard/announcements" },
@@ -78,6 +80,7 @@ export function DashboardLayout({ children, role }: DashboardLayoutProps) {
     { icon: LayoutDashboard, label: t('dashboard.myDashboard'), href: "/member" },
     { icon: Wallet, label: t('dashboard.myContributions'), href: "/member/contributions" },
     { icon: TrendingUp, label: t('dashboard.myLoans'), href: "/member/loans" },
+    { icon: PieChart, label: "My Dividends", href: "/member/dividends" },
     { icon: History, label: t('dashboard.history'), href: "/member/history" },
     { icon: Bell, label: t('dashboard.announcements'), href: "/member/announcements" },
     { icon: Megaphone, label: t('dashboard.systemNotices'), href: "/system-notices" },
