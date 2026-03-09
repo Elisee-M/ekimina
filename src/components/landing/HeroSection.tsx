@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -7,9 +7,80 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { DemoWalkthrough } from "./DemoWalkthrough";
 import { useTranslation } from "react-i18next";
 
+function useTypewriter(text: string, speed = 50) {
+  const [displayed, setDisplayed] = useState("");
+  const [done, setDone] = useState(false);
+
+  useEffect(() => {
+    setDisplayed("");
+    setDone(false);
+    let i = 0;
+    const interval = setInterval(() => {
+      i++;
+      setDisplayed(text.slice(0, i));
+      if (i >= text.length) {
+        clearInterval(interval);
+        setDone(true);
+      }
+    }, speed);
+    return () => clearInterval(interval);
+  }, [text, speed]);
+
+  return { displayed, done };
+}
+
 export function HeroSection() {
   const [showDemo, setShowDemo] = useState(false);
   const { t } = useTranslation();
+
+  const fullTitle = `${t('hero.title')} ${t('hero.titleHighlight')} ${t('hero.titleEnd')} ${t('hero.titleGradient')}`;
+  const { displayed, done } = useTypewriter(fullTitle, 40);
+
+  const titleParts = {
+    part1: t('hero.title'),
+    highlight: t('hero.titleHighlight'),
+    part2: t('hero.titleEnd'),
+    gradient: t('hero.titleGradient'),
+  };
+
+  // Calculate which part of the typewriter we're in
+  const renderTypedTitle = () => {
+    const len = displayed.length;
+    const p1 = titleParts.part1 + " ";
+    const p2 = titleParts.highlight + " ";
+    const p3 = titleParts.part2 + " ";
+    const p4 = titleParts.gradient;
+
+    let pos = 0;
+    const parts: React.ReactNode[] = [];
+
+    // Part 1 - normal text
+    const p1Shown = displayed.slice(pos, pos + p1.length);
+    parts.push(<span key="p1">{p1Shown}</span>);
+    pos += p1.length;
+
+    // Part 2 - highlighted
+    if (len > pos) {
+      const p2Shown = displayed.slice(pos, pos + p2.length);
+      parts.push(<span key="p2" className="text-primary">{p2Shown}</span>);
+    }
+    pos += p2.length;
+
+    // Part 3 - normal
+    if (len > pos) {
+      const p3Shown = displayed.slice(pos, pos + p3.length);
+      parts.push(<span key="p3">{p3Shown}</span>);
+    }
+    pos += p3.length;
+
+    // Part 4 - accent color (no gradient)
+    if (len > pos) {
+      const p4Shown = displayed.slice(pos, pos + p4.length);
+      parts.push(<span key="p4" className="text-accent">{p4Shown}</span>);
+    }
+
+    return parts;
+  };
 
   return (
     <section className="relative min-h-screen flex items-center pt-16 overflow-hidden">
@@ -35,8 +106,8 @@ export function HeroSection() {
             </div>
 
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-foreground leading-tight">
-              {t('hero.title')} <span className="text-primary">{t('hero.titleHighlight')}</span> {t('hero.titleEnd')}{" "}
-              <span className="gradient-hero bg-clip-text text-transparent">{t('hero.titleGradient')}</span>
+              {renderTypedTitle()}
+              {!done && <span className="inline-block w-[3px] h-[1em] bg-primary animate-pulse align-text-bottom ml-0.5" />}
             </h1>
 
             <p className="text-lg text-muted-foreground max-w-xl">
