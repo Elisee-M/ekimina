@@ -1,10 +1,12 @@
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { usePageSeo } from "@/hooks/usePageSeo";
+import { useTranslation } from "react-i18next";
 import { Briefcase, MapPin } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const Careers = () => {
+  const { t } = useTranslation();
   usePageSeo({ title: "Careers | eKimina", description: "Join the eKimina team and help build the future of community savings in Rwanda.", canonicalPath: "/careers" });
 
   return (
@@ -13,10 +15,8 @@ const Careers = () => {
       <main className="flex-1">
         <section className="py-20 bg-gradient-to-b from-primary/5 to-background">
           <div className="container mx-auto px-4 text-center max-w-3xl">
-            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6">Join Our Team</h1>
-            <p className="text-lg text-muted-foreground">
-              Help us transform how Rwandan communities save and grow together. We're always looking for passionate people.
-            </p>
+            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6">{t('careers.title')}</h1>
+            <p className="text-lg text-muted-foreground">{t('careers.description')}</p>
           </div>
         </section>
 
@@ -26,19 +26,17 @@ const Careers = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-3 text-foreground">
                   <Briefcase className="w-5 h-5 text-primary" />
-                  No Open Positions Right Now
+                  {t('careers.noPositions')}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <p className="text-muted-foreground">
-                  We don't have any open positions at the moment, but we're always interested in hearing from talented individuals who are passionate about fintech and community development.
-                </p>
+                <p className="text-muted-foreground">{t('careers.noPositionsDesc')}</p>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <MapPin className="w-4 h-4" />
-                  <span>Kigali, Rwanda</span>
+                  <span>{t('careers.location')}</span>
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  Send your CV and a short introduction to{" "}
+                  {t('careers.sendCV')}{" "}
                   <a href="mailto:mugiranezaelisee0@gmail.com" className="text-primary hover:underline">
                     mugiranezaelisee0@gmail.com
                   </a>

@@ -696,5 +696,59 @@
       "subjectMin": "Subject must be at least 3 characters",
       "messageMin": "Message must be at least 10 characters"
     }
+  },
+  "about": {
+    "title": "About eKimina",
+    "description": "eKimina is the modern platform for Rwandan savings groups (Ikimina). We help communities build wealth together with trust, transparency, and technology.",
+    "missionTitle": "Our Mission",
+    "missionDesc": "To digitize and modernize Rwandan savings groups, making financial collaboration accessible, transparent, and secure for every community.",
+    "valuesTitle": "Our Values",
+    "valuesDesc": "Trust, transparency, and community are at the heart of everything we do. We believe in empowering people to grow together financially.",
+    "serveTitle": "Who We Serve",
+    "serveDesc": "From small neighborhood groups to large community organizations, eKimina serves any Ikimina group looking for a better way to manage their savings and loans.",
+    "securityTitle": "Security First",
+    "securityDesc": "Your financial data is protected with industry-standard encryption and security practices. We take the safety of your information seriously."
+  },
+  "careers": {
+    "title": "Join Our Team",
+    "description": "Help us transform how Rwandan communities save and grow together. We're always looking for passionate people.",
+    "noPositions": "No Open Positions Right Now",
+    "noPositionsDesc": "We don't have any open positions at the moment, but we're always interested in hearing from talented individuals who are passionate about fintech and community development.",
+    "location": "Kigali, Rwanda",
+    "sendCV": "Send your CV and a short introduction to"
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "lastUpdated": "Last updated: March 6, 2026",
+    "s1Title": "1. Information We Collect",
+    "s1Desc": "We collect information you provide directly, including your name, email address, phone number, and financial data related to your savings group activities (contributions, loans, and repayments).",
+    "s2Title": "2. How We Use Your Information",
+    "s2Desc": "Your information is used to provide and improve our services, manage your savings group, process contributions and loans, send notifications, and ensure the security of your account.",
+    "s3Title": "3. Data Security",
+    "s3Desc": "We implement industry-standard security measures including encryption, secure data storage, and access controls to protect your personal and financial information.",
+    "s4Title": "4. Data Sharing",
+    "s4Desc": "We do not sell your personal data. Your financial information is shared only with members of your savings group as necessary for group operations. We may share anonymized data for analytics purposes.",
+    "s5Title": "5. Your Rights",
+    "s5Desc": "You have the right to access, update, or delete your personal data. You can manage your information through your account settings or by contacting us directly.",
+    "s6Title": "6. Contact Us",
+    "s6Desc": "For any privacy-related questions, contact us at"
+  },
+  "termsPage": {
+    "title": "Terms of Service",
+    "lastUpdated": "Last updated: March 6, 2026",
+    "s1Title": "1. Acceptance of Terms",
+    "s1Desc": "By using eKimina, you agree to these Terms of Service. If you do not agree, please do not use our platform.",
+    "s2Title": "2. Description of Service",
+    "s2Desc": "eKimina provides a digital platform for managing Ikimina (savings groups), including contribution tracking, loan management, penalty enforcement, and dividend distribution.",
+    "s3Title": "3. User Responsibilities",
+    "s3Desc": "You are responsible for maintaining the confidentiality of your account, providing accurate information, and complying with your savings group's rules and regulations.",
+    "s4Title": "4. Financial Disclaimer",
+    "s4Desc": "eKimina is a management tool and does not provide financial advice. All financial decisions within your savings group are the responsibility of the group and its members.",
+    "s5Title": "5. Limitation of Liability",
+    "s5Desc": "eKimina is provided \"as is\" without warranties. We are not liable for any financial losses, disputes between group members, or interruptions in service.",
+    "s6Title": "6. Termination",
+    "s6Desc": "We reserve the right to suspend or terminate accounts that violate these terms. You may delete your account at any time through your account settings.",
+    "s7Title": "7. Contact",
+    "s7Desc": "For questions about these terms, contact us at"
   }
 }

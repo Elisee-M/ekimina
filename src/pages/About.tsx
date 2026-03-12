@@ -14,10 +14,8 @@ const About = () => {
       <main className="flex-1">
         <section className="py-20 bg-gradient-to-b from-primary/5 to-background">
           <div className="container mx-auto px-4 text-center max-w-3xl">
-            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6">About eKimina</h1>
-            <p className="text-lg text-muted-foreground">
-              eKimina is the modern platform for Rwandan savings groups (Ikimina). We help communities build wealth together with trust, transparency, and technology.
-            </p>
+            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6">{t('about.title')}</h1>
+            <p className="text-lg text-muted-foreground">{t('about.description')}</p>
           </div>
         </section>
 
@@ -28,15 +26,15 @@ const About = () => {
                 <div className="flex items-start gap-4">
                   <div className="p-3 rounded-xl bg-primary/10 text-primary"><Target className="w-6 h-6" /></div>
                   <div>
-                    <h3 className="text-xl font-semibold text-foreground mb-2">Our Mission</h3>
-                    <p className="text-muted-foreground">To digitize and modernize Rwandan savings groups, making financial collaboration accessible, transparent, and secure for every community.</p>
+                    <h3 className="text-xl font-semibold text-foreground mb-2">{t('about.missionTitle')}</h3>
+                    <p className="text-muted-foreground">{t('about.missionDesc')}</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
                   <div className="p-3 rounded-xl bg-primary/10 text-primary"><Heart className="w-6 h-6" /></div>
                   <div>
-                    <h3 className="text-xl font-semibold text-foreground mb-2">Our Values</h3>
-                    <p className="text-muted-foreground">Trust, transparency, and community are at the heart of everything we do. We believe in empowering people to grow together financially.</p>
+                    <h3 className="text-xl font-semibold text-foreground mb-2">{t('about.valuesTitle')}</h3>
+                    <p className="text-muted-foreground">{t('about.valuesDesc')}</p>
                   </div>
                 </div>
               </div>
@@ -44,15 +42,15 @@ const About = () => {
                 <div className="flex items-start gap-4">
                   <div className="p-3 rounded-xl bg-primary/10 text-primary"><Users className="w-6 h-6" /></div>
                   <div>
-                    <h3 className="text-xl font-semibold text-foreground mb-2">Who We Serve</h3>
-                    <p className="text-muted-foreground">From small neighborhood groups to large community organizations, eKimina serves any Ikimina group looking for a better way to manage their savings and loans.</p>
+                    <h3 className="text-xl font-semibold text-foreground mb-2">{t('about.serveTitle')}</h3>
+                    <p className="text-muted-foreground">{t('about.serveDesc')}</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
                   <div className="p-3 rounded-xl bg-primary/10 text-primary"><Shield className="w-6 h-6" /></div>
                   <div>
-                    <h3 className="text-xl font-semibold text-foreground mb-2">Security First</h3>
-                    <p className="text-muted-foreground">Your financial data is protected with industry-standard encryption and security practices. We take the safety of your information seriously.</p>
+                    <h3 className="text-xl font-semibold text-foreground mb-2">{t('about.securityTitle')}</h3>
+                    <p className="text-muted-foreground">{t('about.securityDesc')}</p>
                   </div>
                 </div>
               </div>

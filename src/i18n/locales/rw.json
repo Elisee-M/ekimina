@@ -696,5 +696,59 @@
       "subjectMin": "Insanganyamatsiko igomba kugira nibura inyuguti 3",
       "messageMin": "Ubutumwa bugomba kugira nibura inyuguti 10"
     }
+  },
+  "about": {
+    "title": "Ibyerekeye eKimina",
+    "description": "eKimina ni urubuga rugezweho rw'amatsinda y'ubwizigame mu Rwanda (Ikimina). Dufasha umuryango kubaka ubutunzi hamwe mu cyizere, ubumwe, n'ikoranabuhanga.",
+    "missionTitle": "Intego Yacu",
+    "missionDesc": "Guhindura amatsinda y'ubwizigame y'u Rwanda mu buryo bwa none, gutuma gukorera hamwe ku bijyanye n'amafaranga bikorwa neza, bisobanutse, kandi byizewe ku muryango wose.",
+    "valuesTitle": "Indangagaciro Zacu",
+    "valuesDesc": "Icyizere, ubumwe, n'umuryango ni ibintu by'ingenzi mu byo dukora byose. Twizera ko abantu bashobora gukura hamwe mu by'amafaranga.",
+    "serveTitle": "Abo Dukorera",
+    "serveDesc": "Kuva ku matsinda mato y'umudugudu kugera ku mashyirahamwe manini, eKimina ikorera itsinda iryo ari ryo ryose ry'Ikimina rishaka uburyo bwiza bwo gucunga ubwizigame n'inguzanyo.",
+    "securityTitle": "Umutekano Mbere ya Byose",
+    "securityDesc": "Amakuru yawe y'amafaranga arindwa n'uburyo bw'umutekano bukurikije amahame mpuzamahanga. Dufata umutekano w'amakuru yawe nk'iby'agaciro."
+  },
+  "careers": {
+    "title": "Injira mu Ikipe Yacu",
+    "description": "Dufashe guhindura uko umuryango w'u Rwanda wizigamira kandi ukura hamwe. Dushaka abantu bashishikajwe buri gihe.",
+    "noPositions": "Nta Mwanya Uboneka Ubu",
+    "noPositionsDesc": "Nta mwanya uboneka ubu, ariko dushishikajwe buri gihe no kumva abantu b'impano bashishikajwe na fintech no guteza imbere umuryango.",
+    "location": "Kigali, Rwanda",
+    "sendCV": "Ohereza CV yawe n'amagambo make akwishimira kuri"
+  },
+  "privacy": {
+    "title": "Politiki y'Ubuzima Bwite",
+    "lastUpdated": "Iheruka guhindurwa: Werurwe 6, 2026",
+    "s1Title": "1. Amakuru Dukusanya",
+    "s1Desc": "Dukusanya amakuru utanga wenyine, harimo amazina yawe, aderesi ya imeli, nimero ya telefoni, n'amakuru y'amafaranga ajyanye n'ibikorwa by'itsinda ry'ubwizigame (imisanzu, inguzanyo, no kwishyura).",
+    "s2Title": "2. Uko Dukoresha Amakuru Yawe",
+    "s2Desc": "Amakuru yawe akoreshwa mu gutanga no kunoza serivisi zacu, gucunga itsinda ry'ubwizigame, gukora imisanzu n'inguzanyo, kohereza ibimenyetso, no kwemeza umutekano wa konti yawe.",
+    "s3Title": "3. Umutekano w'Amakuru",
+    "s3Desc": "Dushyira mu bikorwa uburyo bw'umutekano bukurikije amahame mpuzamahanga harimo ibanga, kubika amakuru mu mutekano, no kugenzura ubugenzuzi kugira ngo turinde amakuru yawe bwite n'ay'amafaranga.",
+    "s4Title": "4. Gusangira Amakuru",
+    "s4Desc": "Ntigucuruza amakuru yawe bwite. Amakuru yawe y'amafaranga asangirwa gusa n'abanyamuryango b'itsinda ryawe uko bisabwa n'ibikorwa by'itsinda. Dushobora gusangira amakuru atarangwa ku bijyanye n'isesengura.",
+    "s5Title": "5. Uburenganzira Bwawe",
+    "s5Desc": "Ufite uburenganzira bwo kubona, guhindura, cyangwa gusiba amakuru yawe bwite. Ushobora gucunga amakuru yawe binyuze mu igenamiterere rya konti yawe cyangwa ukatwandikira.",
+    "s6Title": "6. Twandikire",
+    "s6Desc": "Ku kibazo icyo ari cyo cyose kijyanye n'ubuzima bwite, twandikira kuri"
+  },
+  "termsPage": {
+    "title": "Amabwiriza y'Ikoreshwa",
+    "lastUpdated": "Iheruka guhindurwa: Werurwe 6, 2026",
+    "s1Title": "1. Kwemera Amabwiriza",
+    "s1Desc": "Ukoresheje eKimina, wemera aya Mabwiriza y'Ikoreshwa. Niba udahuje, nyamuneka ntukoreshe urubuga rwacu.",
+    "s2Title": "2. Ibisobanuro by'Ikoreshwa",
+    "s2Desc": "eKimina itanga urubuga rwa digitale rwo gucunga Ikimina (amatsinda y'ubwizigame), harimo gukurikirana imisanzu, gucunga inguzanyo, gushyira mu bikorwa ibihano, no gusangira inyungu.",
+    "s3Title": "3. Inshingano z'Umukoresha",
+    "s3Desc": "Ufite inshingano yo kubungabunga ibanga rya konti yawe, gutanga amakuru y'ukuri, no gukurikiza amategeko n'amabwiriza y'itsinda ry'ubwizigame ryawe.",
+    "s4Title": "4. Itangazo ry'Amafaranga",
+    "s4Desc": "eKimina ni igikoresho cyo gucunga ntabwo itanga inama z'amafaranga. Ibyemezo byose by'amafaranga mu itsinda ry'ubwizigame ni inshingano y'itsinda n'abanyamuryango baryo.",
+    "s5Title": "5. Imipaka y'Uburyozwe",
+    "s5Desc": "eKimina itangwa \"uko iri\" nta garanti. Ntiduhemba igihombo icyo ari cyo cyose cy'amafaranga, amakimbirane y'abanyamuryango, cyangwa ihagarara ry'ikoreshwa.",
+    "s6Title": "6. Guhagarika",
+    "s6Desc": "Dufite uburenganzira bwo guhagarika konti zirwanya aya mabwiriza. Ushobora gusiba konti yawe igihe icyo ari cyo cyose binyuze mu igenamiterere rya konti yawe.",
+    "s7Title": "7. Twandikire",
+    "s7Desc": "Ku bibazo bijyanye n'aya mabwiriza, twandikira kuri"
   }
 }
