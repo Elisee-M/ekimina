@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -9,6 +9,7 @@ import { Loader2, Mail, MailOpen, Eye } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { usePageSeo } from "@/hooks/usePageSeo";
 import { EmptyState } from "@/components/EmptyState";
+import { useTranslation } from "react-i18next";
 
 interface ContactMessage {
   id: string;
@@ -21,6 +22,8 @@ interface ContactMessage {
 }
 
 export default function SuperAdminMessages() {
+  const { t } = useTranslation();
+  
   usePageSeo({
     title: "Contact Messages | eKimina",
     description: "View messages from the contact form.",
@@ -69,11 +72,11 @@ export default function SuperAdminMessages() {
     <DashboardLayout role="super-admin">
       <main className="space-y-6">
         <header>
-          <h1 className="text-2xl font-bold text-foreground">Contact Messages</h1>
+          <h1 className="text-2xl font-bold text-foreground">{t('superAdmin.messages.title')}</h1>
           <p className="text-muted-foreground">
-            Messages from the contact form{" "}
+            {t('superAdmin.messages.description')}{" "}
             {unreadCount > 0 && (
-              <Badge variant="destructive" className="ml-2">{unreadCount} unread</Badge>
+              <Badge variant="destructive" className="ml-2">{unreadCount} {t('superAdmin.messages.unread')}</Badge>
             )}
           </p>
         </header>
@@ -84,8 +87,8 @@ export default function SuperAdminMessages() {
               <div className="p-8">
                 <EmptyState
                   icon={Mail}
-                  title="No messages yet"
-                  description="Messages from the contact form will appear here."
+                  title={t('superAdmin.messages.noMessages')}
+                  description={t('superAdmin.messages.noMessagesDesc')}
                 />
               </div>
             ) : (
@@ -94,11 +97,11 @@ export default function SuperAdminMessages() {
                   <TableHeader>
                     <TableRow>
                       <TableHead className="w-8"></TableHead>
-                      <TableHead>Name</TableHead>
-                      <TableHead>Email</TableHead>
-                      <TableHead>Subject</TableHead>
-                      <TableHead>Date</TableHead>
-                      <TableHead className="text-right">Action</TableHead>
+                      <TableHead>{t('superAdmin.messages.name')}</TableHead>
+                      <TableHead>{t('superAdmin.messages.email')}</TableHead>
+                      <TableHead>{t('superAdmin.messages.subject')}</TableHead>
+                      <TableHead>{t('superAdmin.messages.date')}</TableHead>
+                      <TableHead className="text-right">{t('superAdmin.messages.action')}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -121,7 +124,7 @@ export default function SuperAdminMessages() {
                         </TableCell>
                         <TableCell className="text-right">
                           <Button size="sm" variant="outline" onClick={() => markAsRead(msg)}>
-                            <Eye className="w-4 h-4 mr-1" /> View
+                            <Eye className="w-4 h-4 mr-1" /> {t('superAdmin.messages.view')}
                           </Button>
                         </TableCell>
                       </TableRow>
@@ -133,7 +136,6 @@ export default function SuperAdminMessages() {
           </CardContent>
         </Card>
 
-        {/* Message Detail Dialog */}
         <Dialog open={!!selected} onOpenChange={() => setSelected(null)}>
           <DialogContent className="max-w-lg">
             <DialogHeader>
@@ -142,11 +144,11 @@ export default function SuperAdminMessages() {
             <div className="space-y-3">
               <div className="flex gap-4 text-sm">
                 <div>
-                  <span className="text-muted-foreground">From:</span>{" "}
+                  <span className="text-muted-foreground">{t('superAdmin.messages.from')}</span>{" "}
                   <span className="font-medium">{selected?.name}</span>
                 </div>
                 <div>
-                  <span className="text-muted-foreground">Email:</span>{" "}
+                  <span className="text-muted-foreground">{t('superAdmin.messages.email')}:</span>{" "}
                   <a href={`mailto:${selected?.email}`} className="text-primary hover:underline">
                     {selected?.email}
                   </a>
@@ -157,7 +159,7 @@ export default function SuperAdminMessages() {
               </div>
               <div className="bg-muted rounded-lg p-4 text-sm whitespace-pre-wrap">{selected?.message}</div>
               <Button variant="outline" asChild>
-                <a href={`mailto:${selected?.email}?subject=Re: ${selected?.subject}`}>Reply via Email</a>
+                <a href={`mailto:${selected?.email}?subject=Re: ${selected?.subject}`}>{t('superAdmin.messages.replyViaEmail')}</a>
               </Button>
             </div>
           </DialogContent>

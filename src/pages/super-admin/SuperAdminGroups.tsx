@@ -10,6 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { usePageSeo } from "@/hooks/usePageSeo";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -33,6 +34,8 @@ interface GroupRow {
 }
 
 export default function SuperAdminGroups() {
+  const { t } = useTranslation();
+  
   usePageSeo({
     title: "All Groups | Super Admin | eKimina",
     description: "Super admin view of all savings groups in the platform.",
@@ -75,14 +78,14 @@ export default function SuperAdminGroups() {
       .eq("id", group.id);
 
     if (error) {
-      toast.error("Failed to update group status");
+      toast.error(t('superAdmin.groups.failedUpdate'));
       return;
     }
 
     setGroups((prev) =>
       prev.map((g) => (g.id === group.id ? { ...g, status: newStatus } : g))
     );
-    toast.success(`Group ${newStatus === "active" ? "enabled" : "disabled"} successfully`);
+    toast.success(newStatus === "active" ? t('superAdmin.groups.enabledSuccess') : t('superAdmin.groups.disabledSuccess'));
   };
 
   const deleteGroup = async (groupId: string) => {
@@ -100,7 +103,7 @@ export default function SuperAdminGroups() {
       );
     } catch (error) {
       console.error("Error deleting group:", error);
-      toast.error("Failed to delete group");
+      toast.error(t('superAdmin.groups.failedDelete'));
     }
   };
 
@@ -118,8 +121,8 @@ export default function SuperAdminGroups() {
     <DashboardLayout role="super-admin">
       <main className="space-y-6">
         <header>
-          <h1 className="text-2xl font-bold text-foreground">All Groups</h1>
-          <p className="text-muted-foreground">System-wide list of groups</p>
+          <h1 className="text-2xl font-bold text-foreground">{t('superAdmin.groups.title')}</h1>
+          <p className="text-muted-foreground">{t('superAdmin.groups.description')}</p>
         </header>
 
         <section className="flex flex-col sm:flex-row gap-3">
@@ -128,16 +131,16 @@ export default function SuperAdminGroups() {
             <Input
               value={q}
               onChange={(e) => setQ(e.target.value)}
-              placeholder="Search by group name or ID..."
+              placeholder={t('superAdmin.groups.searchPlaceholder')}
               className="pl-10"
-              aria-label="Search groups"
+              aria-label={t('superAdmin.groups.title')}
             />
           </div>
           <Card className="sm:w-56">
             <CardContent className="p-3 flex items-center justify-between">
               <div className="flex items-center gap-2 text-muted-foreground">
                 <Building2 className="w-4 h-4" />
-                <span className="text-sm">Total</span>
+                <span className="text-sm">{t('superAdmin.groups.total')}</span>
               </div>
               <Badge variant="secondary">{groups.length}</Badge>
             </CardContent>
@@ -147,20 +150,20 @@ export default function SuperAdminGroups() {
         <section>
           <Card>
             <CardHeader>
-              <CardTitle>Groups</CardTitle>
+              <CardTitle>{t('superAdmin.groups.groups')}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="rounded-lg border border-border overflow-hidden">
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Name</TableHead>
-                      <TableHead>Plan</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Frequency</TableHead>
-                      <TableHead>Contribution</TableHead>
-                      <TableHead>Created</TableHead>
-                      <TableHead className="text-right">Actions</TableHead>
+                      <TableHead>{t('superAdmin.groups.name')}</TableHead>
+                      <TableHead>{t('superAdmin.groups.plan')}</TableHead>
+                      <TableHead>{t('superAdmin.groups.status')}</TableHead>
+                      <TableHead>{t('superAdmin.groups.frequency')}</TableHead>
+                      <TableHead>{t('superAdmin.groups.contribution')}</TableHead>
+                      <TableHead>{t('superAdmin.groups.created')}</TableHead>
+                      <TableHead className="text-right">{t('superAdmin.groups.actions')}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -181,7 +184,7 @@ export default function SuperAdminGroups() {
                         <TableCell>RWF {formatCurrency(Number(g.contribution_amount || 0))}</TableCell>
                         <TableCell>{new Date(g.created_at).toLocaleDateString()}</TableCell>
                         <TableCell className="text-right space-x-2">
-                          <Button asChild variant="ghost" size="sm" title="View details">
+                          <Button asChild variant="ghost" size="sm" title={t('superAdmin.overview.viewDetails')}>
                             <Link to={`/super-admin/groups/${g.id}`}>
                               <Eye className="w-4 h-4" />
                             </Link>
@@ -190,7 +193,7 @@ export default function SuperAdminGroups() {
                             variant="ghost"
                             size="sm"
                             onClick={() => toggleGroupStatus(g)}
-                            title={g.status === "active" ? "Disable group" : "Enable group"}
+                            title={g.status === "active" ? t('superAdmin.groups.disableGroup') : t('superAdmin.groups.enableGroup')}
                           >
                             {g.status === "active" ? (
                               <ToggleRight className="w-4 h-4 text-green-600" />
@@ -200,24 +203,24 @@ export default function SuperAdminGroups() {
                           </Button>
                           <AlertDialog>
                             <AlertDialogTrigger asChild>
-                              <Button variant="ghost" size="sm" title="Delete group">
+                              <Button variant="ghost" size="sm" title={t('superAdmin.groups.deleteGroup')}>
                                 <Trash2 className="w-4 h-4 text-destructive" />
                               </Button>
                             </AlertDialogTrigger>
                             <AlertDialogContent>
                               <AlertDialogHeader>
-                                <AlertDialogTitle>Delete Group</AlertDialogTitle>
+                                <AlertDialogTitle>{t('superAdmin.groups.deleteGroup')}</AlertDialogTitle>
                                 <AlertDialogDescription>
-                                  Are you sure you want to delete "{g.name}"? This action cannot be undone.
+                                  {t('superAdmin.groups.deleteConfirm', { name: g.name })}
                                 </AlertDialogDescription>
                               </AlertDialogHeader>
                               <AlertDialogFooter>
-                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
                                 <AlertDialogAction
                                   onClick={() => deleteGroup(g.id)}
                                   className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                                 >
-                                  Delete
+                                  {t('common.delete')}
                                 </AlertDialogAction>
                               </AlertDialogFooter>
                             </AlertDialogContent>
