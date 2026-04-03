@@ -235,6 +235,8 @@ export type Database = {
         Row: {
           constitution: string | null
           contribution_amount: number
+          contribution_day_of_month: number | null
+          contribution_day_of_week: number | null
           contribution_frequency: string
           created_at: string
           created_by: string | null
@@ -252,6 +254,8 @@ export type Database = {
         Insert: {
           constitution?: string | null
           contribution_amount?: number
+          contribution_day_of_month?: number | null
+          contribution_day_of_week?: number | null
           contribution_frequency?: string
           created_at?: string
           created_by?: string | null
@@ -269,6 +273,8 @@ export type Database = {
         Update: {
           constitution?: string | null
           contribution_amount?: number
+          contribution_day_of_month?: number | null
+          contribution_day_of_week?: number | null
           contribution_frequency?: string
           created_at?: string
           created_by?: string | null
