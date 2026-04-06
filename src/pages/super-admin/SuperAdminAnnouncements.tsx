@@ -16,6 +16,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { usePageSeo } from "@/hooks/usePageSeo";
 import {
   Select,
   SelectContent,
@@ -52,6 +53,7 @@ interface SystemAnnouncement {
 }
 
 const SuperAdminAnnouncements = () => {
+  usePageSeo({ title: "Announcements | Super Admin | eKimina", description: "Create and manage platform-wide announcements." });
   const { t } = useTranslation();
   const { user } = useAuth();
   const { toast } = useToast();

@@ -40,6 +40,7 @@ import GroupDisabled from "./pages/GroupDisabled";
 import PendingApproval from "./pages/PendingApproval";
 import SuperAdminApprovals from "./pages/super-admin/SuperAdminApprovals";
 import SuperAdminGroupDetail from "./pages/super-admin/SuperAdminGroupDetail";
+import SuperAdminPenalties from "./pages/super-admin/SuperAdminPenalties";
 import Contact from "./pages/Contact";
 import About from "./pages/About";
 import Careers from "./pages/Careers";
@@ -220,6 +221,11 @@ const App = () => (
             <Route path="/super-admin/approvals" element={
               <ProtectedRoute requiredRole="super_admin">
                 <SuperAdminApprovals />
+              </ProtectedRoute>
+            } />
+            <Route path="/super-admin/penalties" element={
+              <ProtectedRoute requiredRole="super_admin">
+                <SuperAdminPenalties />
               </ProtectedRoute>
             } />
             <Route path="/super-admin/groups/:groupId" element={

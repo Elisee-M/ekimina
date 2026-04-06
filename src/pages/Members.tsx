@@ -25,6 +25,7 @@ import {
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { usePageSeo } from "@/hooks/usePageSeo";
 
 interface Member {
   id: string;
@@ -39,6 +40,7 @@ interface Member {
 }
 
 export default function Members() {
+  usePageSeo({ title: "Members | eKimina", description: "Manage your savings group members." });
   const { groupMembership } = useAuth();
   const [loading, setLoading] = useState(true);
   const [members, setMembers] = useState<Member[]>([]);

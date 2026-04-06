@@ -898,5 +898,39 @@
       "platformDesc": "More system-wide settings can be added here.",
       "comingSoon": "Coming soon."
     }
+  },
+  "penalties": {
+    "title": "Penalties",
+    "description": "Manage late contribution penalties",
+    "runAuto": "Run Auto-Penalties",
+    "pendingPenalties": "Pending Penalties",
+    "unpaidAmount": "Unpaid Amount",
+    "collected": "Collected",
+    "noPenalties": "No penalties found",
+    "noPenaltiesDesc": "Penalties will appear here when auto-applied to late contributions.",
+    "penaltyRecords": "Penalty Records",
+    "lateContribution": "Late Contribution",
+    "contributionDue": "Contribution due:",
+    "applied": "Applied:",
+    "waive": "Waive",
+    "waiveTitle": "Waive Penalty",
+    "waiveConfirm": "Are you sure you want to waive the RWF {{amount}} penalty for {{name}}?",
+    "waivePenalty": "Waive Penalty",
+    "penaltyWaived": "Penalty waived",
+    "markedPaid": "Penalty marked as paid",
+    "penaltiesApplied": "Penalties applied",
+    "failedLoad": "Failed to load penalties",
+    "failedWaive": "Failed to waive penalty",
+    "failedUpdate": "Failed to update penalty",
+    "failedRun": "Failed to run auto-penalties",
+    "searchMember": "Search member..."
+  },
+  "memberPenalties": {
+    "title": "My Penalties",
+    "description": "View penalties applied to your late contributions",
+    "outstandingPenalties": "Outstanding Penalties",
+    "noPenalties": "No penalties",
+    "noPenaltiesDesc": "You have no penalties. Keep up the great work!",
+    "penaltyHistory": "Penalty History"
   }
 }

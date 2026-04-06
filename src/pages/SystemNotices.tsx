@@ -10,6 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import { useTranslation } from "react-i18next";
 import { markAsSeen } from "@/hooks/useNotifications";
+import { usePageSeo } from "@/hooks/usePageSeo";
 
 interface SystemAnnouncement {
   id: string;
@@ -20,6 +21,7 @@ interface SystemAnnouncement {
 }
 
 const SystemNotices = () => {
+  usePageSeo({ title: "System Notices | eKimina", description: "View platform announcements and system notices." });
   const { isGroupAdmin, isSuperAdmin } = useAuth();
   const [loading, setLoading] = useState(true);
   const [announcements, setAnnouncements] = useState<SystemAnnouncement[]>([]);

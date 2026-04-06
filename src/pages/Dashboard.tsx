@@ -24,8 +24,10 @@ import { ContributionTrendsChart } from "@/components/charts/ContributionTrendsC
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "react-i18next";
+import { usePageSeo } from "@/hooks/usePageSeo";
 
 const Dashboard = () => {
+  usePageSeo({ title: "Admin Dashboard | eKimina", description: "Manage your savings group contributions, members, and loans." });
   const { profile } = useAuth();
   const { loading, stats, recentContributions, activeLoans, groupInfo, pendingContributionsCount, rawContributions } = useDashboardData();
   const [copied, setCopied] = useState(false);

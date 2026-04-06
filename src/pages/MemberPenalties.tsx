@@ -8,6 +8,7 @@ import { AlertTriangle, CheckCircle2, Clock, Ban, Loader2, DollarSign } from "lu
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { usePageSeo } from "@/hooks/usePageSeo";
+import { useTranslation } from "react-i18next";
 
 interface Penalty {
   id: string;
@@ -19,6 +20,7 @@ interface Penalty {
 }
 
 export default function MemberPenalties() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [penalties, setPenalties] = useState<Penalty[]>([]);
@@ -84,8 +86,8 @@ export default function MemberPenalties() {
         className="space-y-6"
       >
         <div>
-          <h1 className="text-2xl font-bold text-foreground">My Penalties</h1>
-          <p className="text-muted-foreground">View penalties applied to your late contributions</p>
+          <h1 className="text-2xl font-bold text-foreground">{t('memberPenalties.title')}</h1>
+          <p className="text-muted-foreground">{t('memberPenalties.description')}</p>
         </div>
 
         {totalPending > 0 && (
@@ -95,7 +97,7 @@ export default function MemberPenalties() {
                 <DollarSign className="w-5 h-5 text-destructive" />
               </div>
               <div>
-                <p className="text-sm font-medium text-foreground">Outstanding Penalties</p>
+                <p className="text-sm font-medium text-foreground">{t('memberPenalties.outstandingPenalties')}</p>
                 <p className="text-xl font-bold text-destructive">RWF {formatCurrency(totalPending)}</p>
               </div>
             </CardContent>
@@ -105,15 +107,15 @@ export default function MemberPenalties() {
         {penalties.length === 0 ? (
           <EmptyState
             icon={AlertTriangle}
-            title="No penalties"
-            description="You have no penalties. Keep up the great work!"
+            title={t('memberPenalties.noPenalties')}
+            description={t('memberPenalties.noPenaltiesDesc')}
           />
         ) : (
           <Card>
             <CardHeader>
               <CardTitle className="text-lg flex items-center gap-2">
                 <AlertTriangle className="w-5 h-5 text-destructive" />
-                Penalty History ({penalties.length})
+                {t('memberPenalties.penaltyHistory')} ({penalties.length})
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
@@ -121,12 +123,12 @@ export default function MemberPenalties() {
                 <div key={p.id} className="flex items-center justify-between py-3 border-b border-border last:border-0">
                   <div>
                     <p className="text-sm font-medium text-foreground">
-                      {p.reason === "late_contribution" ? "Late Contribution" : p.reason}
+                      {p.reason === "late_contribution" ? t('penalties.lateContribution') : p.reason}
                     </p>
                     {p.contributionDueDate && (
-                      <p className="text-xs text-muted-foreground">Contribution due: {formatDate(p.contributionDueDate)}</p>
+                      <p className="text-xs text-muted-foreground">{t('penalties.contributionDue')} {formatDate(p.contributionDueDate)}</p>
                     )}
-                    <p className="text-xs text-muted-foreground">Applied: {formatDate(p.createdAt)}</p>
+                    <p className="text-xs text-muted-foreground">{t('penalties.applied')} {formatDate(p.createdAt)}</p>
                   </div>
                   <div className="flex items-center gap-3">
                     <p className="font-semibold text-foreground">RWF {formatCurrency(p.amount)}</p>

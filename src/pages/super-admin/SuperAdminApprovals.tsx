@@ -9,6 +9,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Loader2, CheckCircle2, Clock, Users, Calendar } from "lucide-react";
 import { format } from "date-fns";
 import { useTranslation } from "react-i18next";
+import { usePageSeo } from "@/hooks/usePageSeo";
 
 interface PendingGroup {
   id: string;
@@ -24,6 +25,7 @@ interface PendingGroup {
 }
 
 const SuperAdminApprovals = () => {
+  usePageSeo({ title: "Approvals | Super Admin | eKimina", description: "Approve or reject pending group registrations." });
   const { t } = useTranslation();
   const [pendingGroups, setPendingGroups] = useState<PendingGroup[]>([]);
   const [loading, setLoading] = useState(true);

@@ -898,5 +898,39 @@
       "platformDesc": "Igenamiterere ryinshi ry'urubuga rwose rishobora kongerwa hano.",
       "comingSoon": "Biraje vuba."
     }
+  },
+  "penalties": {
+    "title": "Ibihano",
+    "description": "Cunga ibihano by'imisanzu itishyuwe ku gihe",
+    "runAuto": "Koresha Ibihano Bikora",
+    "pendingPenalties": "Ibihano Bitegerejwe",
+    "unpaidAmount": "Amafaranga Atishyuwe",
+    "collected": "Byakusanyijwe",
+    "noPenalties": "Nta bihano byabonetse",
+    "noPenaltiesDesc": "Ibihano bizagaragara hano iyo bishyizweho ku misanzu yatinze.",
+    "penaltyRecords": "Inyandiko z'Ibihano",
+    "lateContribution": "Umusanzu Watinze",
+    "contributionDue": "Umusanzu utariki:",
+    "applied": "Byashyizweho:",
+    "waive": "Kubabarira",
+    "waiveTitle": "Kubabarira Igihano",
+    "waiveConfirm": "Uzi neza ko ushaka kubabarira igihano cya RWF {{amount}} cya {{name}}?",
+    "waivePenalty": "Kubabarira Igihano",
+    "penaltyWaived": "Igihano cyababariwe",
+    "markedPaid": "Igihano cyashyizweho ko cyishyuwe",
+    "penaltiesApplied": "Ibihano byashyizweho",
+    "failedLoad": "Ntibyashobotse gufungura ibihano",
+    "failedWaive": "Ntibyashobotse kubabarira igihano",
+    "failedUpdate": "Ntibyashobotse guhindura igihano",
+    "failedRun": "Ntibyashobotse gukoresha ibihano bikora",
+    "searchMember": "Shakisha umunyamuryango..."
+  },
+  "memberPenalties": {
+    "title": "Ibihano Byanjye",
+    "description": "Reba ibihano byashyizweho ku misanzu yawe yatinze",
+    "outstandingPenalties": "Ibihano Bitishyuwe",
+    "noPenalties": "Nta bihano",
+    "noPenaltiesDesc": "Nta bihano ufite. Komeza umurimo mwiza!",
+    "penaltyHistory": "Amateka y'Ibihano"
   }
 }

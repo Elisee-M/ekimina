@@ -106,7 +106,7 @@ export default function Penalties() {
       );
     } catch (error) {
       console.error("Error fetching penalties:", error);
-      toast.error("Failed to load penalties");
+      toast.error(t('penalties.failedLoad'));
     } finally {
       setLoading(false);
     }
@@ -121,11 +121,11 @@ export default function Penalties() {
         .update({ status: "waived" })
         .eq("id", waiveDialog.id);
       if (error) throw error;
-      toast.success("Penalty waived");
+      toast.success(t('penalties.penaltyWaived'));
       setWaiveDialog(null);
       fetchPenalties();
     } catch (error: any) {
-      toast.error("Failed to waive penalty");
+      toast.error(t('penalties.failedWaive'));
     } finally {
       setActionLoading(false);
     }
@@ -138,10 +138,10 @@ export default function Penalties() {
         .update({ status: "paid" })
         .eq("id", penalty.id);
       if (error) throw error;
-      toast.success("Penalty marked as paid");
+      toast.success(t('penalties.markedPaid'));
       fetchPenalties();
     } catch {
-      toast.error("Failed to update penalty");
+      toast.error(t('penalties.failedUpdate'));
     }
   };
 
@@ -150,10 +150,10 @@ export default function Penalties() {
     try {
       const { data, error } = await supabase.functions.invoke("apply-penalties");
       if (error) throw error;
-      toast.success(data?.message || "Penalties applied");
+      toast.success(data?.message || t('penalties.penaltiesApplied'));
       fetchPenalties();
     } catch (error: any) {
-      toast.error("Failed to run auto-penalties: " + (error.message || "Unknown error"));
+      toast.error(t('penalties.failedRun') + ": " + (error.message || "Unknown error"));
     } finally {
       setRunningAuto(false);
     }
@@ -195,12 +195,12 @@ export default function Penalties() {
       >
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-foreground">{t('penalties.title', 'Penalties')}</h1>
-            <p className="text-muted-foreground">{t('penalties.description', 'Manage late contribution penalties')}</p>
+            <h1 className="text-2xl font-bold text-foreground">{t('penalties.title')}</h1>
+            <p className="text-muted-foreground">{t('penalties.description')}</p>
           </div>
           <Button onClick={handleRunAuto} disabled={runningAuto} variant="outline" className="gap-2">
             {runningAuto ? <Loader2 className="w-4 h-4 animate-spin" /> : <Play className="w-4 h-4" />}
-            {t('penalties.runAuto', 'Run Auto-Penalties')}
+            {t('penalties.runAuto')}
           </Button>
         </div>
 
@@ -213,7 +213,7 @@ export default function Penalties() {
                   <AlertTriangle className="w-5 h-5 text-destructive" />
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">{t('penalties.pendingPenalties', 'Pending Penalties')}</p>
+                  <p className="text-sm text-muted-foreground">{t('penalties.pendingPenalties')}</p>
                   <p className="text-xl font-bold text-foreground">{pendingCount}</p>
                 </div>
               </div>
@@ -226,7 +226,7 @@ export default function Penalties() {
                   <DollarSign className="w-5 h-5 text-warning" />
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">{t('penalties.unpaidAmount', 'Unpaid Amount')}</p>
+                  <p className="text-sm text-muted-foreground">{t('penalties.unpaidAmount')}</p>
                   <p className="text-xl font-bold text-foreground">RWF {formatCurrency(totalPending)}</p>
                 </div>
               </div>
@@ -239,7 +239,7 @@ export default function Penalties() {
                   <CheckCircle2 className="w-5 h-5 text-success" />
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">{t('penalties.collected', 'Collected')}</p>
+                  <p className="text-sm text-muted-foreground">{t('penalties.collected')}</p>
                   <p className="text-xl font-bold text-foreground">RWF {formatCurrency(totalPaid)}</p>
                 </div>
               </div>
@@ -251,7 +251,7 @@ export default function Penalties() {
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="relative flex-1 max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input placeholder="Search member..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-10" />
+            <Input placeholder={t('penalties.searchMember')} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-10" />
           </div>
           <Select value={statusFilter} onValueChange={setStatusFilter}>
             <SelectTrigger className="w-full sm:w-40">
@@ -271,15 +271,15 @@ export default function Penalties() {
         {filtered.length === 0 ? (
           <EmptyState
             icon={AlertTriangle}
-            title={t('penalties.noPenalties', 'No penalties found')}
-            description={t('penalties.noPenaltiesDesc', 'Penalties will appear here when auto-applied to late contributions.')}
+            title={t('penalties.noPenalties')}
+            description={t('penalties.noPenaltiesDesc')}
           />
         ) : (
           <Card>
             <CardHeader className="pb-3">
               <CardTitle className="text-lg flex items-center gap-2">
                 <AlertTriangle className="w-5 h-5 text-destructive" />
-                {t('penalties.penaltyRecords', 'Penalty Records')} ({filtered.length})
+                {t('penalties.penaltyRecords')} ({filtered.length})
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0">
@@ -295,10 +295,10 @@ export default function Penalties() {
                       <div>
                         <p className="font-medium text-foreground">{penalty.memberName}</p>
                         <p className="text-sm text-muted-foreground">
-                          {penalty.reason === "late_contribution" ? "Late Contribution" : penalty.reason}
-                          {penalty.contributionDueDate && ` • Due: ${formatDate(penalty.contributionDueDate)}`}
+                          {penalty.reason === "late_contribution" ? t('penalties.lateContribution') : penalty.reason}
+                          {penalty.contributionDueDate && ` • ${t('penalties.contributionDue')} ${formatDate(penalty.contributionDueDate)}`}
                         </p>
-                        <p className="text-xs text-muted-foreground">Applied: {formatDate(penalty.createdAt)}</p>
+                        <p className="text-xs text-muted-foreground">{t('penalties.applied')} {formatDate(penalty.createdAt)}</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
@@ -319,10 +319,10 @@ export default function Penalties() {
                       {penalty.status === "pending" && (
                         <div className="flex gap-1">
                           <Button variant="outline" size="sm" onClick={() => handleMarkPaid(penalty)}>
-                            Paid
+                            {t('common.paid')}
                           </Button>
                           <Button variant="ghost" size="sm" onClick={() => setWaiveDialog(penalty)}>
-                            Waive
+                            {t('penalties.waive')}
                           </Button>
                         </div>
                       )}
@@ -338,16 +338,16 @@ export default function Penalties() {
         <Dialog open={!!waiveDialog} onOpenChange={() => setWaiveDialog(null)}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Waive Penalty</DialogTitle>
+              <DialogTitle>{t('penalties.waiveTitle')}</DialogTitle>
               <DialogDescription>
-                Are you sure you want to waive the RWF {waiveDialog ? formatCurrency(waiveDialog.amount) : 0} penalty for {waiveDialog?.memberName}?
+                {t('penalties.waiveConfirm', { amount: waiveDialog ? formatCurrency(waiveDialog.amount) : 0, name: waiveDialog?.memberName })}
               </DialogDescription>
             </DialogHeader>
             <DialogFooter>
-              <Button variant="outline" onClick={() => setWaiveDialog(null)}>Cancel</Button>
+              <Button variant="outline" onClick={() => setWaiveDialog(null)}>{t('common.cancel')}</Button>
               <Button variant="destructive" onClick={handleWaive} disabled={actionLoading}>
                 {actionLoading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
-                Waive Penalty
+                {t('penalties.waivePenalty')}
               </Button>
             </DialogFooter>
           </DialogContent>

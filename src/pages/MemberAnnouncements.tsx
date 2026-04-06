@@ -18,6 +18,7 @@ import {
 import { useMemberData } from "@/hooks/useMemberData";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
+import { usePageSeo } from "@/hooks/usePageSeo";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 
@@ -30,6 +31,7 @@ interface Comment {
 }
 
 const MemberAnnouncements = () => {
+  usePageSeo({ title: "Announcements | eKimina", description: "View group announcements and updates." });
   const { loading, announcements, groupInfo } = useMemberData();
   const { user, profile } = useAuth();
   const { toast } = useToast();

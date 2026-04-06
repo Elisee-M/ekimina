@@ -42,7 +42,7 @@ export function DashboardLayout({ children, role }: DashboardLayoutProps) {
   const navigate = useNavigate();
   const { profile, groupMembership, signOut } = useAuth();
   const { t } = useTranslation();
-  const counts = useNotifications();
+  const { counts } = useNotifications();
 
   // Map href to notification count
   const badgeMap: Record<string, number> = {
@@ -61,6 +61,7 @@ export function DashboardLayout({ children, role }: DashboardLayoutProps) {
     { icon: Users, label: t('dashboard.admins'), href: "/super-admin/admins" },
     { icon: Bell, label: t('dashboard.announcements'), href: "/super-admin/announcements" },
     { icon: Mail, label: t('dashboard.messages'), href: "/super-admin/messages" },
+    { icon: AlertTriangle, label: "Penalties", href: "/super-admin/penalties" },
     { icon: Settings, label: t('dashboard.settings'), href: "/super-admin/settings" },
   ];
 

@@ -17,8 +17,10 @@ import { useAuth } from "@/hooks/useAuth";
 import { useMemberData } from "@/hooks/useMemberData";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { usePageSeo } from "@/hooks/usePageSeo";
 
 const MemberSettings = () => {
+  usePageSeo({ title: "Settings | eKimina", description: "Update your profile and account settings." });
   const { profile, user } = useAuth();
   const { loading: memberLoading, groupInfo } = useMemberData();
   const [saving, setSaving] = useState(false);

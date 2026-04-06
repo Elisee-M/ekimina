@@ -27,6 +27,7 @@ import { Label } from "@/components/ui/label";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { usePageSeo } from "@/hooks/usePageSeo";
 
 interface Contribution {
   id: string;
@@ -46,6 +47,7 @@ interface MemberOption {
 }
 
 export default function Contributions() {
+  usePageSeo({ title: "Contributions | eKimina", description: "Track and manage group contribution payments." });
   const { user, groupMembership } = useAuth();
   const [loading, setLoading] = useState(true);
   const [contributions, setContributions] = useState<Contribution[]>([]);
