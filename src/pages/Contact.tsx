@@ -65,17 +65,23 @@ const Contact = () => {
 
     setIsLoading(true);
     
-    const { error } = await supabase.from("contact_messages").insert({
-      name: result.data.name,
-      email: result.data.email,
-      subject: result.data.subject,
-      message: result.data.message,
+    const { error } = await supabase.functions.invoke("submit-contact-message", {
+      body: {
+        name: result.data.name,
+        email: result.data.email,
+        subject: result.data.subject,
+        message: result.data.message,
+      },
     });
 
     setIsLoading(false);
 
     if (error) {
-      toast({ variant: "destructive", title: t('common.error'), description: error.message });
+      toast({
+        variant: "destructive",
+        title: t('contact.submitErrorTitle'),
+        description: t('contact.submitErrorDescription'),
+      });
       return;
     }
 

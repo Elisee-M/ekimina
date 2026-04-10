@@ -687,6 +687,8 @@
     "messagePlaceholder": "Tell us more about your question or issue...",
     "send": "Send Message",
     "sending": "Sending...",
+    "submitErrorTitle": "Message not sent",
+    "submitErrorDescription": "We could not send your message right now. Please try again in a moment.",
     "successTitle": "Message Sent!",
     "successMessage": "Thank you for reaching out. We'll get back to you soon.",
     "sendAnother": "Send Another Message",

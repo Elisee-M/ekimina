@@ -687,6 +687,8 @@
     "messagePlaceholder": "Tubwire byinshi ku kibazo cyawe...",
     "send": "Ohereza Ubutumwa",
     "sending": "Birimo koherezwa...",
+    "submitErrorTitle": "Ubutumwa ntibwoherejwe",
+    "submitErrorDescription": "Ntitwashoboye kohereza ubutumwa bwawe ubu. Ongera ugerageze nyuma gato.",
     "successTitle": "Ubutumwa Bwoherejwe!",
     "successMessage": "Urakoze kutwandikira. Tuzagusubiza vuba.",
     "sendAnother": "Ohereza Ubundi Butumwa",
