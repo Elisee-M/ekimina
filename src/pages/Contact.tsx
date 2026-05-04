@@ -15,9 +15,11 @@ import { Footer } from "@/components/layout/Footer";
 import { ChatWidget } from "@/components/chat/ChatWidget";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
+import { usePageSeo } from "@/hooks/usePageSeo";
 
 const Contact = () => {
   const { t } = useTranslation();
+  usePageSeo({ title: "Contact Us | eKimina", description: "Get in touch with the eKimina team for questions about savings group management.", canonicalPath: "/contact" });
 
   const contactSchema = z.object({
     name: z.string().trim().min(2, { message: t('contact.validation.nameMin') }).max(100),
@@ -63,17 +65,23 @@ const Contact = () => {
 
     setIsLoading(true);
     
-    const { error } = await supabase.from("contact_messages").insert({
-      name: result.data.name,
-      email: result.data.email,
-      subject: result.data.subject,
-      message: result.data.message,
+    const { error } = await supabase.functions.invoke("submit-contact-message", {
+      body: {
+        name: result.data.name,
+        email: result.data.email,
+        subject: result.data.subject,
+        message: result.data.message,
+      },
     });
 
     setIsLoading(false);
 
     if (error) {
-      toast({ variant: "destructive", title: t('common.error'), description: error.message });
+      toast({
+        variant: "destructive",
+        title: t('contact.submitErrorTitle'),
+        description: t('contact.submitErrorDescription'),
+      });
       return;
     }
 

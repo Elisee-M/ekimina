@@ -21,6 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { usePageSeo } from "@/hooks/usePageSeo";
 import {
   TrendingUp,
   Search,
@@ -65,6 +66,7 @@ interface Member {
 }
 
 const Loans = () => {
+  usePageSeo({ title: "Loans | eKimina", description: "Manage group loans, approvals and repayments." });
   const { groupMembership, user } = useAuth();
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);

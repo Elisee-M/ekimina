@@ -16,6 +16,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { usePageSeo } from "@/hooks/usePageSeo";
 import {
   Select,
   SelectContent,
@@ -39,6 +40,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { markAsSeen } from "@/hooks/useNotifications";
+import { useTranslation } from "react-i18next";
 
 interface SystemAnnouncement {
   id: string;
@@ -51,6 +53,8 @@ interface SystemAnnouncement {
 }
 
 const SuperAdminAnnouncements = () => {
+  usePageSeo({ title: "Announcements | Super Admin | eKimina", description: "Create and manage platform-wide announcements." });
+  const { t } = useTranslation();
   const { user } = useAuth();
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
@@ -103,14 +107,16 @@ const SuperAdminAnnouncements = () => {
       if (error) throw error;
 
       toast({ 
-        title: "Announcement sent", 
-        description: `Your announcement has been sent to ${newAnnouncement.audience === 'all' ? 'all users' : 'group admins only'}.` 
+        title: t('superAdmin.announcements.announcementSent'), 
+        description: newAnnouncement.audience === 'all' 
+          ? t('superAdmin.announcements.sentToAll') 
+          : t('superAdmin.announcements.sentToAdmins')
       });
       setNewAnnouncement({ title: "", content: "", audience: "all", comments_enabled: true });
       setDialogOpen(false);
       fetchAnnouncements();
     } catch (error: any) {
-      toast({ title: "Error", description: error.message, variant: "destructive" });
+      toast({ title: t('common.error'), description: error.message, variant: "destructive" });
     } finally {
       setSubmitting(false);
     }
@@ -125,10 +131,10 @@ const SuperAdminAnnouncements = () => {
 
       if (error) throw error;
 
-      toast({ title: "Announcement deleted" });
+      toast({ title: t('superAdmin.announcements.announcementDeleted') });
       fetchAnnouncements();
     } catch (error: any) {
-      toast({ title: "Error", description: error.message, variant: "destructive" });
+      toast({ title: t('common.error'), description: error.message, variant: "destructive" });
     }
   };
 
@@ -145,12 +151,11 @@ const SuperAdminAnnouncements = () => {
   return (
     <DashboardLayout role="super-admin">
       <div className="space-y-6 sm:space-y-8">
-        {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground">System Announcements</h1>
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground">{t('superAdmin.announcements.title')}</h1>
             <p className="text-sm sm:text-base text-muted-foreground">
-              Broadcast messages to all users or group admins only
+              {t('superAdmin.announcements.description')}
             </p>
           </div>
 
@@ -158,31 +163,31 @@ const SuperAdminAnnouncements = () => {
             <DialogTrigger asChild>
               <Button className="gap-2">
                 <Plus className="w-4 h-4" />
-                New Announcement
+                {t('superAdmin.announcements.newAnnouncement')}
               </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-lg">
               <DialogHeader>
-                <DialogTitle>Create System Announcement</DialogTitle>
+                <DialogTitle>{t('superAdmin.announcements.createTitle')}</DialogTitle>
               </DialogHeader>
               <div className="space-y-4 mt-4">
                 <div>
                   <Input
-                    placeholder="Announcement title"
+                    placeholder={t('superAdmin.announcements.titlePlaceholder')}
                     value={newAnnouncement.title}
                     onChange={(e) => setNewAnnouncement(prev => ({ ...prev, title: e.target.value }))}
                   />
                 </div>
                 <div>
                   <Textarea
-                    placeholder="Write your announcement..."
+                    placeholder={t('superAdmin.announcements.contentPlaceholder')}
                     rows={5}
                     value={newAnnouncement.content}
                     onChange={(e) => setNewAnnouncement(prev => ({ ...prev, content: e.target.value }))}
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium mb-2 block">Audience</label>
+                  <label className="text-sm font-medium mb-2 block">{t('superAdmin.announcements.audience')}</label>
                   <Select 
                     value={newAnnouncement.audience} 
                     onValueChange={(value: "all" | "admins_only") => 
@@ -196,13 +201,13 @@ const SuperAdminAnnouncements = () => {
                       <SelectItem value="all">
                         <div className="flex items-center gap-2">
                           <Users className="w-4 h-4" />
-                          All Users
+                          {t('superAdmin.announcements.allUsers')}
                         </div>
                       </SelectItem>
                       <SelectItem value="admins_only">
                         <div className="flex items-center gap-2">
                           <Shield className="w-4 h-4" />
-                          Group Admins Only
+                          {t('superAdmin.announcements.adminsOnly')}
                         </div>
                       </SelectItem>
                     </SelectContent>
@@ -210,8 +215,8 @@ const SuperAdminAnnouncements = () => {
                 </div>
                 <div className="flex items-center justify-between rounded-lg border border-border p-3">
                   <div className="space-y-0.5">
-                    <Label htmlFor="comments-toggle" className="text-sm font-medium">Allow Comments</Label>
-                    <p className="text-xs text-muted-foreground">Let users comment on this announcement</p>
+                    <Label htmlFor="comments-toggle" className="text-sm font-medium">{t('superAdmin.announcements.allowComments')}</Label>
+                    <p className="text-xs text-muted-foreground">{t('superAdmin.announcements.allowCommentsDesc')}</p>
                   </div>
                   <Switch
                     id="comments-toggle"
@@ -227,14 +232,13 @@ const SuperAdminAnnouncements = () => {
                   disabled={submitting || !newAnnouncement.title.trim() || !newAnnouncement.content.trim()}
                 >
                   {submitting ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
-                  Send Announcement
+                  {t('superAdmin.announcements.sendAnnouncement')}
                 </Button>
               </div>
             </DialogContent>
           </Dialog>
         </div>
 
-        {/* Announcements List */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -243,8 +247,8 @@ const SuperAdminAnnouncements = () => {
           {announcements.length === 0 ? (
             <EmptyState
               icon={Bell}
-              title="No system announcements yet"
-              description="Create your first system-wide announcement to notify users across all groups."
+              title={t('superAdmin.announcements.noAnnouncements')}
+              description={t('superAdmin.announcements.noAnnouncementsDesc')}
             />
           ) : (
             <div className="space-y-4">
@@ -267,18 +271,18 @@ const SuperAdminAnnouncements = () => {
                               <CardTitle className="text-base sm:text-lg">{announcement.title}</CardTitle>
                               <Badge variant={announcement.audience === "all" ? "default" : "secondary"}>
                                 {announcement.audience === "all" ? (
-                                  <><Users className="w-3 h-3 mr-1" /> All Users</>
+                                  <><Users className="w-3 h-3 mr-1" /> {t('superAdmin.announcements.allUsers')}</>
                                 ) : (
-                                  <><Shield className="w-3 h-3 mr-1" /> Admins Only</>
+                                  <><Shield className="w-3 h-3 mr-1" /> {t('superAdmin.announcements.adminsOnly')}</>
                                 )}
                               </Badge>
                               {announcement.comments_enabled ? (
                                 <Badge variant="muted" className="gap-1">
-                                  <MessageSquare className="w-3 h-3" /> Comments On
+                                  <MessageSquare className="w-3 h-3" /> {t('superAdmin.announcements.commentsOn')}
                                 </Badge>
                               ) : (
                                 <Badge variant="outline" className="gap-1">
-                                  <MessageSquareOff className="w-3 h-3" /> Comments Off
+                                  <MessageSquareOff className="w-3 h-3" /> {t('superAdmin.announcements.commentsOff')}
                                 </Badge>
                               )}
                             </div>

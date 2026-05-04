@@ -3,9 +3,11 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ShieldX, ArrowLeft, Home } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { usePageSeo } from "@/hooks/usePageSeo";
 
 const Unauthorized = () => {
   const { t } = useTranslation();
+  usePageSeo({ title: "Unauthorized | eKimina", description: "You don't have permission to access this page." });
 
   return (
     <div className="min-h-screen gradient-subtle flex items-center justify-center p-4">

@@ -114,8 +114,8 @@ export function PenaltySettings() {
           </div>
           <div className="space-y-2">
             <Label>Grace Period (days)</Label>
-            <Input type="number" value={form.grace_period_days} onChange={(e) => setForm({ ...form, grace_period_days: e.target.value })} />
-            <p className="text-xs text-muted-foreground">Days after due date before penalty applies</p>
+            <Input type="number" min="0" value={form.grace_period_days} onChange={(e) => setForm({ ...form, grace_period_days: String(Math.max(0, parseInt(e.target.value) || 0)) })} />
+            <p className="text-xs text-muted-foreground">Days after due date before penalty applies (0 = next day at midnight)</p>
           </div>
         </div>
 

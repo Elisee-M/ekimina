@@ -10,6 +10,7 @@ import { usePageSeo } from "@/hooks/usePageSeo";
 import { Link } from "react-router-dom";
 import { GroupGrowthChart } from "@/components/charts/GroupGrowthChart";
 import { FinancialOverviewChart } from "@/components/charts/FinancialOverviewChart";
+import { useTranslation } from "react-i18next";
 
 interface GroupRow {
   id: string;
@@ -18,6 +19,8 @@ interface GroupRow {
 }
 
 export default function SuperAdminOverview() {
+  const { t } = useTranslation();
+  
   usePageSeo({
     title: "Super Admin Overview | eKimina",
     description: "Super admin overview for monitoring all groups, members, contributions and loans.",
@@ -85,13 +88,13 @@ export default function SuperAdminOverview() {
 
   const statCards = useMemo(
     () => [
-      { title: "Total Groups", value: stats.totalGroups.toLocaleString(), icon: Building2 },
-      { title: "Active Members", value: stats.totalMembers.toLocaleString(), icon: Users },
-      { title: "Total Contributions", value: `RWF ${formatCurrency(stats.totalContributions)}`, icon: Wallet },
-      { title: "Total Loans Issued", value: `RWF ${formatCurrency(stats.totalLoans)}`, icon: TrendingUp },
-      { title: "Total Loan Profit", value: `RWF ${formatCurrency(stats.totalProfit)}`, icon: DollarSign },
+      { title: t('superAdmin.overview.totalGroups'), value: stats.totalGroups.toLocaleString(), icon: Building2 },
+      { title: t('superAdmin.overview.activeMembers'), value: stats.totalMembers.toLocaleString(), icon: Users },
+      { title: t('superAdmin.overview.totalContributions'), value: `RWF ${formatCurrency(stats.totalContributions)}`, icon: Wallet },
+      { title: t('superAdmin.overview.totalLoansIssued'), value: `RWF ${formatCurrency(stats.totalLoans)}`, icon: TrendingUp },
+      { title: t('superAdmin.overview.totalLoanProfit'), value: `RWF ${formatCurrency(stats.totalProfit)}`, icon: DollarSign },
     ],
-    [stats]
+    [stats, t]
   );
 
   if (loading) {
@@ -109,12 +112,12 @@ export default function SuperAdminOverview() {
       <main className="space-y-6">
         <header className="flex items-start justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-foreground">System Overview</h1>
-            <p className="text-muted-foreground">Monitor all groups, members, contributions and loans</p>
+            <h1 className="text-2xl font-bold text-foreground">{t('superAdmin.overview.title')}</h1>
+            <p className="text-muted-foreground">{t('superAdmin.overview.description')}</p>
           </div>
           <Button asChild variant="outline">
             <Link to="/super-admin/groups">
-              View all groups <ArrowRight className="w-4 h-4 ml-2" />
+              {t('superAdmin.overview.viewAllGroups')} <ArrowRight className="w-4 h-4 ml-2" />
             </Link>
           </Button>
         </header>
@@ -137,7 +140,6 @@ export default function SuperAdminOverview() {
           ))}
         </section>
 
-        {/* Charts */}
         <section className="grid lg:grid-cols-2 gap-4">
           <GroupGrowthChart groups={allGroups} />
           <FinancialOverviewChart contributions={allContributions} loans={allLoans} />
@@ -147,19 +149,19 @@ export default function SuperAdminOverview() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <div>
-                <CardTitle>Recent Groups</CardTitle>
-                <p className="text-sm text-muted-foreground mt-1">Latest groups created on the platform</p>
+                <CardTitle>{t('superAdmin.overview.recentGroups')}</CardTitle>
+                <p className="text-sm text-muted-foreground mt-1">{t('superAdmin.overview.latestGroups')}</p>
               </div>
-              <Badge variant="gold">Super Admin</Badge>
+              <Badge variant="gold">{t('dashboard.superAdmin')}</Badge>
             </CardHeader>
             <CardContent>
               <div className="rounded-lg border border-border overflow-hidden">
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Group</TableHead>
-                      <TableHead>Created</TableHead>
-                      <TableHead className="text-right">Action</TableHead>
+                      <TableHead>{t('superAdmin.overview.group')}</TableHead>
+                      <TableHead>{t('superAdmin.overview.created')}</TableHead>
+                      <TableHead className="text-right">{t('superAdmin.overview.action')}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -169,7 +171,7 @@ export default function SuperAdminOverview() {
                         <TableCell>{new Date(g.created_at).toLocaleDateString()}</TableCell>
                         <TableCell className="text-right">
                           <Button asChild size="sm" variant="outline">
-                            <Link to={`/super-admin/groups/${g.id}`}>View Details</Link>
+                            <Link to={`/super-admin/groups/${g.id}`}>{t('superAdmin.overview.viewDetails')}</Link>
                           </Button>
                         </TableCell>
                       </TableRow>

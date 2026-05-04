@@ -7,6 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Loader2, Search, UserCog } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { usePageSeo } from "@/hooks/usePageSeo";
+import { useTranslation } from "react-i18next";
 
 interface AdminRow {
   user_id: string;
@@ -17,6 +18,8 @@ interface AdminRow {
 }
 
 export default function SuperAdminAdmins() {
+  const { t } = useTranslation();
+  
   usePageSeo({
     title: "Admins | Super Admin | eKimina",
     description: "Super admin list of group administrators.",
@@ -90,8 +93,8 @@ export default function SuperAdminAdmins() {
     <DashboardLayout role="super-admin">
       <main className="space-y-6">
         <header>
-          <h1 className="text-2xl font-bold text-foreground">Admins</h1>
-          <p className="text-muted-foreground">All active group administrators across the system</p>
+          <h1 className="text-2xl font-bold text-foreground">{t('superAdmin.admins.title')}</h1>
+          <p className="text-muted-foreground">{t('superAdmin.admins.description')}</p>
         </header>
 
         <section className="flex flex-col sm:flex-row gap-3">
@@ -100,16 +103,16 @@ export default function SuperAdminAdmins() {
             <Input
               value={q}
               onChange={(e) => setQ(e.target.value)}
-              placeholder="Search admin name, email, or group..."
+              placeholder={t('superAdmin.admins.searchPlaceholder')}
               className="pl-10"
-              aria-label="Search admins"
+              aria-label={t('superAdmin.admins.title')}
             />
           </div>
           <Card className="sm:w-56">
             <CardContent className="p-3 flex items-center justify-between">
               <div className="flex items-center gap-2 text-muted-foreground">
                 <UserCog className="w-4 h-4" />
-                <span className="text-sm">Total</span>
+                <span className="text-sm">{t('superAdmin.admins.total')}</span>
               </div>
               <Badge variant="secondary">{rows.length}</Badge>
             </CardContent>
@@ -119,16 +122,16 @@ export default function SuperAdminAdmins() {
         <section>
           <Card>
             <CardHeader>
-              <CardTitle>Group Admins</CardTitle>
+              <CardTitle>{t('superAdmin.admins.groupAdmins')}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="rounded-lg border border-border overflow-hidden">
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Admin</TableHead>
-                      <TableHead>Email</TableHead>
-                      <TableHead>Group</TableHead>
+                      <TableHead>{t('superAdmin.admins.admin')}</TableHead>
+                      <TableHead>{t('superAdmin.admins.email')}</TableHead>
+                      <TableHead>{t('superAdmin.admins.group')}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>

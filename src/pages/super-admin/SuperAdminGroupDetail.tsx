@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2, ArrowLeft, Users, Wallet, TrendingUp, DollarSign, Building2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { usePageSeo } from "@/hooks/usePageSeo";
+import { useTranslation } from "react-i18next";
 
 interface GroupInfo {
   id: string;
@@ -60,6 +61,7 @@ interface LoanRow {
 
 export default function SuperAdminGroupDetail() {
   const { groupId } = useParams<{ groupId: string }>();
+  const { t } = useTranslation();
   
   usePageSeo({
     title: "Group Details | Super Admin | eKimina",
@@ -89,7 +91,6 @@ export default function SuperAdminGroupDetail() {
 
         setGroup(groupData as GroupInfo);
 
-        // Fetch profile names for members
         const memberUserIds = (memberData || []).map((m: any) => m.user_id);
         let profileMap: Record<string, { full_name: string; email: string; phone: string | null }> = {};
 
@@ -113,7 +114,6 @@ export default function SuperAdminGroupDetail() {
           }))
         );
 
-        // Map member names to contributions and loans
         setContributions(
           (contribData || []).map((c: any) => ({
             ...c,
@@ -173,9 +173,9 @@ export default function SuperAdminGroupDetail() {
     return (
       <DashboardLayout role="super-admin">
         <div className="text-center py-12">
-          <p className="text-muted-foreground">Group not found</p>
+          <p className="text-muted-foreground">{t('superAdmin.groupDetail.groupNotFound')}</p>
           <Button asChild variant="outline" className="mt-4">
-            <Link to="/super-admin/groups">Back to Groups</Link>
+            <Link to="/super-admin/groups">{t('superAdmin.groupDetail.backToGroups')}</Link>
           </Button>
         </div>
       </DashboardLayout>
@@ -203,51 +203,49 @@ export default function SuperAdminGroupDetail() {
               <Badge variant={group.plan === "growth" ? "gold" : "muted"} className="capitalize">{group.plan}</Badge>
             </div>
             <p className="text-muted-foreground mt-1">
-              {group.description || "No description"} • {group.contribution_frequency} contributions • Created {new Date(group.created_at).toLocaleDateString()}
+              {group.description || t('superAdmin.groupDetail.noDescription')} • {group.contribution_frequency} {t('superAdmin.groupDetail.contributions')} • {t('superAdmin.groupDetail.createdOn')} {new Date(group.created_at).toLocaleDateString()}
             </p>
           </div>
         </header>
 
-        {/* Stats */}
         <section className="grid grid-cols-2 lg:grid-cols-5 gap-4">
           <Card>
             <CardContent className="p-4">
-              <p className="text-sm text-muted-foreground">Members</p>
+              <p className="text-sm text-muted-foreground">{t('superAdmin.groupDetail.members')}</p>
               <p className="text-xl font-bold">{activeMembers}</p>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="p-4">
-              <p className="text-sm text-muted-foreground">Contributions</p>
+              <p className="text-sm text-muted-foreground">{t('superAdmin.groupDetail.contributionsTotal')}</p>
               <p className="text-xl font-bold">{formatCurrency(totalContributions)}</p>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="p-4">
-              <p className="text-sm text-muted-foreground">Loans Issued</p>
+              <p className="text-sm text-muted-foreground">{t('superAdmin.groupDetail.loansIssued')}</p>
               <p className="text-xl font-bold">{formatCurrency(totalLoansAmount)}</p>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="p-4">
-              <p className="text-sm text-muted-foreground">Loan Profit</p>
+              <p className="text-sm text-muted-foreground">{t('superAdmin.groupDetail.loanProfit')}</p>
               <p className="text-xl font-bold text-green-600">{formatCurrency(totalProfit)}</p>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="p-4">
-              <p className="text-sm text-muted-foreground">Interest Rate</p>
+              <p className="text-sm text-muted-foreground">{t('superAdmin.groupDetail.interestRate')}</p>
               <p className="text-xl font-bold">{group.interest_rate}%</p>
             </CardContent>
           </Card>
         </section>
 
-        {/* Tabs for raw data */}
         <Tabs defaultValue="members">
           <TabsList>
-            <TabsTrigger value="members">Members ({members.length})</TabsTrigger>
-            <TabsTrigger value="contributions">Contributions ({contributions.length})</TabsTrigger>
-            <TabsTrigger value="loans">Loans ({loans.length})</TabsTrigger>
+            <TabsTrigger value="members">{t('superAdmin.groupDetail.members')} ({members.length})</TabsTrigger>
+            <TabsTrigger value="contributions">{t('superAdmin.groupDetail.contributionsTotal')} ({contributions.length})</TabsTrigger>
+            <TabsTrigger value="loans">{t('superAdmin.groupDetail.allLoans')} ({loans.length})</TabsTrigger>
           </TabsList>
 
           <TabsContent value="members">
@@ -255,7 +253,7 @@ export default function SuperAdminGroupDetail() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Users className="w-5 h-5" />
-                  Group Members
+                  {t('superAdmin.groupDetail.groupMembers')}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -263,18 +261,18 @@ export default function SuperAdminGroupDetail() {
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>Name</TableHead>
-                        <TableHead>Email</TableHead>
-                        <TableHead>Phone</TableHead>
-                        <TableHead>Role</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Joined</TableHead>
+                        <TableHead>{t('superAdmin.groupDetail.name')}</TableHead>
+                        <TableHead>{t('superAdmin.groupDetail.email')}</TableHead>
+                        <TableHead>{t('superAdmin.groupDetail.phone')}</TableHead>
+                        <TableHead>{t('superAdmin.groupDetail.role')}</TableHead>
+                        <TableHead>{t('superAdmin.groupDetail.status')}</TableHead>
+                        <TableHead>{t('superAdmin.groupDetail.joined')}</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {members.length === 0 ? (
                         <TableRow>
-                          <TableCell colSpan={6} className="text-center text-muted-foreground py-8">No members</TableCell>
+                          <TableCell colSpan={6} className="text-center text-muted-foreground py-8">{t('superAdmin.groupDetail.noMembers')}</TableCell>
                         </TableRow>
                       ) : (
                         members.map((m) => (
@@ -284,7 +282,7 @@ export default function SuperAdminGroupDetail() {
                             <TableCell className="text-muted-foreground">{m.phone || "—"}</TableCell>
                             <TableCell>
                               <Badge variant={m.is_admin ? "gold" : "muted"}>
-                                {m.is_admin ? "Admin" : "Member"}
+                                {m.is_admin ? t('common.admin') : t('superAdmin.groupDetail.member')}
                               </Badge>
                             </TableCell>
                             <TableCell>
@@ -306,7 +304,7 @@ export default function SuperAdminGroupDetail() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Wallet className="w-5 h-5" />
-                  All Contributions
+                  {t('superAdmin.groupDetail.allContributions')}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -314,17 +312,17 @@ export default function SuperAdminGroupDetail() {
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>Member</TableHead>
-                        <TableHead>Amount</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Due Date</TableHead>
-                        <TableHead>Paid Date</TableHead>
+                        <TableHead>{t('superAdmin.groupDetail.member')}</TableHead>
+                        <TableHead>{t('superAdmin.groupDetail.amount')}</TableHead>
+                        <TableHead>{t('superAdmin.groupDetail.status')}</TableHead>
+                        <TableHead>{t('superAdmin.groupDetail.dueDate')}</TableHead>
+                        <TableHead>{t('superAdmin.groupDetail.paidDate')}</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {contributions.length === 0 ? (
                         <TableRow>
-                          <TableCell colSpan={5} className="text-center text-muted-foreground py-8">No contributions</TableCell>
+                          <TableCell colSpan={5} className="text-center text-muted-foreground py-8">{t('superAdmin.groupDetail.noContributions')}</TableCell>
                         </TableRow>
                       ) : (
                         contributions.map((c) => (
@@ -351,7 +349,7 @@ export default function SuperAdminGroupDetail() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <TrendingUp className="w-5 h-5" />
-                  All Loans
+                  {t('superAdmin.groupDetail.allLoans')}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -359,20 +357,20 @@ export default function SuperAdminGroupDetail() {
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>Borrower</TableHead>
-                        <TableHead>Principal</TableHead>
-                        <TableHead>Interest</TableHead>
-                        <TableHead>Total Payable</TableHead>
-                        <TableHead>Profit</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Start</TableHead>
-                        <TableHead>Due</TableHead>
+                        <TableHead>{t('superAdmin.groupDetail.borrower')}</TableHead>
+                        <TableHead>{t('superAdmin.groupDetail.principal')}</TableHead>
+                        <TableHead>{t('superAdmin.groupDetail.interest')}</TableHead>
+                        <TableHead>{t('superAdmin.groupDetail.totalPayable')}</TableHead>
+                        <TableHead>{t('superAdmin.groupDetail.profit')}</TableHead>
+                        <TableHead>{t('superAdmin.groupDetail.status')}</TableHead>
+                        <TableHead>{t('superAdmin.groupDetail.start')}</TableHead>
+                        <TableHead>{t('superAdmin.groupDetail.due')}</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {loans.length === 0 ? (
                         <TableRow>
-                          <TableCell colSpan={8} className="text-center text-muted-foreground py-8">No loans</TableCell>
+                          <TableCell colSpan={8} className="text-center text-muted-foreground py-8">{t('superAdmin.groupDetail.noLoans')}</TableCell>
                         </TableRow>
                       ) : (
                         loans.map((l) => (

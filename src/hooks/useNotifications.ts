@@ -2,11 +2,21 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 
+interface NotificationItem {
+  id: string;
+  type: string;
+  title: string;
+  message: string;
+  is_read: boolean;
+  created_at: string;
+}
+
 interface NotificationCounts {
   announcements: number;
   systemNotices: number;
   messages: number;
   approvals: number;
+  reminders: number;
   total: number;
 }
 
@@ -39,8 +49,10 @@ export function useNotifications() {
     systemNotices: 0,
     messages: 0,
     approvals: 0,
+    reminders: 0,
     total: 0,
   });
+  const [reminderItems, setReminderItems] = useState<NotificationItem[]>([]);
 
   useEffect(() => {
     if (!user) return;
@@ -50,9 +62,21 @@ export function useNotifications() {
       let systemNotices = 0;
       let messages = 0;
       let approvals = 0;
+      let reminders = 0;
+
+      // Fetch unread in-app notifications
+      const { data: unreadNotifs, count: unreadCount } = await supabase
+        .from("notifications")
+        .select("id, type, title, message, is_read, created_at", { count: "exact" })
+        .eq("user_id", user.id)
+        .eq("is_read", false)
+        .order("created_at", { ascending: false })
+        .limit(10);
+
+      reminders = unreadCount || 0;
+      setReminderItems(unreadNotifs || []);
 
       if (isSuperAdmin) {
-        // Super admin: announcements (system), messages, approvals
         const lastSeenAnn = getLastSeen("sa_announcements");
         const lastSeenMsg = getLastSeen("sa_messages");
         const lastSeenApp = getLastSeen("sa_approvals");
@@ -77,7 +101,6 @@ export function useNotifications() {
         messages = msgRes.count || 0;
         approvals = appRes.count || 0;
       } else {
-        // Group admin or member: group announcements + system notices
         const lastSeenAnn = getLastSeen("announcements");
         const lastSeenSys = getLastSeen("system_notices");
 
@@ -102,7 +125,8 @@ export function useNotifications() {
         systemNotices,
         messages,
         approvals,
-        total: announcements + systemNotices + messages + approvals,
+        reminders,
+        total: announcements + systemNotices + messages + approvals + reminders,
       });
     };
 
@@ -111,5 +135,30 @@ export function useNotifications() {
     return () => clearInterval(interval);
   }, [user, isSuperAdmin, groupMembership]);
 
-  return counts;
+  const markReminderRead = async (id: string) => {
+    await supabase.from("notifications").update({ is_read: true }).eq("id", id);
+    setReminderItems((prev) => prev.filter((n) => n.id !== id));
+    setCounts((prev) => ({
+      ...prev,
+      reminders: Math.max(0, prev.reminders - 1),
+      total: Math.max(0, prev.total - 1),
+    }));
+  };
+
+  const markAllRemindersRead = async () => {
+    if (!user) return;
+    await supabase
+      .from("notifications")
+      .update({ is_read: true })
+      .eq("user_id", user.id)
+      .eq("is_read", false);
+    setReminderItems([]);
+    setCounts((prev) => ({
+      ...prev,
+      reminders: 0,
+      total: prev.total - prev.reminders,
+    }));
+  };
+
+  return { counts, reminderItems, markReminderRead, markAllRemindersRead };
 }

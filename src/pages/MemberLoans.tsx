@@ -16,6 +16,7 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
+import { usePageSeo } from "@/hooks/usePageSeo";
 import { 
   TrendingUp, 
   Clock,
@@ -56,6 +57,7 @@ interface RepaymentRecord {
 }
 
 const MemberLoans = () => {
+  usePageSeo({ title: "My Loans | eKimina", description: "View your loan history and repayment progress." });
   const { user, groupMembership } = useAuth();
   const { loading: memberLoading, stats, groupInfo } = useMemberData();
   const [loans, setLoans] = useState<LoanRecord[]>([]);

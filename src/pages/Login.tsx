@@ -11,9 +11,11 @@ import { z } from "zod";
 import { useTranslation } from "react-i18next";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import ekiminaLogo from "@/assets/ekimina-logo.png";
+import { usePageSeo } from "@/hooks/usePageSeo";
 
 const Login = () => {
   const { t } = useTranslation();
+  usePageSeo({ title: "Sign In | eKimina", description: "Sign in to your eKimina savings group account.", canonicalPath: "/login" });
   
   const loginSchema = z.object({
     email: z.string().trim().email({ message: t('auth.validation.emailRequired') }),

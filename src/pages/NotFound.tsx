@@ -3,8 +3,10 @@ import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Home, ArrowLeft } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { usePageSeo } from "@/hooks/usePageSeo";
 
 const NotFound = () => {
+  usePageSeo({ title: "Page Not Found | eKimina", description: "The page you're looking for doesn't exist." });
   const location = useLocation();
   const { t } = useTranslation();
 

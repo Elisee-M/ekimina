@@ -53,6 +53,8 @@ const Settings = () => {
     description: "",
     contribution_amount: "",
     contribution_frequency: "monthly",
+    contribution_day_of_week: "",
+    contribution_day_of_month: "",
     interest_rate: "",
     constitution: "",
   });
@@ -103,6 +105,8 @@ const Settings = () => {
           description: data.description || "",
           contribution_amount: data.contribution_amount?.toString() || "",
           contribution_frequency: data.contribution_frequency || "monthly",
+          contribution_day_of_week: (data as any).contribution_day_of_week?.toString() || "",
+          contribution_day_of_month: (data as any).contribution_day_of_month?.toString() || "",
           interest_rate: data.interest_rate?.toString() || "",
           constitution: data.constitution || "",
         });
@@ -195,16 +199,23 @@ const Settings = () => {
 
     try {
       setSaving(true);
-      const { error } = await supabase
-        .from('ikimina_groups')
-        .update({
+      const updatePayload: any = {
           name: groupForm.name,
           description: groupForm.description,
           contribution_amount: parseFloat(groupForm.contribution_amount) || 0,
           contribution_frequency: groupForm.contribution_frequency,
           interest_rate: parseFloat(groupForm.interest_rate) || 5,
           constitution: groupForm.constitution,
-        })
+          contribution_day_of_week: groupForm.contribution_frequency === 'weekly' || groupForm.contribution_frequency === 'bi-weekly'
+            ? (groupForm.contribution_day_of_week !== "" ? parseInt(groupForm.contribution_day_of_week) : null)
+            : null,
+          contribution_day_of_month: groupForm.contribution_frequency === 'monthly'
+            ? (groupForm.contribution_day_of_month !== "" ? parseInt(groupForm.contribution_day_of_month) : null)
+            : null,
+      };
+      const { error } = await supabase
+        .from('ikimina_groups')
+        .update(updatePayload)
         .eq('id', groupMembership.group_id);
 
       if (error) throw error;
@@ -433,6 +444,53 @@ const Settings = () => {
                           </SelectContent>
                         </Select>
                       </div>
+
+                      {/* Contribution Day Selection */}
+                      {(groupForm.contribution_frequency === 'weekly' || groupForm.contribution_frequency === 'bi-weekly') && (
+                        <div className="space-y-2">
+                          <Label>Contribution Day</Label>
+                          <Select
+                            value={groupForm.contribution_day_of_week}
+                            onValueChange={(value) => setGroupForm({ ...groupForm, contribution_day_of_week: value })}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select day of week" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="0">Sunday</SelectItem>
+                              <SelectItem value="1">Monday</SelectItem>
+                              <SelectItem value="2">Tuesday</SelectItem>
+                              <SelectItem value="3">Wednesday</SelectItem>
+                              <SelectItem value="4">Thursday</SelectItem>
+                              <SelectItem value="5">Friday</SelectItem>
+                              <SelectItem value="6">Saturday</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <p className="text-xs text-muted-foreground">Members must contribute on this day each week</p>
+                        </div>
+                      )}
+
+                      {groupForm.contribution_frequency === 'monthly' && (
+                        <div className="space-y-2">
+                          <Label>Contribution Day of Month</Label>
+                          <Select
+                            value={groupForm.contribution_day_of_month}
+                            onValueChange={(value) => setGroupForm({ ...groupForm, contribution_day_of_month: value })}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select day of month" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {Array.from({ length: 28 }, (_, i) => (
+                                <SelectItem key={i + 1} value={String(i + 1)}>
+                                  {i + 1}{i === 0 ? 'st' : i === 1 ? 'nd' : i === 2 ? 'rd' : 'th'}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <p className="text-xs text-muted-foreground">Members must contribute on this day each month</p>
+                        </div>
+                      )}
                     </div>
                   </div>
 

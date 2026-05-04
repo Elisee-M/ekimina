@@ -13,8 +13,10 @@ import { useMemberData } from "@/hooks/useMemberData";
 import { useTranslation } from "react-i18next";
 import { MemberSavingsChart } from "@/components/charts/MemberSavingsChart";
 import { ContributionStreakCard } from "@/components/charts/ContributionStreakCard";
+import { usePageSeo } from "@/hooks/usePageSeo";
 
 const MemberDashboard = () => {
+  usePageSeo({ title: "My Dashboard | eKimina", description: "View your savings, contributions, and group activity." });
   const { profile } = useAuth();
   const { loading, stats, contributions, announcements, groupInfo } = useMemberData();
   const { t } = useTranslation();

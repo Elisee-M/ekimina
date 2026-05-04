@@ -12,11 +12,13 @@ import { useTranslation } from "react-i18next";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { Badge } from "@/components/ui/badge";
 import ekiminaLogo from "@/assets/ekimina-logo.png";
+import { usePageSeo } from "@/hooks/usePageSeo";
 
 type PlanKey = "starter" | "growth";
 
 const Register = () => {
   const { t } = useTranslation();
+  usePageSeo({ title: "Create Account | eKimina", description: "Register your savings group on eKimina and start managing contributions, loans and dividends.", canonicalPath: "/register" });
   const [searchParams] = useSearchParams();
   const selectedPlan = (searchParams.get("plan") as PlanKey) || "starter";
 

@@ -16,8 +16,10 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useMemberData } from "@/hooks/useMemberData";
+import { usePageSeo } from "@/hooks/usePageSeo";
 
 const MemberContributions = () => {
+  usePageSeo({ title: "My Contributions | eKimina", description: "Track your savings group contributions and payment history." });
   const { profile } = useAuth();
   const { loading, stats, contributions, groupInfo } = useMemberData();
   const [searchTerm, setSearchTerm] = useState("");

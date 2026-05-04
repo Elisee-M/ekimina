@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
@@ -8,6 +8,8 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { Loader2, CheckCircle2, Clock, Users, Calendar } from "lucide-react";
 import { format } from "date-fns";
+import { useTranslation } from "react-i18next";
+import { usePageSeo } from "@/hooks/usePageSeo";
 
 interface PendingGroup {
   id: string;
@@ -23,6 +25,8 @@ interface PendingGroup {
 }
 
 const SuperAdminApprovals = () => {
+  usePageSeo({ title: "Approvals | Super Admin | eKimina", description: "Approve or reject pending group registrations." });
+  const { t } = useTranslation();
   const [pendingGroups, setPendingGroups] = useState<PendingGroup[]>([]);
   const [loading, setLoading] = useState(true);
   const [approving, setApproving] = useState<string | null>(null);
@@ -41,7 +45,6 @@ const SuperAdminApprovals = () => {
 
       if (error) throw error;
 
-      // Fetch creator profiles for each group
       const enriched: PendingGroup[] = [];
       for (const g of groups || []) {
         let creator_name = 'Unknown';
@@ -71,7 +74,7 @@ const SuperAdminApprovals = () => {
 
       setPendingGroups(enriched);
     } catch (err: any) {
-      toast({ title: "Error loading pending groups", description: err.message, variant: "destructive" });
+      toast({ title: t('superAdmin.approvals.errorLoading'), description: err.message, variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -93,10 +96,10 @@ const SuperAdminApprovals = () => {
 
       if (error) throw error;
 
-      toast({ title: "Group Approved!", description: `"${groupName}" is now active.` });
+      toast({ title: t('superAdmin.approvals.groupApproved'), description: t('superAdmin.approvals.groupNowActive', { name: groupName }) });
       setPendingGroups(prev => prev.filter(g => g.id !== groupId));
     } catch (err: any) {
-      toast({ title: "Approval failed", description: err.message, variant: "destructive" });
+      toast({ title: t('superAdmin.approvals.approvalFailed'), description: err.message, variant: "destructive" });
     } finally {
       setApproving(null);
     }
@@ -106,8 +109,8 @@ const SuperAdminApprovals = () => {
     <DashboardLayout role="super-admin">
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Pending Approvals</h1>
-          <p className="text-muted-foreground">Growth plan groups awaiting payment confirmation</p>
+          <h1 className="text-2xl font-bold text-foreground">{t('superAdmin.approvals.title')}</h1>
+          <p className="text-muted-foreground">{t('superAdmin.approvals.description')}</p>
         </div>
 
         {loading ? (
@@ -118,8 +121,8 @@ const SuperAdminApprovals = () => {
           <Card variant="elevated">
             <CardContent className="p-12 text-center">
               <CheckCircle2 className="w-12 h-12 text-primary/40 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-foreground">All caught up!</h3>
-              <p className="text-muted-foreground mt-1">No groups pending approval right now.</p>
+              <h3 className="text-lg font-semibold text-foreground">{t('superAdmin.approvals.allCaughtUp')}</h3>
+              <p className="text-muted-foreground mt-1">{t('superAdmin.approvals.noGroupsPending')}</p>
             </CardContent>
           </Card>
         ) : (
@@ -133,7 +136,7 @@ const SuperAdminApprovals = () => {
                         <h3 className="text-lg font-semibold text-foreground">{group.name}</h3>
                         <Badge variant="secondary" className="gap-1">
                           <Clock className="w-3 h-3" />
-                          Pending
+                          {t('superAdmin.approvals.pending')}
                         </Badge>
                       </div>
                       {group.description && (
@@ -142,7 +145,7 @@ const SuperAdminApprovals = () => {
                       <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
                         <span className="flex items-center gap-1">
                           <Users className="w-4 h-4" />
-                          {group.member_count} member(s)
+                          {group.member_count} {t('superAdmin.approvals.members')}
                         </span>
                         <span className="flex items-center gap-1">
                           <Calendar className="w-4 h-4" />
@@ -153,7 +156,7 @@ const SuperAdminApprovals = () => {
                         </span>
                       </div>
                       <p className="text-sm text-muted-foreground">
-                        Created by: <strong className="text-foreground">{group.creator_name}</strong>
+                        {t('superAdmin.approvals.createdBy')} <strong className="text-foreground">{group.creator_name}</strong>
                         {group.creator_email && ` (${group.creator_email})`}
                       </p>
                     </div>
@@ -165,9 +168,9 @@ const SuperAdminApprovals = () => {
                       onClick={() => handleApprove(group.id, group.name)}
                     >
                       {approving === group.id ? (
-                        <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Approving...</>
+                        <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> {t('superAdmin.approvals.approving')}</>
                       ) : (
-                        <><CheckCircle2 className="w-4 h-4 mr-2" /> Confirm Payment</>
+                        <><CheckCircle2 className="w-4 h-4 mr-2" /> {t('superAdmin.approvals.confirmPayment')}</>
                       )}
                     </Button>
                   </div>

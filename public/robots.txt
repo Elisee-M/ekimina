@@ -1,14 +1,13 @@
-User-agent: Googlebot
-Allow: /
-
-User-agent: Bingbot
-Allow: /
-
-User-agent: Twitterbot
-Allow: /
-
-User-agent: facebookexternalhit
-Allow: /
-
 User-agent: *
 Allow: /
+
+Disallow: /dashboard
+Disallow: /dashboard/*
+Disallow: /member
+Disallow: /member/*
+Disallow: /super-admin
+Disallow: /super-admin/*
+Disallow: /onboarding
+Disallow: /system-notices
+
+Sitemap: https://ekimina-connect.lovable.app/sitemap.xml
